@@ -1,0 +1,17 @@
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Proyecto1.exe
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Proyecto1.deps.json
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Proyecto1.runtimeconfig.json
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Proyecto1.runtimeconfig.dev.json
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Proyecto1.dll
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Proyecto1.pdb
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\bin\Debug\netcoreapp3.1\Irony.dll
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.csprojAssemblyReference.cache
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.Form1.resources
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.csproj.GenerateResource.cache
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.AssemblyInfoInputs.cache
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.AssemblyInfo.cs
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.csproj.CoreCompileInputs.cache
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.csproj.CopyComplete
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.dll
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.pdb
+C:\Users\efrai\Desktop\Compiladores2_1s2021\Proyecto1[Compiladores2]\Proyecto1\Proyecto1\obj\Debug\netcoreapp3.1\Proyecto1.genruntimeconfig.cache
