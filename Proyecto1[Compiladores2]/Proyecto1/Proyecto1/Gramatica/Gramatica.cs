@@ -103,7 +103,6 @@ namespace Proyecto1.Gramatica
             NonTerminal DECLARACION_OBJETOS1 = new NonTerminal("DECLARACION_OBJETOS1");
             NonTerminal ARREGLO = new NonTerminal("ARREGLO");
             NonTerminal OBJETO = new NonTerminal("OBJETO");
-            //NonTerminal OBJETO1 = new NonTerminal("OBJETO1");
             NonTerminal TIPO = new NonTerminal("TIPO");
             NonTerminal VALOR = new NonTerminal("VALOR");
             NonTerminal CONSTANTE = new NonTerminal("CONSTANTE");
@@ -125,6 +124,9 @@ namespace Proyecto1.Gramatica
             NonTerminal CONDICION1 = new NonTerminal("CONDICION1");
             NonTerminal CONDICION_NUM = new NonTerminal("CONDICION_NUM");
             NonTerminal CONDICION_LOG = new NonTerminal("CONDICION_LOG");
+            NonTerminal CONDICIONES = new NonTerminal("CONDICIONES");
+            NonTerminal CONDICIONES1 = new NonTerminal("CONDICIONES1");
+
 
             //NonTerminal PARAMETROS_PROC3 = new NonTerminal("PARAMETROS_PROC3");
 
@@ -133,16 +135,15 @@ namespace Proyecto1.Gramatica
 
             #region Gramatica
 
-            INICIO.Rule = EXP;
+            INICIO.Rule = CONDICIONES;
 
             PROYECTO.Rule = t_program + id + t_puntoComa + CABECERA + CUERPO;
 
-            CABECERA.Rule = CABECERA + CABECERA1 | CABECERA1;
+            CABECERA.Rule = CABECERA + CABECERA1 | CABECERA1 | Empty;
 
             CABECERA1.Rule = VARIABLE
                         | DECLARACION_OBJETOS
-                        | CONSTANTE
-                        | Empty;
+                        | CONSTANTE;
 
             VARIABLE.Rule = VARIABLE + t_var + VARIABLE1 | t_var + VARIABLE1 | Empty;
 
@@ -190,11 +191,12 @@ namespace Proyecto1.Gramatica
 
             CONSTANTE1.Rule = id + t_igualAritmetico + VALOR + t_puntoComa;
 
-            CUERPO.Rule = CUERPO + CUERPO1 | CUERPO1;
+            CUERPO.Rule = CUERPO + CUERPO1 | CUERPO1 | Empty;
 
             CUERPO1.Rule = FUNCION
-                          | PROCEDIMIENTO
-                          | Empty;
+                          | PROCEDIMIENTO;
+
+            //******************************************* FUNCIONES Y PROCEDIMIENTOS ***************************************************
 
             FUNCION.Rule = t_function + id + PARAMETROS_FUNC + t_dosPuntos + TIPO + t_puntoComa + VARIABLE + t_begin /*INSTRUCCIONES*/ + t_end + t_puntoComa;
 
@@ -203,11 +205,6 @@ namespace Proyecto1.Gramatica
 
             PARAMETROS_FUNC1.Rule = PARAMETROS_FUNC1 + ToTerm(";") + LISTA_DEC | LISTA_DEC
                                     | Empty;
-
-            /*
-            PARAMETROS_FUNC2.Rule = t_puntoComa + LISTA_DEC
-                                    | LISTA_DEC;
-            */
 
             PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS_PROC + t_puntoComa + VARIABLE + t_begin /*INSTRUCCIONES*/ + t_end + t_puntoComa;
 
@@ -219,8 +216,8 @@ namespace Proyecto1.Gramatica
             PARAMETROS_PROC2.Rule = LISTA_DEC
                                     | t_var + LISTA_DEC;
 
-
             //******************************************* EXPRESIONES ***************************************************
+
             EXP.Rule = EXP + mas + EXP
                      | EXP + menos + EXP
                      | EXP + div + EXP
@@ -239,12 +236,22 @@ namespace Proyecto1.Gramatica
                           | t_false
                           | id;
 
+            //******************************************* CONDICIONES ***************************************************
 
-            CONDICION.Rule = EXP + CONDICION + EXP
+
+            CONDICIONES.Rule = CONDICIONES + CONDICIONES1 + CONDICION
+                              | CONDICION;
+
+            CONDICIONES1.Rule = CONDICIONES1
+                               | and
+                               | or;
+
+            CONDICION.Rule = EXP + CONDICION_NUM + EXP
                             | EXP_LOG + CONDICION1;
 
-            CONDICION1.Rule = CONDICION_LOG + EXP_LOG
-                             | Empty;
+            CONDICION1.Rule = t_igualAritmetico + EXP_LOG
+                            | diferente + EXP_LOG
+                            | Empty;
 
             CONDICION_NUM.Rule = CONDICION_LOG
                                 | menor

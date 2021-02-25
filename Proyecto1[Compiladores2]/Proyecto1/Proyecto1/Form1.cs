@@ -48,9 +48,15 @@ namespace Proyecto1
 
             formarArbol(arbol);
 
-            Semantica.Expresion exp = new Semantica.Expresion();
+            Semantica.Condicion cond = new Semantica.Condicion();
+
+            MessageBox.Show(cond.verificar(raiz.getNodos().ElementAt(0))+"");
+
+            /*
+            Semantica.ExpresionLogica exp = new Semantica.ExpresionLogica();
 
             exp.evaluarExpresion(raiz.getNodos().ElementAt(0));
+            */
 
             EscrbirArchivo(this.declaraciones + this.relaciones);
         }
@@ -84,15 +90,18 @@ namespace Proyecto1
             }
             else
             {
-                Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value, Semantica.Terminal.TipoDato.ENTERO);
-                AST.Hoja tempH = new AST.Hoja(tempT);
-                nodoAct.setHoja(tempH);
-                //AST.Nodo nodo = new AST.Nodo("Terminal", tempH);
-                //nodoAct = nodo;
+                if (nodoArbol.Token!=null)
+                {
+                    Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value, Semantica.Terminal.TipoDato.ENTERO);
+                    AST.Hoja tempH = new AST.Hoja(tempT);
+                    nodoAct.setHoja(tempH);
+                    //AST.Nodo nodo = new AST.Nodo("Terminal", tempH);
+                    //nodoAct = nodo;
 
-                this.relaciones += '"' + nodoAct.getId() + '"' + "->" + '"' + nodoAct.getHoja().getId() + '"' + ";\n";
+                    this.relaciones += '"' + nodoAct.getId() + '"' + "->" + '"' + nodoAct.getHoja().getId() + '"' + ";\n";
 
-                this.declaraciones += '"' + nodoAct.getHoja().getId() + '"' + "[label=" + '"' + nodoAct.getHoja().getValor().getValor() + '"' + "shape=" + '"' + "circle" + '"' + "style=" + '"' + "filled" + '"' + " fillcolor=green];\n";
+                    this.declaraciones += '"' + nodoAct.getHoja().getId() + '"' + "[label=" + '"' + nodoAct.getHoja().getValor().getValor() + '"' + "shape=" + '"' + "circle" + '"' + "style=" + '"' + "filled" + '"' + " fillcolor=green];\n";
+                }
             }
 
             return nodoAct;
