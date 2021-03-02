@@ -34,101 +34,101 @@ namespace Proyecto1.Semantica
         }
 
 
-        public object noce(AST.Nodo nodoAct)
+        public bool noce(AST.Nodo nodoAct)
         {
 
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
-
-            if (temp.Length == 3)
+            
+            if (temp.Length==1)
             {
-                object n1;
-                object n2;
-
-                if (temp[0].getHoja() == null)
+                string tipo = temp[0].getHoja().getValor().getValor()+"";
+                if (tipo=="true")
                 {
-                    //Recursividad
-                    n1 = noce(temp[0]);
-                    n2 = noce(temp[2]);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (temp.Length==2)
+            {
+                return !noce(temp[1]);
+            }
+            else if (temp.Length==3)
+            {
 
-                    if (temp[1].getHoja().getValor().getValor()+"" == "and")
+                if (temp[0].getHoja()==null)
+                {
+                    bool n1;
+                    bool n2;
+
+                    if (temp[0].getNombre()=="EXP_LOG")
                     {
+                        n1 = noce(temp[0]);
+                        n2 = noce(temp[2]);
 
-                        if (n1+""=="true")
+                        if (temp[1].getHoja().getValor().getValor() == "and")
                         {
-                            if (n2+""=="true")
-                            {
-
-                                // true and true
-                                return "true";
-                            }
-                            else
-                            {
-                                // true and false
-                                return "false";
-                            }
+                            return n1 && n2;
                         }
                         else
                         {
-                            if (n2+"" == "true")
-                            {
-                                // false and true
-                                return "false";
-                            }
-                            else
-                            {
-                                // false and false
-                                return "false";
-                            }
+                            return n1 || n2;
                         }
-
                     }
                     else
                     {
-                        if (n1+"" == "true")
-                        {
-                            if (n2+"" == "true")
-                            {
-                                // true or true
-                                return "true";
-                            }
-                            else
-                            {
-                                // true or false
-                                return "true";
-                            }
-                        }
-                        else
-                        {
-                            if (n2+"" == "true")
-                            {
-                                // false or true
-                                return "true";
-                            }
-                            else
-                            {
-                                // false or false
-                                return "false";
-                            }
-                        }
+                        Condicion c = new Condicion();
+                        return c.verificar(nodoAct);
                     }
-
                 }
                 else
                 {
                     return noce(temp[1]);
                 }
-
-
             }
             else
             {
-                temp[0].setValorExp(temp[0].getHoja().getValor().getValor());
+                if (temp[1].getNombre()=="EXP")
+                {
+                    Condicion c = new Condicion();
+                    AST.Nodo n = new AST.Nodo("CONDICION");
+                    n.addNodo(temp[1]);
+                    n.addNodo(temp[2]);
+                    n.addNodo(temp[3]);
+                    return c.verificar(n);
+                }
+                else
+                {
+                    bool n1 = noce(temp[1]);
+                    bool n2 = noce(temp[3]);
 
-                return temp[0].getValorExp();
-
+                    string tipo = temp[2].getNodos().ToArray()[0].getHoja().getValor().getValor() + "";
+                    if (tipo=="=")
+                    {
+                        if (n1==n2)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (n1 != n2)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
-
-
 
         }
 

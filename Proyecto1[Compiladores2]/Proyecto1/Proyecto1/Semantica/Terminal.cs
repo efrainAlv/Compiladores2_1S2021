@@ -14,7 +14,8 @@ namespace Proyecto1.Semantica
             REAL,
             BOOLEANO,
             ID,
-            SIMBOLO
+            SIMBOLO,
+            OBJETO
         }
 
         private object valor;

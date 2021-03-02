@@ -83,6 +83,11 @@ namespace Proyecto1.Gramatica
             var mayor = ">";
             var menor = "<";
 
+            var if_t = "if";
+            var elseIf_t = "else if";
+            var else_t = "else";
+            var then_t = "then";
+
 
             #endregion
 
@@ -120,22 +125,32 @@ namespace Proyecto1.Gramatica
 
             NonTerminal EXP = new NonTerminal("EXP");
             NonTerminal EXP_LOG = new NonTerminal("EXP_LOG");
+            NonTerminal EXP_LOG1 = new NonTerminal("EXP_LOG1");
             NonTerminal CONDICION = new NonTerminal("CONDICION");
             NonTerminal CONDICION1 = new NonTerminal("CONDICION1");
             NonTerminal CONDICION_NUM = new NonTerminal("CONDICION_NUM");
             NonTerminal CONDICION_LOG = new NonTerminal("CONDICION_LOG");
+            //NonTerminal CONDICIONESS = new NonTerminal("CONDICIONESS");
             NonTerminal CONDICIONES = new NonTerminal("CONDICIONES");
-            NonTerminal CONDICIONES1 = new NonTerminal("CONDICIONES1");
+            //NonTerminal CONDICIONES1 = new NonTerminal("CONDICIONES1");
+            NonTerminal IF = new NonTerminal("IF");
+            NonTerminal IF1 = new NonTerminal("IF1");
+            NonTerminal IF2 = new NonTerminal("IF2");
+            NonTerminal ELSE_IF = new NonTerminal("ELSE_IF");
+            NonTerminal ELSE = new NonTerminal("ELSE");
 
 
             //NonTerminal PARAMETROS_PROC3 = new NonTerminal("PARAMETROS_PROC3");
 
+            NonTerminal TERM = new NonTerminal("TERM");
+            NonTerminal TERM1 = new NonTerminal("TERM1");
+            NonTerminal FACTOR = new NonTerminal("FACTOR");
 
             #endregion
 
             #region Gramatica
 
-            INICIO.Rule = CONDICIONES;
+            INICIO.Rule = VARIABLE;
 
             PROYECTO.Rule = t_program + id + t_puntoComa + CABECERA + CUERPO;
 
@@ -228,30 +243,39 @@ namespace Proyecto1.Gramatica
                      | real
                      | id;
 
+            
             EXP_LOG.Rule = EXP_LOG + and + EXP_LOG
                           | EXP_LOG + or + EXP_LOG
                           | ToTerm("(") + EXP_LOG + ToTerm(")")
+                          | ToTerm("(") + EXP_LOG + CONDICION_LOG + EXP_LOG + ToTerm(")")
+                          | ToTerm("(") + EXP + CONDICION_NUM + EXP + ToTerm(")")
+                          | EXP + CONDICION_NUM + EXP
                           | not + EXP_LOG
                           | t_true
                           | t_false
                           | id;
 
+            /*
+            EXP_LOG.Rule = TERM + EXP_LOG1;
+
+            EXP_LOG1.Rule = or + TERM
+                            | Empty;
+
+            TERM.Rule = FACTOR + TERM1;
+
+            TERM1.Rule = and + FACTOR
+                        | Empty;
+
+            FACTOR.Rule = not + FACTOR
+                        | ToTerm("(") + FACTOR + ToTerm(")")
+                        | id
+                        | t_true
+                        | t_false;
+
+            */
             //******************************************* CONDICIONES ***************************************************
 
-
-            CONDICIONES.Rule = CONDICIONES + CONDICIONES1 + CONDICION
-                              | CONDICION;
-
-            CONDICIONES1.Rule = CONDICIONES1
-                               | and
-                               | or;
-
-            CONDICION.Rule = EXP + CONDICION_NUM + EXP
-                            | EXP_LOG + CONDICION1;
-
-            CONDICION1.Rule = t_igualAritmetico + EXP_LOG
-                            | diferente + EXP_LOG
-                            | Empty;
+            CONDICION.Rule = EXP_LOG; 
 
             CONDICION_NUM.Rule = CONDICION_LOG
                                 | menor
@@ -264,11 +288,50 @@ namespace Proyecto1.Gramatica
                                 | diferente;
 
 
+
+            //******************************************* SENTENCIAS DE CONTROL ***************************************************
+
+
+            IF.Rule = if_t + CONDICION + then_t + t_begin + t_end + IF1;
+
+            IF1.Rule = ELSE_IF + IF2
+                        | ELSE
+                        | Empty;
+
+            IF2.Rule = ELSE
+                      | Empty;
+
+            ELSE_IF.Rule = ELSE_IF + elseIf_t + CONDICION + then_t + t_begin + t_end
+                        | elseIf_t + CONDICION + then_t + t_begin + t_end;
+
+            ELSE.Rule = else_t + ToTerm("begin") + t_end + ToTerm(";")
+                        | Empty;
+                    
+
             #endregion
 
-            RegisterOperators(1, mas, menos);
-            RegisterOperators(2, mult, div, and, or);
-            RegisterOperators(3, Associativity.Left, menos, not);
+
+            RegisterOperators(6, Associativity.Left, menos, not);
+            RegisterOperators(5, mult, div);
+            RegisterOperators(4, mas, menos);
+            RegisterOperators(3, and, or);
+            RegisterOperators(2, diferente, t_igualAritmetico);
+
+
+            
+
+
+
+            /*
+            RegisterOperators(60, "^");
+            RegisterOperators(50, "*", "/", "\\", "mod");
+            RegisterOperators(40, "+", "-", "&");
+            RegisterOperators(30, "=", "<=", ">=", "<", ">", "<>");
+            RegisterOperators(20, "and", "or");
+             */
+
+
+
 
             this.Root = INICIO;
 

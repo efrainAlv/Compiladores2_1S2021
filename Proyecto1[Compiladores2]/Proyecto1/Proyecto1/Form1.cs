@@ -48,17 +48,20 @@ namespace Proyecto1
 
             formarArbol(arbol);
 
-            Semantica.Condicion cond = new Semantica.Condicion();
+            EscrbirArchivo(this.declaraciones + this.relaciones);
 
-            MessageBox.Show(cond.verificar(raiz.getNodos().ElementAt(0))+"");
+            Semantica.Cabecera cond = new Semantica.Cabecera();
+            cond.agregarVaraibles(raiz.getNodos().ElementAt(0));
+            //MessageBox.Show(cond.verificar(raiz.getNodos().ElementAt(0))+"");
 
-            /*
+
             Semantica.ExpresionLogica exp = new Semantica.ExpresionLogica();
 
-            exp.evaluarExpresion(raiz.getNodos().ElementAt(0));
-            */
+            //exp.evaluarExpresion(raiz.getNodos().ElementAt(0));
 
-            EscrbirArchivo(this.declaraciones + this.relaciones);
+            
+
+
         }
 
 
