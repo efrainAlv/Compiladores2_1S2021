@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Proyecto1.Semantica
 {
-    class Variable
+    public class Variable
     {
 
         private string nombre;

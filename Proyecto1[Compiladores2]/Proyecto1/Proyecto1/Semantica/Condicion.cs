@@ -22,33 +22,7 @@ namespace Proyecto1.Semantica
         {
 
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
-            
-            /*
-            if (nodoAct.getNombre()=="CONDICIONES")
-            {
-                if (temp.Length==3)
-                {
-                    bool n1 = verificar(temp[0]);
-                    bool n2 = verificar(temp[2]);
-
-                    if (temp[1].getNodos().ToArray()[0].getHoja().getValor().getValor()+""=="and")
-                    {
-                        return n1 && n2;
-                    }
-                    else
-                    {
-                        return n1 || n2;
-                    }
-                }
-                else
-                {
-                    return verificar(temp[0]);
-                }
-            }
-
-            */
-            
-             
+       
             Expresion exp = new Expresion();
                     
             double n1 = Convert.ToSingle((exp.noce(temp[0])));
@@ -130,59 +104,6 @@ namespace Proyecto1.Semantica
                     }
                 }
             }
-
-             
-                
-            /*
-            else
-            {
-                ExpresionLogica exp = new ExpresionLogica();
-                object n1 = exp.noce(temp[0]);
-
-                AST.Nodo[] temp1 = temp[0].getNodos().ToArray();
-
-                if (temp1.Length>0)
-                {
-                    object n2 = exp.noce(temp1[1]);
-
-                    if (temp1[0].getHoja().getValor().getValor()+""=="=")
-                    {
-                        if (n1==n2)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        if (n1 != n2)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (n1+""=="true")
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-            }
-            */
-            
 
         }
         

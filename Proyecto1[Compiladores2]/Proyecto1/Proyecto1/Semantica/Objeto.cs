@@ -4,14 +4,16 @@ using System.Text;
 
 namespace Proyecto1.Semantica
 {
-    class Objeto
+    public class Objeto
     {
 
-        List<Variable> atributos;
+        private List<Variable> atributos;
+        private string nombre;
 
-        public Objeto()
+        public Objeto(string nombre)
         {
-            this.atributos = null;
+            this.nombre = nombre;
+            this.atributos = new List<Variable>(); ;
         }
 
 
@@ -21,6 +23,14 @@ namespace Proyecto1.Semantica
             this.atributos.Add(var);
         }
 
+        public void agregarAtributos(List<Variable> vars)
+        {
+            Variable[] vrs = vars.ToArray();
+            for (int i = 0; i < vrs.Length; i++)
+            {
+                this.atributos.Add(vrs[i]);
+            }
+        }
 
         public Variable buscarAtributo(string nombre)
         {
@@ -35,6 +45,15 @@ namespace Proyecto1.Semantica
             return null;
         }
 
+
+        public string getNombre()
+        {
+            return this.nombre;
+        }
+        public void setNombre(string nombre)
+        {
+            this.nombre = nombre;
+        }
 
     }
 }

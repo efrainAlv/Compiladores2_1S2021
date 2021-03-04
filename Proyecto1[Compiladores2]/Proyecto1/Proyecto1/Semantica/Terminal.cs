@@ -20,6 +20,7 @@ namespace Proyecto1.Semantica
 
         private object valor;
         private TipoDato tipo;
+        private Objeto valorObjeto;
 
         public Terminal()
         {
@@ -28,8 +29,17 @@ namespace Proyecto1.Semantica
 
         public Terminal(object valor, TipoDato tipo)
         {
-            this.valor = valor;
             this.tipo = tipo;
+            this.valor = valor;
+            this.valorObjeto = null;
+        }
+
+
+        public Terminal(object valor, TipoDato tipo, Objeto obj)
+        {
+            this.tipo = tipo;
+            this.valor = valor;
+            this.valorObjeto = obj;
         }
 
         public void setValor(object valor)

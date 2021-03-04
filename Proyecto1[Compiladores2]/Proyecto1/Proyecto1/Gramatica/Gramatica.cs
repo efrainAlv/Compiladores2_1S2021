@@ -41,7 +41,6 @@ namespace Proyecto1.Gramatica
             var t_integer = "integer";
             var t_real = "real";
             var t_boolean = "boolean";
-            var t_void = "void";
             var t_object = "object";
             var t_program = "program";
             var t_var = "var";
@@ -55,10 +54,9 @@ namespace Proyecto1.Gramatica
 
             var t_puntoComa = ";";
             var t_dosPuntos = ":";
+            var punto = ".";
             var t_coma = ",";
             var t_igualAritmetico = "=";
-            //var t_corcheteApertura = "[";
-            //var t_corcheteCierre = "]";
             var t_puntoPunto = "..";
 
             var t_function = "function";
@@ -87,6 +85,8 @@ namespace Proyecto1.Gramatica
             var elseIf_t = "else if";
             var else_t = "else";
             var then_t = "then";
+            var writeln = "writeln";
+            var write = "write";
 
 
             #endregion
@@ -103,7 +103,6 @@ namespace Proyecto1.Gramatica
             NonTerminal LISTA_DEC = new NonTerminal("LISTA_DEC");
             NonTerminal LISTA_DEC1 = new NonTerminal("LISTA_DEC1");
             NonTerminal DECLARACION = new NonTerminal("DECLARACION");
-            NonTerminal DECLARACION1 = new NonTerminal("DECLARACION1");
             NonTerminal DECLARACION_OBJETOS = new NonTerminal("DECLARACION_OBJETOS");
             NonTerminal DECLARACION_OBJETOS1 = new NonTerminal("DECLARACION_OBJETOS1");
             NonTerminal ARREGLO = new NonTerminal("ARREGLO");
@@ -117,7 +116,6 @@ namespace Proyecto1.Gramatica
             NonTerminal FUNCION = new NonTerminal("FUNCION");
             NonTerminal PARAMETROS_FUNC = new NonTerminal("PARAMETROS_FUNC");
             NonTerminal PARAMETROS_FUNC1 = new NonTerminal("PARAMETROS_FUNC1");
-            NonTerminal PARAMETROS_FUNC2 = new NonTerminal("PARAMETROS_FUNC2");
             NonTerminal PROCEDIMIENTO = new NonTerminal("PROCEDIMIENTO");
             NonTerminal PARAMETROS_PROC = new NonTerminal("PARAMETROS_PROC");
             NonTerminal PARAMETROS_PROC1 = new NonTerminal("PARAMETROS_PROC1");
@@ -125,34 +123,29 @@ namespace Proyecto1.Gramatica
 
             NonTerminal EXP = new NonTerminal("EXP");
             NonTerminal EXP_LOG = new NonTerminal("EXP_LOG");
-            NonTerminal EXP_LOG1 = new NonTerminal("EXP_LOG1");
             NonTerminal CONDICION = new NonTerminal("CONDICION");
-            NonTerminal CONDICION1 = new NonTerminal("CONDICION1");
             NonTerminal CONDICION_NUM = new NonTerminal("CONDICION_NUM");
             NonTerminal CONDICION_LOG = new NonTerminal("CONDICION_LOG");
-            //NonTerminal CONDICIONESS = new NonTerminal("CONDICIONESS");
-            NonTerminal CONDICIONES = new NonTerminal("CONDICIONES");
-            //NonTerminal CONDICIONES1 = new NonTerminal("CONDICIONES1");
             NonTerminal IF = new NonTerminal("IF");
             NonTerminal IF1 = new NonTerminal("IF1");
             NonTerminal IF2 = new NonTerminal("IF2");
             NonTerminal ELSE_IF = new NonTerminal("ELSE_IF");
             NonTerminal ELSE = new NonTerminal("ELSE");
 
+            NonTerminal INSTRUCCIONES = new NonTerminal("INSTRUCCIONES");
+            NonTerminal INSTRUCCION = new NonTerminal("INSTRUCCION");
+            NonTerminal ASIGNACION = new NonTerminal("ASIGNACION");
+            NonTerminal ASIGNACIONES = new NonTerminal("ASIGNACIONES");
 
-            //NonTerminal PARAMETROS_PROC3 = new NonTerminal("PARAMETROS_PROC3");
 
-            NonTerminal TERM = new NonTerminal("TERM");
-            NonTerminal TERM1 = new NonTerminal("TERM1");
-            NonTerminal FACTOR = new NonTerminal("FACTOR");
 
             #endregion
 
             #region Gramatica
 
-            INICIO.Rule = VARIABLE;
+            INICIO.Rule = ASIGNACIONES;
 
-            PROYECTO.Rule = t_program + id + t_puntoComa + CABECERA + CUERPO;
+            PROYECTO.Rule = t_program + id + t_puntoComa + CABECERA + CUERPO + t_begin + INSTRUCCIONES + t_end + punto;
 
             CABECERA.Rule = CABECERA + CABECERA1 | CABECERA1 | Empty;
 
@@ -255,24 +248,6 @@ namespace Proyecto1.Gramatica
                           | t_false
                           | id;
 
-            /*
-            EXP_LOG.Rule = TERM + EXP_LOG1;
-
-            EXP_LOG1.Rule = or + TERM
-                            | Empty;
-
-            TERM.Rule = FACTOR + TERM1;
-
-            TERM1.Rule = and + FACTOR
-                        | Empty;
-
-            FACTOR.Rule = not + FACTOR
-                        | ToTerm("(") + FACTOR + ToTerm(")")
-                        | id
-                        | t_true
-                        | t_false;
-
-            */
             //******************************************* CONDICIONES ***************************************************
 
             CONDICION.Rule = EXP_LOG; 
@@ -287,12 +262,10 @@ namespace Proyecto1.Gramatica
                                 | t_igualAritmetico
                                 | diferente;
 
-
-
             //******************************************* SENTENCIAS DE CONTROL ***************************************************
 
 
-            IF.Rule = if_t + CONDICION + then_t + t_begin + t_end + IF1;
+            IF.Rule = if_t + CONDICION + ToTerm("then") + t_begin + INSTRUCCIONES + t_end + IF1;
 
             IF1.Rule = ELSE_IF + IF2
                         | ELSE
@@ -301,12 +274,32 @@ namespace Proyecto1.Gramatica
             IF2.Rule = ELSE
                       | Empty;
 
-            ELSE_IF.Rule = ELSE_IF + elseIf_t + CONDICION + then_t + t_begin + t_end
-                        | elseIf_t + CONDICION + then_t + t_begin + t_end;
+            ELSE_IF.Rule = ELSE_IF + else_t + if_t + CONDICION + then_t + t_begin + INSTRUCCIONES + t_end
+                        | ToTerm("else") + if_t + CONDICION + then_t + t_begin + INSTRUCCIONES + t_end;
 
-            ELSE.Rule = else_t + ToTerm("begin") + t_end + ToTerm(";")
+            ELSE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + ToTerm(";")
                         | Empty;
-                    
+
+
+
+
+
+
+
+
+            INSTRUCCIONES.Rule = INSTRUCCIONES + INSTRUCCION
+                                | INSTRUCCION;
+
+            INSTRUCCION.Rule = IF
+                             | ASIGNACIONES
+                             | Empty;
+
+
+            ASIGNACIONES.Rule = ASIGNACIONES + ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa
+                                | ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa ;
+
+            ASIGNACION.Rule = ASIGNACION + punto + id
+                            | id;
 
             #endregion
 

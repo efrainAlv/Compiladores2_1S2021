@@ -80,7 +80,11 @@ namespace Proyecto1.Semantica
                     else
                     {
                         Condicion c = new Condicion();
-                        return c.verificar(nodoAct);
+                        AST.Nodo n = new AST.Nodo("CONDICION");
+                        n.addNodo(temp[0]);
+                        n.addNodo(temp[1]);
+                        n.addNodo(temp[2]);
+                        return c.verificar(n);
                     }
                 }
                 else
