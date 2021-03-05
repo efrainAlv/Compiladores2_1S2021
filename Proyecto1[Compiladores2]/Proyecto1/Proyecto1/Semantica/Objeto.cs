@@ -46,6 +46,20 @@ namespace Proyecto1.Semantica
         }
 
 
+        public void actualizarVariable(string nombre, Variable var)
+        {
+            Variable[] temp = atributos.ToArray();
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (temp[i].getNombre() == nombre)
+                {
+                    temp[i] = var;
+                    break;
+                }
+            }
+        }
+
+
         public string getNombre()
         {
             return this.nombre;
@@ -54,6 +68,9 @@ namespace Proyecto1.Semantica
         {
             this.nombre = nombre;
         }
+
+
+
 
     }
 }

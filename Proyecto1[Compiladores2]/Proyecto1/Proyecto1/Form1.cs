@@ -23,8 +23,8 @@ namespace Proyecto1
         private string declaraciones = "";
         private string relaciones = "";
 
-        private List<Semantica.Variable> variableGlobales = new List<Semantica.Variable>();
-        private List<Semantica.Objeto> objetos = new List<Semantica.Objeto>();
+        public static List<Semantica.Variable> variableGlobales = new List<Semantica.Variable>();
+        public static List<Semantica.Objeto> objetos = new List<Semantica.Objeto>();
 
         public Form1()
         {
@@ -55,17 +55,15 @@ namespace Proyecto1
 
                 EscrbirArchivo(this.declaraciones + this.relaciones);
 
-                string cadena = getDeclaracion(this.raiz.getNodos()[0], "");
+                //***********************************************************************************
 
-                string[] idValor = cadena.Split(":=");
-                string[] ids = idValor[0].Split('.');
+                
+               // MessageBox.Show("Valor: "+idValor[1]);
 
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    MessageBox.Show(ids[i]);
-                }
-                MessageBox.Show("Valor: "+idValor[1]);
-                //ejecutar(this.raiz.getNodos()[0]);
+                //***********************************************************************************
+
+
+                ejecutar(this.raiz.getNodos()[0]);
             }
 
         }
@@ -130,8 +128,15 @@ namespace Proyecto1
                     Semantica.Cabecera cabecera = new Semantica.Cabecera();
                     cabecera.analizar(temp[3]);
 
-                    this.variableGlobales = cabecera.getVariables();
-                    this.objetos = cabecera.getObjetos();
+                    variableGlobales = cabecera.getVariables();
+                    objetos = cabecera.getObjetos();
+                }
+                if (temp[6].getNombre()=="INSTRUCCIONES")
+                {
+                    Semantica.Instruccion ins = new Semantica.Instruccion();
+
+                    ins.analizar(temp[6]);
+
                 }
 
             }
@@ -141,57 +146,8 @@ namespace Proyecto1
 
 
 
-        public string getDeclaracion(AST.Nodo nodoAct, string cadena)
-        {
-            string tipo = nodoAct.getNombre();
-            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
-            int len = temp.Length;
-
-            if (tipo=="ASIGNACIONES")
-            {
-                if (len==6)
-                {
-                    cadena += getDeclaracion(temp[0], cadena);
-                    cadena += getDeclaracion(temp[1], cadena);
-
-                    cadena+= temp[2].getHoja().getValor().getValor();
-                    cadena += temp[3].getHoja().getValor().getValor();
-                    cadena += temp[4].getNodos().ToArray()[0].getHoja().getValor().getValor();
-                    
-                    return cadena;
-                }
-                else
-                {
-                    cadena += getDeclaracion(temp[0], cadena);
-                    cadena += temp[1].getHoja().getValor().getValor();
-                    cadena += temp[2].getHoja().getValor().getValor();
-                    cadena += temp[3].getNodos().ToArray()[0].getHoja().getValor().getValor();
-
-                    return cadena;
-                }
-                
-            }
-            else
-            {
-                if (len==3)
-                {
-                    cadena += getDeclaracion(temp[0], cadena);
-                    cadena += temp[1].getHoja().getValor().getValor();
-                    cadena += temp[2].getHoja().getValor().getValor();
-                    
-                    return cadena;
-                }
-                else
-                {
-                    return cadena += temp[0].getHoja().getValor().getValor();
-                }
-            }
-
-        }
-
-
-
-
+     
+        
         public async Task EscrbirArchivo(string text)
         {
             await File.WriteAllTextAsync("c:\\compiladores2\\hola.txt", text);

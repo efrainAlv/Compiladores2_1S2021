@@ -28,15 +28,26 @@ namespace Proyecto1.Semantica
         }
 
 
+        public void setValorTerminal(object valor)
+        {
+            this.valor.setValor(valor);
+        }
+
+
         public string getNombre()
         {
             return this.nombre;
         }
-        public void setValor(string nombre)
+        public void setValo(string nombre)
         {
             this.nombre = nombre;
         }
 
+
+        public void setValorObjeto(Objeto obj)
+        {
+            this.valor.setValorObjeto(obj);
+        }
 
     }
 }

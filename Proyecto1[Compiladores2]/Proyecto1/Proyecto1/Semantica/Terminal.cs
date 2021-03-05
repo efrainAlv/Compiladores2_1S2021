@@ -62,5 +62,18 @@ namespace Proyecto1.Semantica
             return this.tipo;
         }
 
+        public Objeto getValorObjeto()
+        {
+            return this.valorObjeto;
+        }
+
+        public void setValorObjeto(Objeto obj)
+        {
+            this.valorObjeto = obj;
+        }
+
+
     }
+
+
 }

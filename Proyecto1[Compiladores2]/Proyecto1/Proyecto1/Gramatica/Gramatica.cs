@@ -143,7 +143,7 @@ namespace Proyecto1.Gramatica
 
             #region Gramatica
 
-            INICIO.Rule = ASIGNACIONES;
+            INICIO.Rule = PROYECTO;
 
             PROYECTO.Rule = t_program + id + t_puntoComa + CABECERA + CUERPO + t_begin + INSTRUCCIONES + t_end + punto;
 
