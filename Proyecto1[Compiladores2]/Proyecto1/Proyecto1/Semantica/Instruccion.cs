@@ -41,13 +41,16 @@ namespace Proyecto1.Semantica
                     string cadena = getAsignaciones(temp[0], "");
                     string[] vars = cadena.Split(';');
                     string[] ids = cadena.Split(":=")[0].Split('.');
-                    string valor = "165645";
+                    string valor = "55555";
 
                     for (int i = 0; i < Form1.variableGlobales.Count; i++)
                     {
                         if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
                         {   
                             Variable var = asignarAVariable(ids, valor, 0, Form1.variableGlobales.ElementAt(i), null);
+                            object nose = asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
+                            MessageBox.Show("Valor " + nose);
+
 
                             if (var!=null)
                             {
@@ -127,8 +130,15 @@ namespace Proyecto1.Semantica
         {
             if (ids.Length == 1)
             {
-                var.getValor().setValor(valor);
-                return var;
+                if (var.getValor().getValorObjeto()==null)
+                {
+                    var.getValor().setValor(valor);
+                    return var;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -205,8 +215,94 @@ namespace Proyecto1.Semantica
             }
         }
 
+        public Object asignarAVariable1(string[] ids, int indice, Semantica.Variable var, Semantica.Objeto obj)
+        {
+            if (ids.Length == 1)
+            {
+                if (var.getValor().getValorObjeto()==null)
+                {
+                    return var.getValor().getValor();
+                }
+                else
+                {
+                    return null;
+                }
 
-        
+            }
+            else
+            {
+                if (indice == 0)
+                {
+                    if (var.getNombre() == ids[indice])
+                    {
+                        object valor = asignarAVariable1(ids, indice + 1, var, var.getValor().getValorObjeto());
+                        return valor;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else if (indice == ids.Length - 1)
+                {
+                    Semantica.Objeto objeto = var.getValor().getValorObjeto();
+
+
+                    if (objeto != null)
+                    {
+                        Semantica.Variable v = objeto.buscarAtributo(ids[indice]);
+
+                        if (v != null)
+                        {
+
+                            if (v.getValor().getValorObjeto() == null)
+                            {
+                                return v.getValor().getValor();
+                            }
+                            else
+                            {
+                                return null;
+                            }
+
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+                else
+                {
+                    Semantica.Variable v = obj.buscarAtributo(ids[indice]);
+
+                    if (v != null)
+                    {
+                        object vari = asignarAVariable1(ids, indice + 1, v, v.getValor().getValorObjeto());
+
+                        if (vari != null)
+                        {
+                            return vari;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+        }
+
+
 
     }
 }

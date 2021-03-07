@@ -1,0 +1,366 @@
+INICIO -> PROYECTO
+
+PROYECTO -> program ID ; CABECERA CUERPO begin INSTRUCCIONES end .
+
+
+// *************************************** CABECERA DEL PROGRAMA ************************
+
+
+CABECERA -> CABECERA CABECERA'
+			| CABECERA'
+			
+CABECERA' -> VARIABLE
+			| DECLARACION_OBJETOS
+			| CONSTANTE
+
+VARIABLE -> VARIABLE var VARIABLE'
+			| var VARIABLE'
+
+VARIABLE' -> VARIABLE' DECLARACION : TIPO ;
+			| DECLARACION : TIPO ;
+
+LISTA_DEC->  LISTA_DEC LISTA_DEC'
+			| LISTA_DEC'
+
+LISTA_DEC' -> DECLARACION : TIPO
+
+DECLARACION -> DECLARACION , id
+			| id
+			
+DECLARACION_OBJETOS -> type id = DECLARACION_OBJETOS'
+
+DECLARACION_OBJETOS' -> ARREGLO
+						| OBJETO
+
+ARREGLO -> array[num..num] of TIPO ;
+
+OBJETO -> object VARIABLE end ;
+
+TIPO -> string
+		| integer
+		| real
+		| boolean
+		| void
+		| object
+		| id
+		
+VALOR -> id
+		|entero
+		|decimal
+		|cadena
+		|true
+		|false
+
+CONSTANTE -> CONSTANTE CONSTANTE'
+			|CONSTANTE'
+			
+CONSTANTE' -> id = VALOR ;
+		
+		
+
+// *************************************** CUERPO DEL PROGRAMA ************************
+		
+
+CUERPO -> CUERPO CUERPO'
+		| CUERPO'
+		| epsilon
+		
+CUERPO' -> FUNCION
+		  | PROCEDIMIENTO
+		  | Eof
+		
+FUNCION -> function id PARAMETROS_FUNC : TIPO ; DEC_LOCAL begin INSTRUCCIONES end ;
+
+PARAMETROS_FUNC -> ( PARAMETROS_FUNC' )
+				 | epsilon
+
+PARAMETROS_FUNC' -> PARAMETROS_FUNC' ; LISTA_DEC
+			 | LISTA_DEC
+			 | epsilon
+			 
+PROCEDIMIENTO -> procedure id PARAMETROS_PROC ; DEC_LOCAL begin INSTRUCCIONES end;
+
+PARAMETROS_PROC -> ( PARAMETROS_PROC' )
+					| epsilon
+
+PARAMETROS_PROC' -> PARAMETROS_PROC' ; PARAMETROS_PROC''
+					| PARAMETROS_PROC''
+					
+PARAMETROS_PROC'' ->  LISTA_DEC
+				 	| var LISTA_DEC
+
+
+DEC_LOCAL -> var LISTA_DEC
+			| epsilon
+			
+
+			
+			
+// **************************** INSTRUCCIONES *****************************
+
+true and false and (false=(5<=(10))) or ((false<>true) and (true or false))
+
+
+INSTRUCCIONES -> INSTRUCCIONES INSTRUCCION
+				| INSTRUCCION;
+				
+INSTRUCCION -> IF
+			| ASIGNACIONES
+				
+CONDICION -> EXP_LOG
+			| EXP CONDICION_NUM EXP
+			| id 
+			
+CONDICION -> 
+
+CONDICION_NUM -> CONDICION_LOG
+				| <
+				| >
+				| <=
+				| >=
+
+CONDICION_LOG -> =
+				|<>
+
+EXP -> EXP + EXP
+	|EXP - EXP
+	|EXP * EXP
+	|EXP / EXP
+	|( EXP )
+	|- EXP
+	|entero
+	|real
+	|id
+	 
+	 
+EXP_LOG -> EXP_LOG and EXP_LOG						3
+		|EXP_LOG or EXP_LOG							3
+		|( EXP_LOG )								3
+		|( EXP CONDICION_NUM EXP )					5
+		|( EXP_LOG CONDICION_LOG EXP_LOG )			5
+		| EXP CONDICION_NUM EXP						3
+		|not EXP_LOG								2
+		|true										1
+		|false										1
+		|id											1
+	
+	
+
+IF -> if CONDICION then begin INSTRUCCIONES end 'IF
+
+IF' ->   ELSE_IF IF''
+		|ELSE
+		|epsilon
+
+IF'' -> ELSE
+		|epsilon
+
+ELSE_IF -> ELSE_IF else if CONDICION then begin INSTRUCCIONES end
+		| else if CONDICION then begin INSTRUCCIONES end 
+
+ELSE -> else begin INSTRUCCIONES end;
+		| epsilon
+
+CASE -> case id of LISTA_CASE ELSE_CASE end;
+
+LISTA_CASE -> LISTA_CASE' : INSTRUCCION
+			
+LISTA_CASE' -> LISTA_CASE , VALOR
+			| VALOR
+
+ELSE_CASE -> else INSTRUCCION
+			| epsilon
+
+
+WHILE -> while CONDICION do begin INSTRUCCIONES end;
+
+REPEAT -> repeat begin INSTRUCCIONES end until CONDICION
+
+FOR -> id := EXP to EXP do INSTRUCCIONES
+
+ASIGNACIONES -> ASIGNACIONES ASIGNACION : = VALOR ;
+			| ASIGNACION : = VALOR ;
+
+ASIGNACION -> ASIGNACION . id
+			| id
+
+
+----------------------- PRUEBAS -------------------------------------
+
+program Hello;
+
+type
+	Rectangle = object
+	var
+		base, altura : integer;
+		area, volumen: real;
+end;
+
+var
+	r1: Rectangulo;
+	n1:integer;
+
+var
+    uno, dos:integer;
+
+procedure findMin(x, y: integer; var m,n: integer; z:integer); {m es por referencia}
+
+	var
+		r1: Rectangulo;
+		n1:integer;
+
+begin
+end;
+
+
+function factorial(a, b:integer) : integer;
+
+    var
+        m,n:integer;
+        p:boolean;
+		
+begin
+end;
+
+
+5+5=2 and (6*(1+1))<=15 or (5+5-(6*1))>hola
+
+5+5 = 2 and 6*(1+1)<=15
+
+(false or true) and (5+5*(5-1))<=100
+
+5+5*(3+(2+69))-5+6*(5+(5*3))
+
+procedure uno(x:real; var n:integer; uno, dos: integer; var x, y:integer; dos: integer);
+            begin
+            end;
+			
+var uno, dos, tres:integer;
+var cuatro:numero;
+
+type 
+    Cuadraro = object
+        var
+            altura:integer;
+end;
+
+type 
+    Rectangulo = object
+        var
+            altura:integer;
+            ancho:integer;
+end;
+
+type 
+    Cuadrilatero = object
+        var
+            rectangulo:Rectangulo;
+            cuadraro:Cuadraro;
+end;
+
+type 
+    Circulo = object
+        var
+            radio:integer;
+end;
+
+
+type 
+    Geometria = object
+        var
+            cuadrilatero:Cuadrilatero;
+            circulo:Circulo;
+end;
+
+var geo: Geometria;
+var uno, dos, tres:integer;
+
+
+if 3=5 then
+	begin
+		
+	end
+else if 4=5 then
+	begin
+		
+	end
+else if 5=5 then
+	begin
+		
+	end
+else
+	begin
+		
+	end;
+	
+	
+/*
+
+program holaMundo;
+
+type 
+    Cuadrado = object
+        var
+            altura:integer;
+end;
+
+type 
+    Rectangulo = object
+        var
+            altura:integer;
+            ancho:integer;
+end;
+
+type 
+    Cuadrilatero = object
+        var
+            rectangulo:Rectangulo;
+            cuadrado:Cuadrado;
+end;
+
+type 
+    Circulo = object
+        var
+            radio:integer;
+end;
+
+
+type 
+    Geometria = object
+        var
+            cuadrilatero:Cuadrilatero;
+            circulo:Circulo;
+end;
+
+var geo: Geometria;
+var uno, dos, tres:integer;
+var circulo:Circulo;
+
+begin
+
+	geo.cuadrilatero.rectangulo.altura:=10;
+	circulo.radio:=5;
+	
+	if 5=5 then
+		begin
+		end
+	else if 5=3 then
+		begin
+		end
+	else if 5=1 then
+		begin
+		end
+	else
+		begin
+		end;
+end.
+
+
+*/
+
+
+uno:=1;
+dos.tres:=3;
+uno.dos.tres.cuatro:=4;
+cinco:=5;
+cinco.seis:=6;

@@ -117,9 +117,9 @@ namespace Proyecto1.Gramatica
             NonTerminal PARAMETROS_FUNC = new NonTerminal("PARAMETROS_FUNC");
             NonTerminal PARAMETROS_FUNC1 = new NonTerminal("PARAMETROS_FUNC1");
             NonTerminal PROCEDIMIENTO = new NonTerminal("PROCEDIMIENTO");
-            NonTerminal PARAMETROS_PROC = new NonTerminal("PARAMETROS_PROC");
-            NonTerminal PARAMETROS_PROC1 = new NonTerminal("PARAMETROS_PROC1");
-            NonTerminal PARAMETROS_PROC2 = new NonTerminal("PARAMETROS_PROC2");
+            NonTerminal PARAMETROS = new NonTerminal("PARAMETROS");
+            NonTerminal PARAMETROS1 = new NonTerminal("PARAMETROS1");
+            NonTerminal PARAMETROS2 = new NonTerminal("PARAMETROS2");
 
             NonTerminal EXP = new NonTerminal("EXP");
             NonTerminal EXP_LOG = new NonTerminal("EXP_LOG");
@@ -214,14 +214,14 @@ namespace Proyecto1.Gramatica
             PARAMETROS_FUNC1.Rule = PARAMETROS_FUNC1 + ToTerm(";") + LISTA_DEC | LISTA_DEC
                                     | Empty;
 
-            PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS_PROC + t_puntoComa + VARIABLE + t_begin /*INSTRUCCIONES*/ + t_end + t_puntoComa;
+            PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS + t_puntoComa + VARIABLE + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
 
-            PARAMETROS_PROC.Rule = t_parentesisApertura + PARAMETROS_PROC1 + t_parentesisCierre
+            PARAMETROS.Rule = t_parentesisApertura + PARAMETROS1 + t_parentesisCierre
                                     | Empty;
 
-            PARAMETROS_PROC1.Rule = PARAMETROS_PROC1 + ToTerm(";") + PARAMETROS_PROC2 | PARAMETROS_PROC2;
+            PARAMETROS1.Rule = PARAMETROS1 + ToTerm(";") + PARAMETROS2 | PARAMETROS2;
 
-            PARAMETROS_PROC2.Rule = LISTA_DEC
+            PARAMETROS2.Rule = LISTA_DEC
                                     | t_var + LISTA_DEC;
 
             //******************************************* EXPRESIONES ***************************************************

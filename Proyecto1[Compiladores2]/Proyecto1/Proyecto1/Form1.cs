@@ -25,6 +25,8 @@ namespace Proyecto1
 
         public static List<Semantica.Variable> variableGlobales = new List<Semantica.Variable>();
         public static List<Semantica.Objeto> objetos = new List<Semantica.Objeto>();
+        public static List<Semantica.FuncsProcs.Procedimiento> procedimientos = new List<Semantica.FuncsProcs.Procedimiento>();
+
 
         public Form1()
         {
@@ -35,6 +37,21 @@ namespace Proyecto1
         {
 
         }
+
+
+        public static Semantica.Objeto buscarObjeto(string nombre)
+        {
+            for (int i = 0; i < objetos.Count; i++)
+            {
+                if (objetos.ElementAt(i).getNombre()==nombre)
+                {
+                    return objetos.ElementAt(i);
+                }
+            }
+
+            return null; 
+        }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -57,8 +74,8 @@ namespace Proyecto1
 
                 //***********************************************************************************
 
-                
-               // MessageBox.Show("Valor: "+idValor[1]);
+
+                // MessageBox.Show("Valor: "+idValor[1]);
 
                 //***********************************************************************************
 
@@ -130,6 +147,13 @@ namespace Proyecto1
 
                     variableGlobales = cabecera.getVariables();
                     objetos = cabecera.getObjetos();
+                }
+                if (temp[4].getNombre() == "CUERPO")
+                {
+                    Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo();
+                    cuerpo.analizar(temp[4]);
+
+                    procedimientos = cuerpo.getProcedimientos();
                 }
                 if (temp[6].getNombre()=="INSTRUCCIONES")
                 {
