@@ -18,57 +18,37 @@ namespace Proyecto1.Semantica
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
             int len = temp.Length;
 
-            if (tipo=="INSTRUCCIONES")
+            if (len>0)
             {
-                if (len == 2)
+                if (tipo == "INSTRUCCIONES")
                 {
-                    analizar(temp[0]);
-                    analizar(temp[1]);
-                }
-                else
-                {
-                    analizar(temp[0]);
-                }
-            }
-            else
-            {
-                if (temp[0].getNombre()=="IF")
-                {
-
-                }
-                else
-                {
-                    string cadena = getAsignaciones(temp[0], "");
-                    string[] vars = cadena.Split(';');
-                    string[] ids = cadena.Split(":=")[0].Split('.');
-                    string valor = "55555";
-
-                    for (int i = 0; i < Form1.variableGlobales.Count; i++)
+                    if (len == 2)
                     {
-                        if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
-                        {   
-                            Variable var = asignarAVariable(ids, valor, 0, Form1.variableGlobales.ElementAt(i), null);
-                            object nose = asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
-                            MessageBox.Show("Valor " + nose);
-
-
-                            if (var!=null)
-                            {
-                                Form1.variableGlobales.ElementAt(i).setValorObjeto(var.getValor().getValorObjeto());
-                                MessageBox.Show("LA VARIABLE SI EXISTE");
-                            }
-                            else
-                            {
-                                MessageBox.Show("LA VARIABLE NO EXISTE");
-                            }
-
-                            break;
-                        }
+                        analizar(temp[0]);
+                        analizar(temp[1]);
                     }
-
+                    else
+                    {
+                        analizar(temp[0]);
+                    }
                 }
-            }
+                else
+                {
+                    if (temp[0].getNombre() == "IF")
+                    {
+                        SentenciaDeControl.SenteciaIf senIf = new SentenciaDeControl.SenteciaIf();
 
+                        senIf.analizar(temp[0], false);
+
+                    }
+                    else
+                    {
+                        string cadena = getAsignaciones(temp[0], "");
+                        
+                    }
+                }
+
+            }
 
         }
 
@@ -88,20 +68,24 @@ namespace Proyecto1.Semantica
 
                     cadena += temp[2].getHoja().getValor().getValor();
                     cadena += temp[3].getHoja().getValor().getValor();
-                    cadena += temp[4].getNodos().ToArray()[0].getHoja().getValor().getValor();
-                    cadena += temp[5].getHoja().getValor().getValor();
 
-                    return cadena;
+                    //nuermo 4
+
+                    asignarValor(temp, cadena, 4);
+
+                    return "";
                 }
                 else
                 {
                     cadena = getAsignaciones(temp[0], cadena);
                     cadena += temp[1].getHoja().getValor().getValor();
                     cadena += temp[2].getHoja().getValor().getValor();
-                    cadena += temp[3].getNodos().ToArray()[0].getHoja().getValor().getValor();
-                    cadena += temp[4].getHoja().getValor().getValor();
 
-                    return cadena;
+                    //numero 3
+
+                    asignarValor(temp, cadena, 3);
+
+                    return "";
                 }
 
             }
@@ -301,6 +285,82 @@ namespace Proyecto1.Semantica
                 }
             }
         }
+
+
+
+        //RETORNA EL VALOR QUE SE LE ESTA ASIGNANDO A UNA VARIABLE, EL VALOR PUEDE SER UNA EXPRESION,
+        //EXPRESION LOGICA, O UNA ASIGNACION
+        public void asignarValor(AST.Nodo[] temp, string cadena, int n)
+        {
+
+            if (temp[n].getNodos()[0].getNombre() == "ASIGNACION")
+            {
+                string referencia = getAsignaciones(temp[n].getNodos()[0], "");
+
+                string[] ids = referencia.Split(".");
+
+                object resultado = "";
+
+                for (int i = 0; i < Form1.variableGlobales.Count; i++)
+                {
+                    if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
+                    {
+                        resultado = asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
+
+                        break;
+                    }
+                }
+
+                //RETORNA UN RESULTADO
+
+                cadena += resultado + "";
+            }
+            else if (temp[n].getNodos()[0].getNombre() == "EXP")
+            {
+                Expresion exp = new Expresion();
+                cadena += exp.noce(temp[n].getNodos()[0]);
+            }
+            else if (temp[n].getNodos()[0].getNombre() == "EXP_LOG")
+            {
+                ExpresionLogica expL = new ExpresionLogica();
+                cadena += expL.noce(temp[n].getNodos()[0]);
+            }
+            else
+            {
+                cadena += temp[n].getNodos().ToArray()[0].getHoja().getValor().getValor();
+            }
+
+            //cadena += temp[5].getHoja().getValor().getValor();
+
+
+            string[] idss = cadena.Split(":=")[0].Split('.');
+            string valor = cadena.Split(":=")[1];
+
+
+            for (int i = 0; i < Form1.variableGlobales.Count; i++)
+            {
+                if (Form1.variableGlobales.ElementAt(i).getNombre() == idss[0])
+                {
+                    Variable var = asignarAVariable(idss, valor, 0, Form1.variableGlobales.ElementAt(i), null);
+                    //object nose = asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
+                    //MessageBox.Show("Valor " + nose);
+
+                    if (var != null)
+                    {
+                        Form1.variableGlobales.ElementAt(i).setValorObjeto(var.getValor().getValorObjeto());
+                        //MessageBox.Show("LA VARIABLE SI EXISTE");
+                    }
+                    else
+                    {
+                        //MessageBox.Show("LA VARIABLE NO EXISTE");
+                    }
+
+                    break;
+                }
+            }
+
+        }
+
 
 
 

@@ -23,32 +23,49 @@ namespace Proyecto1.Semantica.SentenciaDeControl
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
             int len = temp.Length;
 
-            if (tipo=="IF")
+            if (len>0)
             {
-                ExpresionLogica e = new ExpresionLogica();
-                if (e.noce(temp[1].getNodos()[0]))
+                if (tipo == "IF")
                 {
-                    MessageBox.Show("If verdadero");
+                    ExpresionLogica e = new ExpresionLogica();
+                    if (e.noce(temp[1].getNodos()[0]))
+                    {
+                        MessageBox.Show("If verdadero");
 
-                    return true;
+                        Instruccion ins = new Instruccion();
+                        ins.analizar(temp[4]);
+
+                        return true;
+                    }
+                    else
+                    {
+                        //cambiar a 6 cuando esten las instrucciones
+                        return analizar(temp[6], false);
+                    }
+
                 }
-                else
+                else if (tipo == "IF1")
                 {
-                    //cambiar a 6 cuando esten las instrucciones
-                    return analizar(temp[6], false);
+                    if (len == 2)
+                    {
+                        flag = analizar(temp[0], flag);
+                        return analizar(temp[1], flag);
+                    }
+                    else
+                    {
+                        if (temp[0].getNombre() == "ELSE")
+                        {
+                            return analizar(temp[0], flag);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
                 }
-                
-            }
-            else if (tipo=="IF1")
-            {
-                if (len==2)
+                else if (tipo == "IF2")
                 {
-                    flag = analizar(temp[0], flag);
-                    return analizar(temp[1], flag);
-                }
-                else
-                {
-                    if (temp[0].getNombre()=="ELSE")
+                    if (temp[0].getNombre() == "ELSE")
                     {
                         return analizar(temp[0], flag);
                     }
@@ -57,66 +74,72 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         return false;
                     }
                 }
-            }
-            else if (tipo == "IF2")
-            {
-                if (temp[0].getNombre()=="ELSE")
+                else if (tipo == "ELSE_IF")
                 {
-                    return analizar(temp[0], flag);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (tipo=="ELSE_IF")
-            {
-                ExpresionLogica e = new ExpresionLogica();
+                    ExpresionLogica e = new ExpresionLogica();
 
-                if (len==8)
-                {
-                    flag = analizar(temp[0], flag); // ELSE_IF
-                   
-                    if (e.noce(temp[3].getNodos()[0]) && !flag)
+                    if (len == 8)
                     {
-                        MessageBox.Show("Else if verdadero");
-                        return true;
+                        flag = analizar(temp[0], flag); // ELSE_IF
+
+                        if (e.noce(temp[3].getNodos()[0]) && !flag)
+                        {
+                            MessageBox.Show("Else if verdadero");
+
+                            Instruccion ins = new Instruccion();
+                            ins.analizar(temp[6]);
+
+                            return true;
+                        }
+                        else
+                        {
+                            return flag;//flag
+                        }
+
                     }
                     else
                     {
-                        return flag;//flag
+                        if (e.noce(temp[2].getNodos()[0]) && !flag)
+                        {
+                            MessageBox.Show("Else if verdadero");
+
+                            Instruccion ins = new Instruccion();
+                            ins.analizar(temp[5]);
+
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
 
                 }
                 else
                 {
-                    if (e.noce(temp[2].getNodos()[0]) && !flag)
+
+                    if (!flag)
                     {
-                        MessageBox.Show("Else if verdadero");
+                        MessageBox.Show("Else verdadero");
+
+                        Instruccion ins = new Instruccion();
+                        ins.analizar(temp[2]);
+
                         return true;
                     }
                     else
                     {
                         return false;
                     }
+
                 }
 
             }
             else
             {
-
-                if (!flag)
-                {
-                    MessageBox.Show("Else verdadero");
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-                
+                return false;
             }
-
+            
         }
 
     }

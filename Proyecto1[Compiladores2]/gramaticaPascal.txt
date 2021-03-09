@@ -15,9 +15,13 @@ CABECERA' -> VARIABLE
 
 VARIABLE -> VARIABLE var VARIABLE'
 			| var VARIABLE'
+			| epsilon
 
-VARIABLE' -> VARIABLE' DECLARACION : TIPO ;
-			| DECLARACION : TIPO ;
+VARIABLE' -> VARIABLE' DECLARACION : TIPO VARIABLE'' ;
+			| DECLARACION : TIPO VARIABLE'' ;
+
+VARIABLE'' -> = VALOR
+			| epsilon
 
 LISTA_DEC->  LISTA_DEC LISTA_DEC'
 			| LISTA_DEC'
@@ -44,12 +48,10 @@ TIPO -> string
 		| object
 		| id
 		
-VALOR -> id
-		|entero
-		|decimal
+VALOR -> ASIGNACION
 		|cadena
-		|true
-		|false
+		|EXP
+		|EXP_LOG
 
 CONSTANTE -> CONSTANTE CONSTANTE'
 			|CONSTANTE'
@@ -71,23 +73,17 @@ CUERPO' -> FUNCION
 		
 FUNCION -> function id PARAMETROS_FUNC : TIPO ; DEC_LOCAL begin INSTRUCCIONES end ;
 
-PARAMETROS_FUNC -> ( PARAMETROS_FUNC' )
-				 | epsilon
-
-PARAMETROS_FUNC' -> PARAMETROS_FUNC' ; LISTA_DEC
-			 | LISTA_DEC
-			 | epsilon
 			 
-PROCEDIMIENTO -> procedure id PARAMETROS_PROC ; DEC_LOCAL begin INSTRUCCIONES end;
+PROCEDIMIENTO -> procedure id PARAMETROS ; VARIABLE begin INSTRUCCIONES end;
 
-PARAMETROS_PROC -> ( PARAMETROS_PROC' )
+PARAMETROS -> ( PARAMETROS' )
 					| epsilon
 
-PARAMETROS_PROC' -> PARAMETROS_PROC' ; PARAMETROS_PROC''
-					| PARAMETROS_PROC''
+PARAMETROS' -> PARAMETROS' ; PARAMETROS''
+					| PARAMETROS''
 					
-PARAMETROS_PROC'' ->  LISTA_DEC
-				 	| var LISTA_DEC
+PARAMETROS'' ->  LISTA_DEC
+				 | var LISTA_DEC
 
 
 DEC_LOCAL -> var LISTA_DEC
@@ -109,7 +105,7 @@ INSTRUCCION -> IF
 				
 CONDICION -> EXP_LOG
 			| EXP CONDICION_NUM EXP
-			| id 
+			| ASIGNACION 
 			
 CONDICION -> 
 
@@ -130,7 +126,7 @@ EXP -> EXP + EXP
 	|- EXP
 	|entero
 	|real
-	|id
+	|ASIGNACION
 	 
 	 
 EXP_LOG -> EXP_LOG and EXP_LOG						3
@@ -142,7 +138,7 @@ EXP_LOG -> EXP_LOG and EXP_LOG						3
 		|not EXP_LOG								2
 		|true										1
 		|false										1
-		|id											1
+		|ASIGNACION											1
 	
 	
 
@@ -231,70 +227,14 @@ end;
 
 5+5*(3+(2+69))-5+6*(5+(5*3))
 
-procedure uno(x:real; var n:integer; uno, dos: integer; var x, y:integer; dos: integer);
-            begin
-            end;
-			
-var uno, dos, tres:integer;
-var cuatro:numero;
-
-type 
-    Cuadraro = object
-        var
-            altura:integer;
-end;
-
-type 
-    Rectangulo = object
-        var
-            altura:integer;
-            ancho:integer;
-end;
-
-type 
-    Cuadrilatero = object
-        var
-            rectangulo:Rectangulo;
-            cuadraro:Cuadraro;
-end;
-
-type 
-    Circulo = object
-        var
-            radio:integer;
-end;
 
 
-type 
-    Geometria = object
-        var
-            cuadrilatero:Cuadrilatero;
-            circulo:Circulo;
-end;
-
-var geo: Geometria;
-var uno, dos, tres:integer;
-
-
-if 3=5 then
-	begin
-		
-	end
-else if 4=5 then
-	begin
-		
-	end
-else if 5=5 then
-	begin
-		
-	end
-else
-	begin
-		
-	end;
 	
-	
-/*
+
+
+
+
+
 
 program holaMundo;
 
@@ -336,31 +276,40 @@ var geo: Geometria;
 var uno, dos, tres:integer;
 var circulo:Circulo;
 
+procedure findMin(x, y: integer; var m,n: integer; z:integer); {m es por referencia}
+
+	var
+		r1: Rectangulo;
+		n1:integer;
+
+begin
+end;
+
 begin
 
-	geo.cuadrilatero.rectangulo.altura:=10;
-	circulo.radio:=5;
-	
-	if 5=5 then
+	uno:=10;
+	dos:=20;
+	tres:=30;
+
+
+
+	if uno+dos+tres<40 then
 		begin
+			geo.cuadrilatero.rectangulo.altura:=uno;
 		end
-	else if 5=3 then
+	else if uno+dos+tres<50 then
 		begin
+			geo.cuadrilatero.rectangulo.altura:=dos;
 		end
-	else if 5=1 then
-		begin
+	else if uno+dos+tres=60 then
+		begin						
+			geo.cuadrilatero.rectangulo.altura:=tres;
 		end
 	else
 		begin
+			geo.cuadrilatero.rectangulo.altura:=uno+dos+tres;
 		end;
+
 end.
 
-
-*/
-
-
-uno:=1;
-dos.tres:=3;
-uno.dos.tres.cuatro:=4;
-cinco:=5;
-cinco.seis:=6;
+	

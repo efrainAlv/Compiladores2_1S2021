@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
+using System.Linq;
+
+
 namespace Proyecto1.Semantica
 {
-    class Cabecera
+    public class Cabecera
     {
 
 
@@ -47,31 +50,34 @@ namespace Proyecto1.Semantica
             string tipo = nodoAct.getNombre();
             int len = temp.Length;
 
-            if (tipo=="CABECERA")
+            if (len>0)
             {
-                if (len==2)
+                if (tipo == "CABECERA")
                 {
-                    analizar(temp[0]);
-                    analizar(temp[1]);
+                    if (len == 2)
+                    {
+                        analizar(temp[0]);
+                        analizar(temp[1]);
+                    }
+                    else
+                    {
+                        analizar(temp[0]);
+                    }
                 }
-                else
+                else if (tipo == "CABECERA1")
                 {
-                    analizar(temp[0]);
-                }
-            }
-            else if (tipo=="CABECERA1")
-            {
-                if (temp[0].getNombre()=="VARIABLE")
-                {
-                    agregarVariableGlobal(temp[0], new List<string>(), this.objetos);
-                }
-                else if (temp[0].getNombre()=="DECLARACION_OBJETOS")
-                {
-                    agregarObjetos(temp[0]);
+                    if (temp[0].getNombre() == "VARIABLE")
+                    {
+                        agregarVariableGlobal(temp[0], new List<string>(), this.objetos);
+                    }
+                    else if (temp[0].getNombre() == "DECLARACION_OBJETOS")
+                    {
+                        agregarObjetos(temp[0]);
+                    }
+
                 }
 
             }
-            
 
 
         }
@@ -91,30 +97,37 @@ namespace Proyecto1.Semantica
             string tipo = nodoAct.getNombre();
             int len = temp.Length;
 
-            if (tipo=="DECLARACION_OBJETOS")
+            if (len>0)
             {
-                string nombreTipo;
-                nombreTipo = temp[1].getHoja().getValor().getValor()+"";
-                Objeto o = new Objeto(nombreTipo);
-                o.agregarAtributos(agregarObjetos(temp[3]));
-                this.objetos.Add(o);
-                return null;
-
-            }
-            else
-            {
-
-                if (temp[0].getNombre()=="OBJETO")
+                if (tipo == "DECLARACION_OBJETOS")
                 {
-                    Cabecera c = new Cabecera();
-                    c.agregarVaraibles(temp[0].getNodos().ToArray()[1], this.objetos);
-                    return c.getVariables();
+                    string nombreTipo;
+                    nombreTipo = temp[1].getHoja().getValor().getValor() + "";
+                    Objeto o = new Objeto(nombreTipo);
+                    o.agregarAtributos(agregarObjetos(temp[3]));
+                    this.objetos.Add(o);
+                    return null;
+
                 }
                 else
                 {
-                    return null;
-                }
 
+                    if (temp[0].getNombre() == "OBJETO")
+                    {
+                        Cabecera c = new Cabecera();
+                        c.agregarVaraibles(temp[0].getNodos().ToArray()[1], this.objetos);
+                        return c.getVariables();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+            }
+            else
+            {
+                return new List<Variable>();
             }
 
 
@@ -128,154 +141,211 @@ namespace Proyecto1.Semantica
             string tipo = nodoAct.getNombre();
             int len = temp.Length;
 
-            if (tipo=="VARIABLE")
+            if (len>0)
             {
-                if (len == 2)
+                if (tipo == "VARIABLE")
                 {
-                    return agregarVariableGlobal(temp[1], variables, objetos);
-                }
-                else
-                {
-                    variables = agregarVariableGlobal(temp[0], variables, objetos);
-                    return agregarVariableGlobal(temp[2], variables, objetos);
-                }
-            }
-            else if (tipo=="VARIABLE1")
-            {
-                if (len==5)
-                {
-                    variables = agregarVariableGlobal(temp[0], variables, objetos);
-                    variables = agregarVariableGlobal(temp[1], variables, objetos);
-
-                    string[] vars = variables.ToArray();
-                    string tipoVar = temp[3].getNodos()[0].getHoja().getValor().getValor()+"";
-                    string valor;
-                    Terminal.TipoDato tipoDato;
-                    Objeto o = null;
-
-
-
-                    if (tipoVar=="integer")
+                    if (len == 2)
                     {
-                        valor = "0";
-                        tipoDato = Terminal.TipoDato.ENTERO;
-                    }
-                    else if (tipoVar == "real")
-                    {
-                        valor = "0.0";
-                        tipoDato = Terminal.TipoDato.REAL;
-                    }
-                    else if (tipoVar == "boolean")
-                    {
-                        valor = "false";
-                        tipoDato = Terminal.TipoDato.BOOLEANO;
-                    }
-                    else if (tipoVar == "string")
-                    {
-                        valor = "";
-                        tipoDato = Terminal.TipoDato.CADENA;
+                        return agregarVariableGlobal(temp[1], variables, objetos);
                     }
                     else
                     {
-
-                        tipoDato = Terminal.TipoDato.OBJETO;
-                        valor = tipoVar;
-
-                        Objeto[] tempO = objetos.ToArray();
-                        for (int i = 0; i < tempO.Length; i++)
-                        {
-                            if (tempO[i].getNombre() == tipoVar)
-                            {
-                                o = tempO[i];
-                                break;
-                            }
-                        }
-
+                        variables = agregarVariableGlobal(temp[0], variables, objetos);
+                        return agregarVariableGlobal(temp[2], variables, objetos);
                     }
-
-                    for (int i = 0; i < vars.Length; i++)
-                    {
-                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o)));
-                    }
-
-                    return new List<string>();
                 }
-                else
+                else if (tipo == "VARIABLE1")
                 {
-                    variables = agregarVariableGlobal(temp[0], variables, objetos);
+                    if (temp[0].getNombre() == "VARIABLE1")
+                    {
+                        variables = agregarVariableGlobal(temp[0], variables, objetos);
+                        variables = agregarVariableGlobal(temp[1], variables, objetos);
 
-                    string[] vars = variables.ToArray();
-                    string tipoVar = temp[2].getNodos()[0].getHoja().getValor().getValor() + "";
-                    string valor;
-                    Terminal.TipoDato tipoDato;
-                    Objeto o = null;
+                        //NUMERO 4
 
-                    if (tipoVar == "integer")
-                    {
-                        valor = "0";
-                        tipoDato = Terminal.TipoDato.ENTERO;
-                    }
-                    else if (tipoVar == "real")
-                    {
-                        valor = "0.0";
-                        tipoDato = Terminal.TipoDato.REAL;
-                    }
-                    else if (tipoVar == "boolean")
-                    {
-                        valor = "false";
-                        tipoDato = Terminal.TipoDato.BOOLEANO;
-                    }
-                    else if (tipoVar == "string")
-                    {
-                        valor = "";
-                        tipoDato = Terminal.TipoDato.CADENA;
+                        asignarValorYTipo(temp, variables, 4, objetos);
+
+                        return new List<string>();
                     }
                     else
                     {
-                        tipoDato = Terminal.TipoDato.OBJETO;
-                        valor = tipoVar;
+                        variables = agregarVariableGlobal(temp[0], variables, objetos);
 
-                        Objeto[] tempO = objetos.ToArray();
-                        for (int i = 0; i < tempO.Length; i++)
-                        {
-                            if (tempO[i].getNombre() == tipoVar)
-                            {
-                                o = tempO[i];
-                                break;
-                            }
-                        }
+                        //NUMERO TRES
+
+                        asignarValorYTipo(temp, variables, 3, objetos);
+
+                        return new List<string>();
                     }
-
-                    for (int i = 0; i < vars.Length; i++)
+                }
+                else
+                {
+                    if (len == 1)
                     {
-                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o)));
+                        variables.Add(temp[0].getHoja().getValor().getValor() + "");
+                        return variables;
                     }
+                    else
+                    {
+                        variables = agregarVariableGlobal(temp[0], variables, objetos);
 
-                    return new List<string>();
+                        variables.Add(temp[2].getHoja().getValor().getValor() + "");
+                        return variables;
+                    }
                 }
             }
             else
             {
-                if (len==1)
-                {
-                    variables.Add(temp[0].getHoja().getValor().getValor()+"");
-                    return variables;
-                }
-                else
-                {
-                    variables = agregarVariableGlobal(temp[0], variables, objetos);
-
-                    variables.Add(temp[2].getHoja().getValor().getValor() + "");
-                    return variables;
-                }
+                return new List<string>();
             }
             
         }
+
+
+        public void asignarValorYTipo(AST.Nodo[] temp, List<string> variables, int n, List<Objeto>objetos)
+        {
+
+            string[] vars = variables.ToArray();
+            string tipoVar = temp[n-1].getNodos()[0].getHoja().getValor().getValor() + "";
+            string valor;
+            Terminal.TipoDato tipoDato;
+            Objeto o = null;
+
+            if (tipoVar == "integer")
+            {
+                valor = "0";
+                tipoDato = Terminal.TipoDato.ENTERO;
+            }
+            else if (tipoVar == "real")
+            {
+                valor = "0.0";
+                tipoDato = Terminal.TipoDato.REAL;
+            }
+            else if (tipoVar == "boolean")
+            {
+                valor = "false";
+                tipoDato = Terminal.TipoDato.BOOLEANO;
+            }
+            else if (tipoVar == "string")
+            {
+                valor = "";
+                tipoDato = Terminal.TipoDato.CADENA;
+            }
+            else
+            {
+                tipoDato = Terminal.TipoDato.OBJETO;
+                valor = tipoVar;
+
+                Objeto[] tempO = objetos.ToArray();
+                for (int i = 0; i < tempO.Length; i++)
+                {
+                    if (tempO[i].getNombre() == tipoVar)
+                    {
+                        o = tempO[i];
+                        break;
+                    }
+                }
+            }
+
+            if (variables.Count == 1)
+            {
+                if (temp[n].getNodos().Count > 0)
+                {
+                    Instruccion ins = new Instruccion();
+
+                    if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "ASIGNACION")
+                    {
+                        string referencia = ins.getAsignaciones(temp[n], "");
+
+                        string[] ids = referencia.Split(".");
+
+                        string resultado = "";
+
+                        for (int i = 0; i < Form1.variableGlobales.Count; i++)
+                        {
+                            if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
+                            {
+                                resultado = ins.asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null) + "";
+
+                                if (resultado == "false")
+                                {
+                                    tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                                }
+                                else if (resultado == "true")
+                                {
+                                    tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                                }
+                                else if (resultado.Contains("'"))
+                                {
+                                    tipoDato = Semantica.Terminal.TipoDato.CADENA;
+                                }
+                                else if (resultado.Contains("."))
+                                {
+                                    tipoDato = Semantica.Terminal.TipoDato.REAL;
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        int result = Int32.Parse(tipoVar);
+                                        tipoDato = Semantica.Terminal.TipoDato.ENTERO;
+                                    }
+                                    catch (FormatException)
+                                    {
+                                        tipoDato = Semantica.Terminal.TipoDato.ID;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+
+                        valor = resultado + "";
+                    }
+                    else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP")
+                    {
+                        Expresion exp = new Expresion();
+                        valor = exp.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
+
+                        if (valor.ToString().Contains("."))
+                        {
+                            tipoDato = Terminal.TipoDato.REAL;
+                        }
+                        else
+                        {
+                            tipoDato = Terminal.TipoDato.ENTERO;
+                        }
+
+                    }
+                    else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP_LOG")
+                    {
+                        ExpresionLogica expL = new ExpresionLogica();
+                        valor = expL.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
+                        tipoDato = Terminal.TipoDato.BOOLEANO;
+                    }
+                    else
+                    {
+                        valor = temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getHoja().getValor().getValor() + "";
+                    }
+
+                }
+            }
+
+
+            for (int i = 0; i < vars.Length; i++)
+            {
+                this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o)));
+            }
+
+        }
+
 
         public List<Variable> getVariables()
         {
             return this.variablesGLobales;
         }
+
 
         public  List<Objeto> getObjetos()
         {

@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Collections;
+
 using Irony.Parsing;
 using Irony.Ast;
 
@@ -53,8 +55,31 @@ namespace Proyecto1
         }
 
 
+        public static Semantica.Variable buscarVariable(string nombre)
+        {
+            for (int i = 0; i < variableGlobales.Count; i++)
+            {
+                if (variableGlobales.ElementAt(i).getNombre() == nombre)
+                {
+                    return variableGlobales.ElementAt(i);
+                }
+            }
+
+            return null;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
+            string hola = "uno";
+
+            string[] holas = hola.Split(".");
+
+            for (int i = 0; i < holas.Length; i++)
+            {
+                MessageBox.Show(holas[i]);
+            }
+
+
             this.relaciones = "";
             this.declaraciones = "";
 
@@ -79,12 +104,24 @@ namespace Proyecto1
 
                 //***********************************************************************************
 
+                //Semantica.FuncsProcs.Cuerpo cu = new Semantica.FuncsProcs.Cuerpo();
+
+                //cu.analizar(this.raiz.getNodos()[0]);
 
                 ejecutar(this.raiz.getNodos()[0]);
+
+                Hashtable hs = new Hashtable();
+                hs.Add(0, variableGlobales);
+
+                for (int i = 0; i < hs.Count; i++)
+                {
+                    MessageBox.Show(hs[i] + "");
+                }
+
             }
 
         }
-
+       
 
         private void formarArbol(ParseTree arbol)
         {
@@ -115,7 +152,41 @@ namespace Proyecto1
             {
                 if (nodoArbol.Token!=null)
                 {
-                    Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value, Semantica.Terminal.TipoDato.ENTERO);
+
+                    String tipoVar = nodoArbol.Token.Value + "";
+                    Semantica.Terminal.TipoDato tipoDato;
+
+
+                    if (tipoVar == "false")
+                    {
+                        tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                    }
+                    else if (tipoVar == "true")
+                    {
+                        tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                    }
+                    else if (tipoVar.Contains("'"))
+                    {
+                        tipoDato = Semantica.Terminal.TipoDato.CADENA;
+                    }
+                    else if (tipoVar.Contains("."))
+                    {
+                        tipoDato = Semantica.Terminal.TipoDato.REAL;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            int result = Int32.Parse(tipoVar);
+                            tipoDato = Semantica.Terminal.TipoDato.ENTERO;
+                        }
+                        catch (FormatException)
+                        {
+                            tipoDato = Semantica.Terminal.TipoDato.SIMBOLO;
+                        }
+                    }
+
+                    Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value, tipoDato);
                     AST.Hoja tempH = new AST.Hoja(tempT);
                     nodoAct.setHoja(tempH);
                     //AST.Nodo nodo = new AST.Nodo("Terminal", tempH);
@@ -168,7 +239,10 @@ namespace Proyecto1
         }
 
 
+        public static void buscarID()
+        {
 
+        }
 
      
         

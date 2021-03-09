@@ -100,6 +100,7 @@ namespace Proyecto1.Gramatica
             NonTerminal CABECERA1 = new NonTerminal("CABECERA1");
             NonTerminal VARIABLE = new NonTerminal("VARIABLE");
             NonTerminal VARIABLE1 = new NonTerminal("VARIABLE1");
+            NonTerminal VARIABLE2 = new NonTerminal("VARIABLE2");
             NonTerminal LISTA_DEC = new NonTerminal("LISTA_DEC");
             NonTerminal LISTA_DEC1 = new NonTerminal("LISTA_DEC1");
             NonTerminal DECLARACION = new NonTerminal("DECLARACION");
@@ -114,8 +115,6 @@ namespace Proyecto1.Gramatica
             NonTerminal CUERPO = new NonTerminal("CUERPO");
             NonTerminal CUERPO1 = new NonTerminal("CUERPO1");
             NonTerminal FUNCION = new NonTerminal("FUNCION");
-            NonTerminal PARAMETROS_FUNC = new NonTerminal("PARAMETROS_FUNC");
-            NonTerminal PARAMETROS_FUNC1 = new NonTerminal("PARAMETROS_FUNC1");
             NonTerminal PROCEDIMIENTO = new NonTerminal("PROCEDIMIENTO");
             NonTerminal PARAMETROS = new NonTerminal("PARAMETROS");
             NonTerminal PARAMETROS1 = new NonTerminal("PARAMETROS1");
@@ -155,8 +154,11 @@ namespace Proyecto1.Gramatica
 
             VARIABLE.Rule = VARIABLE + t_var + VARIABLE1 | t_var + VARIABLE1 | Empty;
 
-            VARIABLE1.Rule = VARIABLE1 + DECLARACION + t_dosPuntos + TIPO + t_puntoComa
-                           | DECLARACION + t_dosPuntos + TIPO + t_puntoComa;
+            VARIABLE1.Rule = VARIABLE1 + DECLARACION + t_dosPuntos + TIPO + VARIABLE2 + t_puntoComa
+                           | DECLARACION + t_dosPuntos + TIPO + VARIABLE2 + t_puntoComa;
+
+            VARIABLE2.Rule = t_igualAritmetico + VALOR
+                            | Empty;
 
             LISTA_DEC.Rule = LISTA_DEC + LISTA_DEC1 | LISTA_DEC1;
 
@@ -188,12 +190,10 @@ namespace Proyecto1.Gramatica
                         | t_object
                         | id;
 
-            VALOR.Rule = id
-                        | entero
+            VALOR.Rule = ASIGNACION
                         | cadena
-                        | t_true
-                        | t_false
-                        | real;
+                        | EXP
+                        | EXP_LOG;
 
             CONSTANTE.Rule = CONSTANTE + CONSTANTE1 | CONSTANTE1;
 
@@ -206,14 +206,14 @@ namespace Proyecto1.Gramatica
 
             //******************************************* FUNCIONES Y PROCEDIMIENTOS ***************************************************
 
-            FUNCION.Rule = t_function + id + PARAMETROS_FUNC + t_dosPuntos + TIPO + t_puntoComa + VARIABLE + t_begin /*INSTRUCCIONES*/ + t_end + t_puntoComa;
-
+            FUNCION.Rule = t_function + id + PARAMETROS + t_dosPuntos + TIPO + t_puntoComa + VARIABLE + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
+            /*
             PARAMETROS_FUNC.Rule = t_parentesisApertura + PARAMETROS_FUNC1 + t_parentesisCierre
                                     | Empty;
 
             PARAMETROS_FUNC1.Rule = PARAMETROS_FUNC1 + ToTerm(";") + LISTA_DEC | LISTA_DEC
                                     | Empty;
-
+            */
             PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS + t_puntoComa + VARIABLE + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
 
             PARAMETROS.Rule = t_parentesisApertura + PARAMETROS1 + t_parentesisCierre
@@ -234,7 +234,7 @@ namespace Proyecto1.Gramatica
                      | menos + EXP
                      | entero
                      | real
-                     | id;
+                     | ASIGNACION;
 
             
             EXP_LOG.Rule = EXP_LOG + and + EXP_LOG
@@ -246,7 +246,7 @@ namespace Proyecto1.Gramatica
                           | not + EXP_LOG
                           | t_true
                           | t_false
-                          | id;
+                          | ASIGNACION;
 
             //******************************************* CONDICIONES ***************************************************
 
@@ -279,11 +279,6 @@ namespace Proyecto1.Gramatica
 
             ELSE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + ToTerm(";")
                         | Empty;
-
-
-
-
-
 
 
 

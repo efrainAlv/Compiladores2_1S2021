@@ -28,38 +28,41 @@ namespace Proyecto1.Semantica.FuncsProcs
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
             int len = temp.Length;
 
-            if (tipo == "CUERPO")
+            if (len>0)
             {
-                if (len == 2)
+                if (tipo == "CUERPO")
                 {
-                    analizar(temp[0]);
-
-                    analizar(temp[1]);
-                }
-                else
-                {
-                    if (temp[0].getNombre() == "CUERPO1")
+                    if (len == 2)
                     {
                         analizar(temp[0]);
+
+                        analizar(temp[1]);
                     }
                     else
                     {
-                        //epsilon
+                        if (temp[0].getNombre() == "CUERPO1")
+                        {
+                            analizar(temp[0]);
+                        }
+                        else
+                        {
+                            //epsilon
+                        }
                     }
-                }
-            }
-            else
-            {
-                if (temp[0].getNombre() == "FUNCION")
-                {
-
                 }
                 else
                 {
-                    agregarProcedimiento(temp[0], new List<Parametro>());
-                }
-            }
+                    if (temp[0].getNombre() == "FUNCION")
+                    {
 
+                    }
+                    else
+                    {
+                        agregarProcedimiento(temp[0], new List<Parametro>());
+                    }
+                }
+
+            }
 
         }
 
@@ -73,71 +76,78 @@ namespace Proyecto1.Semantica.FuncsProcs
             int len = temp.Length;
 
 
-            if (tipo == "PROCEDIMIENTO")
+            if (len>0)
             {
-                string nombre = temp[1].getHoja().getValor().getValor() + "";
-
-                parametros = agregarProcedimiento(temp[2], parametros);
-
-                Cabecera c = new Cabecera();
-                c.agregarVariableGlobal(temp[4], new List<string>(), Form1.objetos);
-
-                Procedimiento proc = new Procedimiento(nombre, c.getVariables(), parametros, temp[6]);
-
-                this.procedimientos.Add(proc);
-
-                return null;
-
-            }
-            else if (tipo == "PARAMETROS")
-            {
-                if (len == 3)
+                if (tipo == "PROCEDIMIENTO")
                 {
-                    return agregarProcedimiento(temp[1], parametros);
+                    string nombre = temp[1].getHoja().getValor().getValor() + "";
+
+                    parametros = agregarProcedimiento(temp[2], parametros);
+
+                    Cabecera c = new Cabecera();
+                    c.agregarVariableGlobal(temp[4], new List<string>(), Form1.objetos);
+
+                    Procedimiento proc = new Procedimiento(nombre, c.getVariables(), parametros, temp[6]);
+
+                    this.procedimientos.Add(proc);
+
+                    return null;
+
+                }
+                else if (tipo == "PARAMETROS")
+                {
+                    if (len == 3)
+                    {
+                        return agregarProcedimiento(temp[1], parametros);
+                    }
+                    else
+                    {
+                        return new List<Parametro>();
+                    }
+                }
+                else if (tipo == "PARAMETROS1")
+                {
+                    if (len == 3)
+                    {
+                        parametros = agregarProcedimiento(temp[0], parametros);
+
+                        return agregarProcedimiento(temp[2], parametros);
+                    }
+                    else
+                    {
+                        return agregarProcedimiento(temp[0], parametros);
+                    }
                 }
                 else
                 {
-                    return new List<Parametro>();
-                }
-            }
-            else if (tipo == "PARAMETROS1")
-            {
-                if (len == 3)
-                {
-                    parametros = agregarProcedimiento(temp[0], parametros);
+                    if (len == 1)
+                    {
+                        List<Variable> vars = agregarParametro(temp[0], new List<Variable>());
 
-                    return agregarProcedimiento(temp[2], parametros);
+                        for (int i = 0; i < vars.Count; i++)
+                        {
+                            parametros.Add(new Parametro(vars.ElementAt(i), "valor"));
+                        }
+                        return parametros;
+                    }
+                    else
+                    {
+                        List<Variable> vars = agregarParametro(temp[1], new List<Variable>());
+
+                        for (int i = 0; i < vars.Count; i++)
+                        {
+                            parametros.Add(new Parametro(vars.ElementAt(i), "referencia"));
+                        }
+
+                        return parametros;
+                    }
                 }
-                else
-                {
-                    return agregarProcedimiento(temp[0], parametros);
-                }
+
             }
             else
             {
-                if (len == 1)
-                {
-                    List<Variable> vars = agregarParametro(temp[0], new List<Variable>());
-
-                    for (int i = 0; i < vars.Count; i++)
-                    {
-                        parametros.Add(new Parametro(vars.ElementAt(i), "valor"));
-                    }
-                    return parametros;
-                }
-                else
-                {
-                    List<Variable> vars = agregarParametro(temp[1], new List<Variable>());
-
-                    for (int i = 0; i < vars.Count; i++)
-                    {
-                        parametros.Add(new Parametro(vars.ElementAt(i), "referencia"));
-                    }
-
-                    return parametros;
-                }
+                return new List<Parametro>();
             }
-
 
 
 
