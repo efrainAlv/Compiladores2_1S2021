@@ -8,10 +8,12 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 {
     class SenteciaIf
     {
+        
+        private List<Entorno> entorno;
 
-        public SenteciaIf()
+        public SenteciaIf(List<Entorno> entorno)
         {
-
+            this.entorno = entorno;
         }
 
 
@@ -27,12 +29,12 @@ namespace Proyecto1.Semantica.SentenciaDeControl
             {
                 if (tipo == "IF")
                 {
-                    ExpresionLogica e = new ExpresionLogica();
+                    ExpresionLogica e = new ExpresionLogica(this.entorno);
                     if (e.noce(temp[1].getNodos()[0]))
                     {
-                        MessageBox.Show("If verdadero");
+                        //MessageBox.Show("If verdadero");
 
-                        Instruccion ins = new Instruccion();
+                        Instruccion ins = new Instruccion(this.entorno);
                         ins.analizar(temp[4]);
 
                         return true;
@@ -76,7 +78,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                 }
                 else if (tipo == "ELSE_IF")
                 {
-                    ExpresionLogica e = new ExpresionLogica();
+                    ExpresionLogica e = new ExpresionLogica(this.entorno);
 
                     if (len == 8)
                     {
@@ -84,9 +86,9 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
                         if (e.noce(temp[3].getNodos()[0]) && !flag)
                         {
-                            MessageBox.Show("Else if verdadero");
+                            //MessageBox.Show("Else if verdadero");
 
-                            Instruccion ins = new Instruccion();
+                            Instruccion ins = new Instruccion(this.entorno);
                             ins.analizar(temp[6]);
 
                             return true;
@@ -101,9 +103,9 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     {
                         if (e.noce(temp[2].getNodos()[0]) && !flag)
                         {
-                            MessageBox.Show("Else if verdadero");
+                            //MessageBox.Show("Else if verdadero");
 
-                            Instruccion ins = new Instruccion();
+                            Instruccion ins = new Instruccion(this.entorno);
                             ins.analizar(temp[5]);
 
                             return true;
@@ -120,9 +122,9 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
                     if (!flag)
                     {
-                        MessageBox.Show("Else verdadero");
+                        //MessageBox.Show("Else verdadero");
 
-                        Instruccion ins = new Instruccion();
+                        Instruccion ins = new Instruccion(this.entorno);
                         ins.analizar(temp[2]);
 
                         return true;

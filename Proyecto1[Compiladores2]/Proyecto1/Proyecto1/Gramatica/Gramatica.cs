@@ -10,7 +10,7 @@ namespace Proyecto1.Gramatica
     public class Gramatica : Grammar
     {
 
-        public Gramatica() : base(caseSensitive: false)
+        public Gramatica() : base(caseSensitive: true)
         {
 
             #region Expresiones regulares del lenguaje
@@ -119,6 +119,11 @@ namespace Proyecto1.Gramatica
             NonTerminal PARAMETROS = new NonTerminal("PARAMETROS");
             NonTerminal PARAMETROS1 = new NonTerminal("PARAMETROS1");
             NonTerminal PARAMETROS2 = new NonTerminal("PARAMETROS2");
+            NonTerminal ANIDAR = new NonTerminal("ANIDAR");
+            NonTerminal ANIDAR1 = new NonTerminal("ANIDAR1");
+            NonTerminal LLAMADA = new NonTerminal("LLAMADA");
+            NonTerminal LLAMADA1 = new NonTerminal("LLAMADA1");
+
 
             NonTerminal EXP = new NonTerminal("EXP");
             NonTerminal EXP_LOG = new NonTerminal("EXP_LOG");
@@ -133,8 +138,10 @@ namespace Proyecto1.Gramatica
 
             NonTerminal INSTRUCCIONES = new NonTerminal("INSTRUCCIONES");
             NonTerminal INSTRUCCION = new NonTerminal("INSTRUCCION");
-            NonTerminal ASIGNACION = new NonTerminal("ASIGNACION");
             NonTerminal ASIGNACIONES = new NonTerminal("ASIGNACIONES");
+            NonTerminal ASIGNACION = new NonTerminal("ASIGNACION");
+            NonTerminal ASIGNACION1 = new NonTerminal("ASIGNACION1");
+            NonTerminal ASIGNACION2 = new NonTerminal("ASIGNACION2");
 
 
 
@@ -190,7 +197,7 @@ namespace Proyecto1.Gramatica
                         | t_object
                         | id;
 
-            VALOR.Rule = ASIGNACION
+            VALOR.Rule = ASIGNACION1
                         | cadena
                         | EXP
                         | EXP_LOG;
@@ -206,15 +213,16 @@ namespace Proyecto1.Gramatica
 
             //******************************************* FUNCIONES Y PROCEDIMIENTOS ***************************************************
 
-            FUNCION.Rule = t_function + id + PARAMETROS + t_dosPuntos + TIPO + t_puntoComa + VARIABLE + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
-            /*
-            PARAMETROS_FUNC.Rule = t_parentesisApertura + PARAMETROS_FUNC1 + t_parentesisCierre
-                                    | Empty;
+            FUNCION.Rule = t_function + id + PARAMETROS + t_dosPuntos + TIPO + t_puntoComa + VARIABLE + ANIDAR + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
 
-            PARAMETROS_FUNC1.Rule = PARAMETROS_FUNC1 + ToTerm(";") + LISTA_DEC | LISTA_DEC
-                                    | Empty;
-            */
-            PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS + t_puntoComa + VARIABLE + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
+            ANIDAR.Rule = ANIDAR + ANIDAR1
+                        | ANIDAR1;
+
+            ANIDAR1.Rule = FUNCION
+                          | PROCEDIMIENTO
+                          | Empty;
+
+            PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS + t_puntoComa + VARIABLE + ANIDAR + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
 
             PARAMETROS.Rule = t_parentesisApertura + PARAMETROS1 + t_parentesisCierre
                                     | Empty;
@@ -223,6 +231,12 @@ namespace Proyecto1.Gramatica
 
             PARAMETROS2.Rule = LISTA_DEC
                                     | t_var + LISTA_DEC;
+
+            LLAMADA.Rule = id + t_parentesisApertura + LLAMADA1 + t_parentesisCierre + t_puntoComa;
+
+            LLAMADA1.Rule = LLAMADA1 + t_coma + VALOR
+                          | VALOR
+                          | Empty;
 
             //******************************************* EXPRESIONES ***************************************************
 
@@ -234,9 +248,9 @@ namespace Proyecto1.Gramatica
                      | menos + EXP
                      | entero
                      | real
-                     | ASIGNACION;
+                     | ASIGNACION1;
 
-            
+
             EXP_LOG.Rule = EXP_LOG + and + EXP_LOG
                           | EXP_LOG + or + EXP_LOG
                           | ToTerm("(") + EXP_LOG + ToTerm(")")
@@ -246,11 +260,11 @@ namespace Proyecto1.Gramatica
                           | not + EXP_LOG
                           | t_true
                           | t_false
-                          | ASIGNACION;
+                          | ASIGNACION1;
 
             //******************************************* CONDICIONES ***************************************************
 
-            CONDICION.Rule = EXP_LOG; 
+            CONDICION.Rule = EXP_LOG;
 
             CONDICION_NUM.Rule = CONDICION_LOG
                                 | menor
@@ -287,14 +301,21 @@ namespace Proyecto1.Gramatica
 
             INSTRUCCION.Rule = IF
                              | ASIGNACIONES
+                             | LLAMADA
                              | Empty;
 
 
             ASIGNACIONES.Rule = ASIGNACIONES + ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa
-                                | ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa ;
+                                | ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa;
 
             ASIGNACION.Rule = ASIGNACION + punto + id
                             | id;
+
+            ASIGNACION1.Rule = id + ASIGNACION2;
+            
+            ASIGNACION2.Rule =  punto + ASIGNACION
+                              | ToTerm("(") + LLAMADA1 + ToTerm(")")
+                              | Empty ;
 
             #endregion
 
@@ -306,7 +327,6 @@ namespace Proyecto1.Gramatica
             RegisterOperators(2, diferente, t_igualAritmetico);
 
 
-            
 
 
 

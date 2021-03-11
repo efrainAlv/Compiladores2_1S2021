@@ -52,6 +52,7 @@ VALOR -> ASIGNACION
 		|cadena
 		|EXP
 		|EXP_LOG
+		|LLAMADA
 
 CONSTANTE -> CONSTANTE CONSTANTE'
 			|CONSTANTE'
@@ -71,11 +72,18 @@ CUERPO' -> FUNCION
 		  | PROCEDIMIENTO
 		  | Eof
 		
-FUNCION -> function id PARAMETROS_FUNC : TIPO ; DEC_LOCAL begin INSTRUCCIONES end ;
+FUNCION -> function id PARAMETROS : TIPO ; VARIABLE ANIDAR begin INSTRUCCIONES end ;
 
 			 
-PROCEDIMIENTO -> procedure id PARAMETROS ; VARIABLE begin INSTRUCCIONES end;
+PROCEDIMIENTO -> procedure id PARAMETROS ; VARIABLE ANIDAR begin INSTRUCCIONES end ;
 
+ANIDAR -> ANIDAR ANIDAR'
+		| ANIDAR'
+		
+ANIDAR' -> FUNCION
+		| PROCEDIMIENTO
+		| epsilon
+		
 PARAMETROS -> ( PARAMETROS' )
 					| epsilon
 
@@ -85,10 +93,11 @@ PARAMETROS' -> PARAMETROS' ; PARAMETROS''
 PARAMETROS'' ->  LISTA_DEC
 				 | var LISTA_DEC
 
+LLAMADA -> id ( LLAMADA' ) ;
 
-DEC_LOCAL -> var LISTA_DEC
+LLAMADA' -> LLAMADA' , VALOR
+			| VALOR
 			| epsilon
-			
 
 			
 			
@@ -127,7 +136,7 @@ EXP -> EXP + EXP
 	|entero
 	|real
 	|ASIGNACION
-	 
+	|LLAMADA
 	 
 EXP_LOG -> EXP_LOG and EXP_LOG						3
 		|EXP_LOG or EXP_LOG							3
@@ -138,9 +147,8 @@ EXP_LOG -> EXP_LOG and EXP_LOG						3
 		|not EXP_LOG								2
 		|true										1
 		|false										1
-		|ASIGNACION											1
-	
-	
+		|ASIGNACION									1
+		|LLAMADA
 
 IF -> if CONDICION then begin INSTRUCCIONES end 'IF
 
@@ -282,8 +290,34 @@ procedure findMin(x, y: integer; var m,n: integer; z:integer); {m es por referen
 		r1: Rectangulo;
 		n1:integer;
 
+	procedure despedirse(dos:integer);
+		procedure adios(tres:imteger);
+		begin
+		end;
+	begin
+	end;
 begin
 end;
+
+procedure adios(tres:imteger);
+		begin
+		end;
+		
+
+function Ackermann(m, n : Integer) : Integer;
+	
+	var n1:integer='que pex';
+	
+	procedure despedirse(dos, tres:integer;var cuatro:string);
+		procedure adios(tres:integer);
+		begin
+		end;
+	begin
+	end;
+	
+begin
+end;
+
 
 begin
 
@@ -303,7 +337,8 @@ begin
 		end
 	else if uno+dos+tres=60 then
 		begin						
-			geo.cuadrilatero.rectangulo.altura:=tres;
+			//geo.cuadrilatero.rectangulo.altura:=tres;
+			findMin(1,3,uno,dos,5);
 		end
 	else
 		begin
@@ -311,5 +346,46 @@ begin
 		end;
 
 end.
-
 	
+	
+	
+	
+function Ackermann(m, n : Integer) : Integer;
+	begin
+		if m = 0 then
+			begin
+				Ackermann := n+1
+			end
+		else if n = 0 then
+			begin
+				Ackermann := Ackermann(m-1, 1)
+			end
+		else
+			begin
+				Ackermann := Ackermann(m-1, Ackermann(m, n-1));
+			end;
+	end;
+
+
+program Hello;
+
+var adios:integer;
+
+
+function hola(uno, dos:integer):integer;
+    begin
+        hola:=uno+dos;
+    end;
+
+
+begin
+
+	adios:=hola(27, 39);
+    
+end.
+
+
+id
+
+node ()
+

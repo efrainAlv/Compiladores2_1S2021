@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Proyecto1.Semantica
 {
-    class Entorno
+    public class Entorno
     {
 
         List<Variable> variables;
@@ -12,6 +12,12 @@ namespace Proyecto1.Semantica
         public Entorno(ref List<Variable> variables) 
         {
             this.variables = variables;
+        }
+
+
+        public List<Variable> getVariables()
+        {
+            return this.variables;
         }
 
 

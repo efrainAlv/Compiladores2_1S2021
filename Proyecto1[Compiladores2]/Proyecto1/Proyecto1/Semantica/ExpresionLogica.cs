@@ -15,10 +15,13 @@ namespace Proyecto1.Semantica
 
         private object resultado;
 
-        public ExpresionLogica()
+        private List<Entorno> entorno;
+
+        public ExpresionLogica(List<Entorno> entorno)
         {
             this.nodoE = null;
             this.resultado = null;
+            this.entorno = entorno;
         }
 
         public ExpresionLogica(AST.Nodo nodoE)
@@ -45,36 +48,67 @@ namespace Proyecto1.Semantica
             {
                 if (temp.Length == 1)
                 {
-                    if (temp[0].getNombre() == "ASIGNACION")
+                    if (temp[0].getNombre() == "ASIGNACION1")
                     {
-                        Instruccion ins = new Instruccion();
+                        Instruccion ins = new Instruccion(this.entorno);
 
-                        string cadena = ins.getAsignaciones(temp[0], "");
+                        Cabecera c = new Cabecera();
+                        string valor = c.validarAsignacionAVariable(temp[0], "", ins);
 
-                        string[] ids = cadena.Split(".");
-
-                        bool resultado = false;
-
-                        for (int i = 0; i < Form1.variableGlobales.Count; i++)
+                        if (valor == "false")
                         {
-                            if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
-                            {
-                                object nose = ins.asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
+                            return false;
+                        }
+                        else if (valor == "true")
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
 
-                                if (nose+"" == "false")
+                    }
+                    else if (temp[0].getNombre() == "LLAMADA")
+                    {
+                        Instruccion inst = new Instruccion(this.entorno);
+
+                        FuncsProcs.Procedimiento proc = inst.llamadasProcedimientos(temp[0], null, 0);
+                        if (proc != null)
+                        {
+                            proc.ejecutar();
+                            return false;
+                        }
+                        else
+                        {
+                            FuncsProcs.Funcion func = inst.llamadasFunciones(temp[0], null, 0);
+
+                            if (func != null)
+                            {
+                                func.ejecutar();
+                                string resultado = func.getEntorno()[func.getEntorno().Count - 1].buscarVariable(func.getNombre()).getValor().getValor()+"";
+
+                                if (resultado=="false")
                                 {
-                                    resultado = false;
+                                    return false;
+                                }
+                                else if (resultado == "true")
+                                {
+                                    return true;
                                 }
                                 else
                                 {
-                                    resultado = true;
+                                    return false;
                                 }
-
-                                break;
                             }
+                            else
+                            {
+                                return false;
+                            }
+
                         }
 
-                        return resultado;
+
                     }
                     else
                     {
@@ -117,7 +151,7 @@ namespace Proyecto1.Semantica
                         }
                         else
                         {
-                            Condicion c = new Condicion();
+                            Condicion c = new Condicion(this.entorno);
                             AST.Nodo n = new AST.Nodo("CONDICION");
                             n.addNodo(temp[0]);
                             n.addNodo(temp[1]);
@@ -134,7 +168,7 @@ namespace Proyecto1.Semantica
                 {
                     if (temp[1].getNombre() == "EXP")
                     {
-                        Condicion c = new Condicion();
+                        Condicion c = new Condicion(this.entorno);
                         AST.Nodo n = new AST.Nodo("CONDICION");
                         n.addNodo(temp[1]);
                         n.addNodo(temp[2]);

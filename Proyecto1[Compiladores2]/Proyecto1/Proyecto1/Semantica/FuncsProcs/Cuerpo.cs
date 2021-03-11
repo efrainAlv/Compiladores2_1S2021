@@ -9,11 +9,14 @@ namespace Proyecto1.Semantica.FuncsProcs
     {
 
         private List<Procedimiento> procedimientos;
+        private List<Funcion> funciones;
+        private List<Entorno> entorno;
 
-
-        public Cuerpo()
+        public Cuerpo(List<Entorno> entorno)
         {
             this.procedimientos = new List<Procedimiento>();
+            this.funciones = new List<Funcion>();
+            this.entorno = entorno;
         }
 
         public List<Procedimiento> getProcedimientos()
@@ -21,6 +24,10 @@ namespace Proyecto1.Semantica.FuncsProcs
             return this.procedimientos;
         }
 
+        public List<Funcion> getFunciones()
+        {
+            return this.funciones;
+        }
 
         public void analizar(AST.Nodo nodoAct)
         {
@@ -54,11 +61,17 @@ namespace Proyecto1.Semantica.FuncsProcs
                 {
                     if (temp[0].getNombre() == "FUNCION")
                     {
-
+                        agregarFuncion(temp[0], new List<Parametro>());
+                        Form1.addFunciones(this.funciones);
+                        this.funciones = null;
+                        this.funciones = new List<Funcion>();
                     }
                     else
                     {
                         agregarProcedimiento(temp[0], new List<Parametro>());
+                        Form1.addProcedimientos(this.procedimientos);
+                        this.procedimientos = null;
+                        this.procedimientos = new List<Procedimiento>();
                     }
                 }
 
@@ -84,12 +97,28 @@ namespace Proyecto1.Semantica.FuncsProcs
 
                     parametros = agregarProcedimiento(temp[2], parametros);
 
-                    Cabecera c = new Cabecera();
+                    List<Entorno> ent = new List<Entorno>();
+                    for (int i = 0; i < this.entorno.Count; i++)
+                    {
+                        ent.Add(this.entorno[i]);
+                    }
+
+                    Cabecera c = new Cabecera(ent);
                     c.agregarVariableGlobal(temp[4], new List<string>(), Form1.objetos);
 
-                    Procedimiento proc = new Procedimiento(nombre, c.getVariables(), parametros, temp[6]);
+                    Procedimiento proc = new Procedimiento(nombre, c.getVariables(), parametros, temp[7], ent);
+                    //c = null;
+                    //ent = null;
+
+                    Cuerpo cuer = new Cuerpo(proc.getEntorno());
+                    cuer.anidarFuncionProcedimiento(temp[5]);
+                    proc.addProcedimientos(cuer.getProcedimientos());
+
+                    //cuer = null;
 
                     this.procedimientos.Add(proc);
+
+                    //proc = null;
 
                     return null;
 
@@ -152,7 +181,108 @@ namespace Proyecto1.Semantica.FuncsProcs
 
 
         }
-        
+
+        public List<Parametro> agregarFuncion(AST.Nodo nodoAct, List<Parametro> parametros)
+        {
+            string tipo = nodoAct.getNombre();
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+            int len = temp.Length;
+
+
+            if (len > 0)
+            {
+                if (tipo == "FUNCION")
+                {
+                    string nombre = temp[1].getHoja().getValor().getValor() + "";
+
+                    parametros = agregarFuncion(temp[2], parametros);
+
+                    List<Entorno> ent = new List<Entorno>();
+                    for (int i = 0; i < this.entorno.Count; i++)
+                    {
+                        ent.Add(this.entorno[i]);
+                    }
+
+                    Cabecera c = new Cabecera(ent);
+                    c.agregarVariableGlobal(temp[6], new List<string>(), Form1.objetos);
+
+                    //nombre, c.getVariables(), parametros, temp[7], ent
+                    Funcion func = new Funcion(nombre, new Terminal(temp[4].getNodos()[0].getHoja().getValor().getValor(), temp[4].getNodos()[0].getHoja().getValor().getTipo()), c.getVariables(), parametros, temp[9], ent);
+                    //c = null;
+                    //ent = null;
+
+                    Cuerpo cuer = new Cuerpo(func.getEntorno());
+                    cuer.anidarFuncionProcedimiento(temp[7]);
+                    func.addProcedimientos(cuer.getProcedimientos());
+                    func.addFunciones(cuer.getFunciones());
+                    //cuer = null;
+
+                    this.funciones.Add(func);
+
+                    //proc = null;
+
+                    return null;
+
+                }
+                else if (tipo == "PARAMETROS")
+                {
+                    if (len == 3)
+                    {
+                        return agregarProcedimiento(temp[1], parametros);
+                    }
+                    else
+                    {
+                        return new List<Parametro>();
+                    }
+                }
+                else if (tipo == "PARAMETROS1")
+                {
+                    if (len == 3)
+                    {
+                        parametros = agregarProcedimiento(temp[0], parametros);
+
+                        return agregarProcedimiento(temp[2], parametros);
+                    }
+                    else
+                    {
+                        return agregarProcedimiento(temp[0], parametros);
+                    }
+                }
+                else
+                {
+                    if (len == 1)
+                    {
+                        List<Variable> vars = agregarParametro(temp[0], new List<Variable>());
+
+                        for (int i = 0; i < vars.Count; i++)
+                        {
+                            parametros.Add(new Parametro(vars.ElementAt(i), "valor"));
+                        }
+                        return parametros;
+                    }
+                    else
+                    {
+                        List<Variable> vars = agregarParametro(temp[1], new List<Variable>());
+
+                        for (int i = 0; i < vars.Count; i++)
+                        {
+                            parametros.Add(new Parametro(vars.ElementAt(i), "referencia"));
+                        }
+
+                        return parametros;
+                    }
+                }
+
+            }
+            else
+            {
+                return new List<Parametro>();
+            }
+
+
+
+        }
+
         public List<Variable> agregarParametro(AST.Nodo nodoAct, List<Variable> vars)
         {
             string tipo = nodoAct.getNombre();
@@ -184,22 +314,22 @@ namespace Proyecto1.Semantica.FuncsProcs
                 Objeto o = null;
                 object valor;
 
-                if (tipoTerminal == "string")
+                if (tipoTerminal.ToLower() == "string")
                 {
                     tipoDato = Terminal.TipoDato.CADENA;
                     valor = "";
                 }
-                else if (tipoTerminal == "integer")
+                else if (tipoTerminal.ToLower() == "integer")
                 {
                     tipoDato = Terminal.TipoDato.ENTERO;
                     valor = 0;
                 }
-                else if (tipoTerminal == "real")
+                else if (tipoTerminal.ToLower() == "real")
                 {
                     tipoDato = Terminal.TipoDato.REAL;
                     valor = 0;
                 }
-                else if (tipoTerminal == "boolean")
+                else if (tipoTerminal.ToLower() == "boolean")
                 {
                     tipoDato = Terminal.TipoDato.BOOLEANO;
                     valor = false;
@@ -245,6 +375,45 @@ namespace Proyecto1.Semantica.FuncsProcs
                 return ids;
             }
             
+        }
+
+
+        public void anidarFuncionProcedimiento(AST.Nodo nodoAct)
+        {
+            string tipo = nodoAct.getNombre();
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+            int len = temp.Length;
+
+            if (len>0)
+            {
+                if (tipo == "ANIDAR")
+                {
+                    if (len==2)
+                    {
+                        anidarFuncionProcedimiento(temp[0]);
+                        anidarFuncionProcedimiento(temp[1]);
+                    }
+                    else
+                    {
+                        anidarFuncionProcedimiento(temp[0]);
+                    }
+                }
+                else
+                {
+                    if (temp[0].getNombre()=="FUNCION")
+                    {
+
+                    }
+                    else if (temp[0].getNombre() == "PROCEDIMIENTO")
+                    {
+                        agregarProcedimiento(temp[0], new List<Parametro>());
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
         }
 
     }

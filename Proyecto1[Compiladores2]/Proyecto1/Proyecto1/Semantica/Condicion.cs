@@ -6,8 +6,13 @@ using System.Windows.Forms;
 
 namespace Proyecto1.Semantica
 {
-    class Condicion
+    public class Condicion
     {
+        List<Entorno> entorno;
+        public Condicion(List<Entorno> entorno)
+        {
+            this.entorno = entorno;
+        }
 
         //
         public void evaluarExpresion(AST.Nodo nodo)
@@ -23,7 +28,7 @@ namespace Proyecto1.Semantica
 
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
        
-            Expresion exp = new Expresion();
+            Expresion exp = new Expresion(this.entorno);
                     
             double n1 = Convert.ToSingle((exp.noce(temp[0])));
             double n2 = Convert.ToSingle((exp.noce(temp[2])));

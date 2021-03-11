@@ -14,17 +14,18 @@ namespace Proyecto1.Semantica
         private AST.Nodo nodo;
         private List<Variable> variablesGLobales;
         private List<Objeto> objetos;
-
-        public Cabecera(AST.Nodo nodo)
-        {
-            this.nodo = nodo;
-            this.variablesGLobales = new List<Variable>();
-        }
+        private List<Entorno> entorno;
 
         public Cabecera()
         {
             this.variablesGLobales = new List<Variable>();
+        }
+
+        public Cabecera(List<Entorno> entorno)
+        {
+            this.variablesGLobales = new List<Variable>();
             this.objetos = new List<Objeto>();
+            this.entorno = entorno;
         }
 
 
@@ -114,7 +115,7 @@ namespace Proyecto1.Semantica
 
                     if (temp[0].getNombre() == "OBJETO")
                     {
-                        Cabecera c = new Cabecera();
+                        Cabecera c = new Cabecera(this.entorno);
                         c.agregarVaraibles(temp[0].getNodos().ToArray()[1], this.objetos);
                         return c.getVariables();
                     }
@@ -212,22 +213,22 @@ namespace Proyecto1.Semantica
             Terminal.TipoDato tipoDato;
             Objeto o = null;
 
-            if (tipoVar == "integer")
+            if (tipoVar.ToLower() == "integer")
             {
                 valor = "0";
                 tipoDato = Terminal.TipoDato.ENTERO;
             }
-            else if (tipoVar == "real")
+            else if (tipoVar.ToLower() == "real")
             {
                 valor = "0.0";
                 tipoDato = Terminal.TipoDato.REAL;
             }
-            else if (tipoVar == "boolean")
+            else if (tipoVar.ToLower() == "boolean")
             {
                 valor = "false";
                 tipoDato = Terminal.TipoDato.BOOLEANO;
             }
-            else if (tipoVar == "string")
+            else if (tipoVar.ToLower() == "string")
             {
                 valor = "";
                 tipoDato = Terminal.TipoDato.CADENA;
@@ -252,60 +253,49 @@ namespace Proyecto1.Semantica
             {
                 if (temp[n].getNodos().Count > 0)
                 {
-                    Instruccion ins = new Instruccion();
+                    Instruccion ins = new Instruccion(this.entorno);
 
-                    if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "ASIGNACION")
+                    if (temp[n].getNodos()[1].getNodos()[0].getNombre() == "ASIGNACION1")
                     {
-                        string referencia = ins.getAsignaciones(temp[n], "");
-
-                        string[] ids = referencia.Split(".");
-
                         string resultado = "";
 
-                        for (int i = 0; i < Form1.variableGlobales.Count; i++)
+                        resultado = validarAsignacionAVariable(temp[n].getNodos()[1].getNodos()[0], "", ins);
+
+                        if (resultado == "false")
                         {
-                            if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
+                            tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                        }
+                        else if (resultado == "true")
+                        {
+                            tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                        }
+                        else if (resultado.Contains("'"))
+                        {
+                            tipoDato = Semantica.Terminal.TipoDato.CADENA;
+                        }
+                        else if (resultado.Contains("."))
+                        {
+                            tipoDato = Semantica.Terminal.TipoDato.REAL;
+                        }
+                        else
+                        {
+                            try
                             {
-                                resultado = ins.asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null) + "";
-
-                                if (resultado == "false")
-                                {
-                                    tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
-                                }
-                                else if (resultado == "true")
-                                {
-                                    tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
-                                }
-                                else if (resultado.Contains("'"))
-                                {
-                                    tipoDato = Semantica.Terminal.TipoDato.CADENA;
-                                }
-                                else if (resultado.Contains("."))
-                                {
-                                    tipoDato = Semantica.Terminal.TipoDato.REAL;
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        int result = Int32.Parse(tipoVar);
-                                        tipoDato = Semantica.Terminal.TipoDato.ENTERO;
-                                    }
-                                    catch (FormatException)
-                                    {
-                                        tipoDato = Semantica.Terminal.TipoDato.ID;
-                                    }
-                                }
-
-                                break;
+                                int result = Int32.Parse(tipoVar);
+                                tipoDato = Semantica.Terminal.TipoDato.ENTERO;
+                            }
+                            catch (FormatException)
+                            {
+                                tipoDato = Semantica.Terminal.TipoDato.ID;
                             }
                         }
+
 
                         valor = resultado + "";
                     }
                     else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP")
                     {
-                        Expresion exp = new Expresion();
+                        Expresion exp = new Expresion(this.entorno);
                         valor = exp.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
 
                         if (valor.ToString().Contains("."))
@@ -320,7 +310,7 @@ namespace Proyecto1.Semantica
                     }
                     else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP_LOG")
                     {
-                        ExpresionLogica expL = new ExpresionLogica();
+                        ExpresionLogica expL = new ExpresionLogica(this.entorno);
                         valor = expL.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
                         tipoDato = Terminal.TipoDato.BOOLEANO;
                     }
@@ -351,6 +341,101 @@ namespace Proyecto1.Semantica
         {
             return this.objetos;
         }
+
+
+
+        //METODO PARA ANALIZAR PRODUCCION ASIGNAICON1
+        //RETORNA EL VALOR DE UNA VARIABLE, OBJETO ANINDADO, FUNCION
+        public string validarAsignacionAVariable(AST.Nodo nodoAct, string referencia, Instruccion ins)
+        {
+
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+            string tipo = nodoAct.getNombre();
+
+
+            if (tipo=="ASIGNACION1")
+            {
+
+                referencia = temp[0].getHoja().getValor().getValor()+"";
+
+                referencia = validarAsignacionAVariable(temp[1], referencia, ins); //PRODUCCION ASIGNACION2
+
+                return referencia;
+
+            }
+            else
+            {
+                if (temp.Length == 2)
+                {
+                    referencia += ".";
+
+                    referencia += ins.getAsignaciones(temp[1], "");
+
+
+                    string[] ids = referencia.Split(".");
+                    string resultado = "";
+
+                    resultado = ins.getResultadoDeVariable(ids);
+
+                    referencia = resultado;
+
+                    return referencia;
+
+                }
+                else if (temp.Length == 3)
+                {
+                    double valorRetorno = 0;
+
+                    Instruccion inst = new Instruccion(this.entorno);
+
+                    FuncsProcs.Funcion funcion = Form1.buscarFuncion(referencia);
+
+                    if (funcion != null)
+                    {
+                        if (funcion.getLongParams()>0)
+                        {
+                            funcion = ins.llamadasFunciones(temp[1], funcion, funcion.getLongParams()-1);   
+                        }
+                    }
+
+
+                    if (funcion != null)
+                    {
+                        funcion.ejecutar();
+
+                        try
+                        {
+                            valorRetorno = Double.Parse(funcion.getEntorno()[funcion.getEntorno().Count - 1].buscarVariable(funcion.getNombre()).getValor().getValor() + "");
+
+                            referencia  = valorRetorno + "";
+                        }
+                        catch (FormatException e)
+                        {
+                            string valorRetornoAux = funcion.getEntorno()[funcion.getEntorno().Count - 1].buscarVariable(funcion.getNombre()).getValor().getValor() + "";
+
+                            referencia = valorRetornoAux + "";
+                        }
+
+                        return referencia;
+                    }
+                    else
+                    {
+                        return referencia +"";
+                    }
+
+                }
+                else
+                {
+
+                    referencia = ins.getResultadoDeVariable(referencia.Split("."));
+                    return referencia;
+                    //epsilon
+                }
+            }
+
+
+        }
+
 
     }
 }

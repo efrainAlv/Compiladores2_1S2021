@@ -28,7 +28,8 @@ namespace Proyecto1
         public static List<Semantica.Variable> variableGlobales = new List<Semantica.Variable>();
         public static List<Semantica.Objeto> objetos = new List<Semantica.Objeto>();
         public static List<Semantica.FuncsProcs.Procedimiento> procedimientos = new List<Semantica.FuncsProcs.Procedimiento>();
-
+        public static List<Semantica.FuncsProcs.Funcion> funciones = new List<Semantica.FuncsProcs.Funcion>();
+        public Semantica.Entorno entorno;
 
         public Form1()
         {
@@ -54,6 +55,32 @@ namespace Proyecto1
             return null; 
         }
 
+        public static Semantica.FuncsProcs.Procedimiento buscarProcedimiento(string nombre)
+        {
+            for (int i = 0; i < procedimientos.Count; i++)
+            {
+                if (procedimientos[i].getNombre() == nombre)
+                {
+                    return procedimientos[i];
+                }
+            }
+
+            return null;
+        }
+
+        public static Semantica.FuncsProcs.Funcion buscarFuncion(string nombre)
+        {
+            for (int i = 0; i < funciones.Count; i++)
+            {
+                if (funciones[i].getNombre() == nombre)
+                {
+                    return funciones[i];
+                }
+            }
+
+            return null;
+        }
+
 
         public static Semantica.Variable buscarVariable(string nombre)
         {
@@ -68,18 +95,25 @@ namespace Proyecto1
             return null;
         }
 
+        public static void addProcedimientos(List<Semantica.FuncsProcs.Procedimiento> procs)
+        {
+            for (int i = 0; i < procs.Count; i++)
+            {
+                procedimientos.Add(procs[i]);
+            }
+        }
+
+        public static void addFunciones(List<Semantica.FuncsProcs.Funcion> funcs)
+        {
+            for (int i = 0; i < funcs.Count; i++)
+            {
+                funciones.Add(funcs[i]);
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            string hola = "uno";
-
-            string[] holas = hola.Split(".");
-
-            for (int i = 0; i < holas.Length; i++)
-            {
-                MessageBox.Show(holas[i]);
-            }
-
-
+            
             this.relaciones = "";
             this.declaraciones = "";
 
@@ -104,19 +138,7 @@ namespace Proyecto1
 
                 //***********************************************************************************
 
-                //Semantica.FuncsProcs.Cuerpo cu = new Semantica.FuncsProcs.Cuerpo();
-
-                //cu.analizar(this.raiz.getNodos()[0]);
-
                 ejecutar(this.raiz.getNodos()[0]);
-
-                Hashtable hs = new Hashtable();
-                hs.Add(0, variableGlobales);
-
-                for (int i = 0; i < hs.Count; i++)
-                {
-                    MessageBox.Show(hs[i] + "");
-                }
 
             }
 
@@ -189,6 +211,8 @@ namespace Proyecto1
                     Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value, tipoDato);
                     AST.Hoja tempH = new AST.Hoja(tempT);
                     nodoAct.setHoja(tempH);
+                    tempH = null;
+                    tempT = null;
                     //AST.Nodo nodo = new AST.Nodo("Terminal", tempH);
                     //nodoAct = nodo;
 
@@ -213,22 +237,29 @@ namespace Proyecto1
             {
                 if (temp[3].getNombre() == "CABECERA") //CABECERA
                 {
-                    Semantica.Cabecera cabecera = new Semantica.Cabecera();
+                    List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
+                    Semantica.Cabecera cabecera = new Semantica.Cabecera(entornos);
                     cabecera.analizar(temp[3]);
 
                     variableGlobales = cabecera.getVariables();
+                    entorno = new Semantica.Entorno(ref variableGlobales);
                     objetos = cabecera.getObjetos();
                 }
                 if (temp[4].getNombre() == "CUERPO")
                 {
-                    Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo();
+                    List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
+                    entornos.Add(entorno);
+                    Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo(entornos);
                     cuerpo.analizar(temp[4]);
 
-                    procedimientos = cuerpo.getProcedimientos();
+                    //procedimientos = cuerpo.getProcedimientos();
                 }
                 if (temp[6].getNombre()=="INSTRUCCIONES")
                 {
-                    Semantica.Instruccion ins = new Semantica.Instruccion();
+                    List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
+                    entornos.Add(entorno);
+
+                    Semantica.Instruccion ins = new Semantica.Instruccion(entornos);
 
                     ins.analizar(temp[6]);
 
@@ -254,3 +285,17 @@ namespace Proyecto1
 
     }
 }
+
+
+
+/*
+ 
+ 
+ 1.     2, 0    
+ 2.         1, 1    0, (1, 0)
+ 
+ 
+ 
+ 
+ 
+ */
