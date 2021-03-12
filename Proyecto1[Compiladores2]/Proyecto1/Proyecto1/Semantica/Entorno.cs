@@ -36,5 +36,20 @@ namespace Proyecto1.Semantica
 
 
 
+        public void actualizarValorDeVariable(string nombre, object valor)
+        {
+            for (int i = 0; i < this.variables.Count; i++)
+            {
+                if (variables[i].getNombre() == nombre)
+                {
+                    this.variables[i].setValorTerminal(valor);
+                    break;
+                }
+
+            }
+        }
+
+
+
     }
 }

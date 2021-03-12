@@ -113,7 +113,13 @@ namespace Proyecto1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+
+            variableGlobales = new List<Semantica.Variable>();
+            objetos = new List<Semantica.Objeto>();
+            procedimientos = new List<Semantica.FuncsProcs.Procedimiento>();
+            funciones = new List<Semantica.FuncsProcs.Funcion>();
+
+
             this.relaciones = "";
             this.declaraciones = "";
 
@@ -208,7 +214,7 @@ namespace Proyecto1
                         }
                     }
 
-                    Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value, tipoDato);
+                    Semantica.Terminal tempT = new Semantica.Terminal(nodoArbol.Token.Value.ToString().ToLower(), tipoDato);
                     AST.Hoja tempH = new AST.Hoja(tempT);
                     nodoAct.setHoja(tempH);
                     tempH = null;
@@ -259,7 +265,7 @@ namespace Proyecto1
                     List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
                     entornos.Add(entorno);
 
-                    Semantica.Instruccion ins = new Semantica.Instruccion(entornos);
+                    Semantica.Instruccion ins = new Semantica.Instruccion(ref entornos);
 
                     ins.analizar(temp[6]);
 

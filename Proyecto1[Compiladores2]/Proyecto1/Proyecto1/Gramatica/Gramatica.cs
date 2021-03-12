@@ -10,7 +10,7 @@ namespace Proyecto1.Gramatica
     public class Gramatica : Grammar
     {
 
-        public Gramatica() : base(caseSensitive: true)
+        public Gramatica() : base(caseSensitive: false)
         {
 
             #region Expresiones regulares del lenguaje
@@ -88,6 +88,19 @@ namespace Proyecto1.Gramatica
             var writeln = "writeln";
             var write = "write";
 
+            var while_t = "while";
+            var do_t = "do";
+
+            var t_for = "for";
+            var to_t = "to";
+
+            var t_case = "case";
+
+            var t_repeat = "repeat";
+            var t_until = "until";
+
+            var t_write = "write";
+            var t_writeln = "writeln";
 
             #endregion
 
@@ -143,8 +156,18 @@ namespace Proyecto1.Gramatica
             NonTerminal ASIGNACION1 = new NonTerminal("ASIGNACION1");
             NonTerminal ASIGNACION2 = new NonTerminal("ASIGNACION2");
 
+            NonTerminal WHILE = new NonTerminal("WHILE");
 
+            NonTerminal FOR = new NonTerminal("FOR");
 
+            NonTerminal CASE = new NonTerminal("CASE");
+            NonTerminal LISTA_CASE = new NonTerminal("LISTA_CASE");
+            NonTerminal ELSE_CASE = new NonTerminal("ELSE_CASE");
+            NonTerminal LISTA_CASE1 = new NonTerminal("LISTA_CASE1");
+
+            NonTerminal REPEAT = new NonTerminal("REPEAT");
+            NonTerminal WRITE = new NonTerminal("WRITE");
+            NonTerminal WRITELN = new NonTerminal("WRITELN");
             #endregion
 
             #region Gramatica
@@ -295,6 +318,8 @@ namespace Proyecto1.Gramatica
                         | Empty;
 
 
+            WHILE.Rule = while_t + CONDICION + do_t + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
+
 
             INSTRUCCIONES.Rule = INSTRUCCIONES + INSTRUCCION
                                 | INSTRUCCION;
@@ -302,6 +327,11 @@ namespace Proyecto1.Gramatica
             INSTRUCCION.Rule = IF
                              | ASIGNACIONES
                              | LLAMADA
+                             | WHILE
+                             | FOR
+                             | CASE
+                             | WRITE
+                             | WRITELN
                              | Empty;
 
 
@@ -316,6 +346,31 @@ namespace Proyecto1.Gramatica
             ASIGNACION2.Rule =  punto + ASIGNACION
                               | ToTerm("(") + LLAMADA1 + ToTerm(")")
                               | Empty ;
+
+
+            FOR.Rule = t_for + id + t_dosPuntos + t_igualAritmetico + EXP + to_t + EXP + do_t + t_begin + INSTRUCCIONES + t_end + t_puntoComa ;
+
+            CASE.Rule = t_case + id + t_of + LISTA_CASE + ELSE_CASE + t_end + t_puntoComa;
+
+            LISTA_CASE.Rule = LISTA_CASE + LISTA_CASE1 + t_dosPuntos + t_begin + INSTRUCCIONES + t_end + t_puntoComa
+                            | LISTA_CASE1 + t_dosPuntos + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
+
+            LISTA_CASE1.Rule = LISTA_CASE1 + t_coma + VALOR
+                                | VALOR;
+
+            ELSE_CASE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + t_puntoComa
+                            | Empty;
+
+
+            REPEAT.Rule = t_repeat + t_begin + INSTRUCCIONES + t_end + t_until + CONDICION + t_puntoComa;
+
+
+
+            WRITE.Rule = t_write + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + t_puntoComa;
+
+            WRITELN.Rule = t_writeln + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + t_puntoComa;
+
+
 
             #endregion
 

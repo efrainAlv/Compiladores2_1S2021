@@ -31,12 +31,13 @@ namespace Proyecto1
         {
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
+            richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // richTextBox1
             // 
             this.richTextBox1.AcceptsTab = true;
-            this.richTextBox1.Location = new System.Drawing.Point(27, 19);
+            this.richTextBox1.Location = new System.Drawing.Point(12, 19);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(993, 460);
             this.richTextBox1.TabIndex = 0;
@@ -52,11 +53,24 @@ namespace Proyecto1
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // richTextBox2
+            // 
+            richTextBox2.AcceptsTab = true;
+            richTextBox2.BackColor = System.Drawing.SystemColors.WindowText;
+            richTextBox2.ForeColor = System.Drawing.SystemColors.InactiveBorder;
+            richTextBox2.Location = new System.Drawing.Point(1041, 19);
+            richTextBox2.Name = "richTextBox2";
+            richTextBox2.ReadOnly = true;
+            richTextBox2.Size = new System.Drawing.Size(365, 460);
+            richTextBox2.TabIndex = 2;
+            richTextBox2.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1044, 606);
+            this.ClientSize = new System.Drawing.Size(1428, 627);
+            this.Controls.Add(richTextBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.richTextBox1);
             this.Name = "Form1";
@@ -70,6 +84,7 @@ namespace Proyecto1
 
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
+        public static System.Windows.Forms.RichTextBox richTextBox2;
     }
 }
 

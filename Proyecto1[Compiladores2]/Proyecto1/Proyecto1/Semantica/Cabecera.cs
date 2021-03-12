@@ -253,7 +253,7 @@ namespace Proyecto1.Semantica
             {
                 if (temp[n].getNodos().Count > 0)
                 {
-                    Instruccion ins = new Instruccion(this.entorno);
+                    Instruccion ins = new Instruccion(ref this.entorno);
 
                     if (temp[n].getNodos()[1].getNodos()[0].getNombre() == "ASIGNACION1")
                     {
@@ -310,7 +310,7 @@ namespace Proyecto1.Semantica
                     }
                     else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP_LOG")
                     {
-                        ExpresionLogica expL = new ExpresionLogica(this.entorno);
+                        ExpresionLogica expL = new ExpresionLogica(ref this.entorno);
                         valor = expL.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
                         tipoDato = Terminal.TipoDato.BOOLEANO;
                     }
@@ -386,7 +386,7 @@ namespace Proyecto1.Semantica
                 {
                     double valorRetorno = 0;
 
-                    Instruccion inst = new Instruccion(this.entorno);
+                    Instruccion inst = new Instruccion(ref this.entorno);
 
                     FuncsProcs.Funcion funcion = Form1.buscarFuncion(referencia);
 

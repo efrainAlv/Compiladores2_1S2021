@@ -92,7 +92,7 @@ namespace Proyecto1.Semantica
                     {
                         double resultado = 0;
 
-                        Instruccion ins = new Instruccion(this.entorno);
+                        Instruccion ins = new Instruccion(ref this.entorno);
                         
                         Cabecera c = new Cabecera();
                         string valor = c.validarAsignacionAVariable(temp[0], "", ins);
@@ -113,7 +113,7 @@ namespace Proyecto1.Semantica
                     {
                         double resultado = 0;
 
-                        Instruccion inst = new Instruccion(this.entorno);
+                        Instruccion inst = new Instruccion(ref this.entorno);
 
                         FuncsProcs.Procedimiento proc = inst.llamadasProcedimientos(temp[0], null, 0);
                         if (proc!=null)

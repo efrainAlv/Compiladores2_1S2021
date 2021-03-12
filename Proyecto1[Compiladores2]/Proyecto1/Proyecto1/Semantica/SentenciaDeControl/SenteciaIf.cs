@@ -29,12 +29,12 @@ namespace Proyecto1.Semantica.SentenciaDeControl
             {
                 if (tipo == "IF")
                 {
-                    ExpresionLogica e = new ExpresionLogica(this.entorno);
+                    ExpresionLogica e = new ExpresionLogica(ref this.entorno);
                     if (e.noce(temp[1].getNodos()[0]))
                     {
                         //MessageBox.Show("If verdadero");
 
-                        Instruccion ins = new Instruccion(this.entorno);
+                        Instruccion ins = new Instruccion(ref this.entorno);
                         ins.analizar(temp[4]);
 
                         return true;
@@ -78,7 +78,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                 }
                 else if (tipo == "ELSE_IF")
                 {
-                    ExpresionLogica e = new ExpresionLogica(this.entorno);
+                    ExpresionLogica e = new ExpresionLogica(ref this.entorno);
 
                     if (len == 8)
                     {
@@ -88,7 +88,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         {
                             //MessageBox.Show("Else if verdadero");
 
-                            Instruccion ins = new Instruccion(this.entorno);
+                            Instruccion ins = new Instruccion(ref this.entorno);
                             ins.analizar(temp[6]);
 
                             return true;
@@ -105,7 +105,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         {
                             //MessageBox.Show("Else if verdadero");
 
-                            Instruccion ins = new Instruccion(this.entorno);
+                            Instruccion ins = new Instruccion(ref this.entorno);
                             ins.analizar(temp[5]);
 
                             return true;
@@ -124,7 +124,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     {
                         //MessageBox.Show("Else verdadero");
 
-                        Instruccion ins = new Instruccion(this.entorno);
+                        Instruccion ins = new Instruccion(ref this.entorno);
                         ins.analizar(temp[2]);
 
                         return true;

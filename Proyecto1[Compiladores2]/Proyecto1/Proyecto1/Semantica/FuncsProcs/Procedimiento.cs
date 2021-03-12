@@ -94,7 +94,7 @@ namespace Proyecto1.Semantica.FuncsProcs
 
         public void ejecutar()
         {
-            Instruccion ins = new Instruccion(this.entorno);
+            Instruccion ins = new Instruccion(ref this.entorno);
 
             ins.analizar(this.instrucciones);
 

@@ -17,7 +17,7 @@ namespace Proyecto1.Semantica
 
         private List<Entorno> entorno;
 
-        public ExpresionLogica(List<Entorno> entorno)
+        public ExpresionLogica(ref List<Entorno> entorno)
         {
             this.nodoE = null;
             this.resultado = null;
@@ -50,7 +50,7 @@ namespace Proyecto1.Semantica
                 {
                     if (temp[0].getNombre() == "ASIGNACION1")
                     {
-                        Instruccion ins = new Instruccion(this.entorno);
+                        Instruccion ins = new Instruccion(ref this.entorno);
 
                         Cabecera c = new Cabecera();
                         string valor = c.validarAsignacionAVariable(temp[0], "", ins);
@@ -71,7 +71,7 @@ namespace Proyecto1.Semantica
                     }
                     else if (temp[0].getNombre() == "LLAMADA")
                     {
-                        Instruccion inst = new Instruccion(this.entorno);
+                        Instruccion inst = new Instruccion(ref this.entorno);
 
                         FuncsProcs.Procedimiento proc = inst.llamadasProcedimientos(temp[0], null, 0);
                         if (proc != null)

@@ -12,9 +12,17 @@ namespace Proyecto1.Semantica
 
         private List<Entorno>  entorno;
 
-        public Instruccion(List<Entorno> entorno)
+
+
+        public Instruccion(ref List<Entorno> entorno)
         {
             this.entorno = entorno;
+        }
+
+
+        public List<Entorno> getEntorno()
+        {
+            return this.entorno;
         }
 
 
@@ -46,6 +54,34 @@ namespace Proyecto1.Semantica
                         SentenciaDeControl.SenteciaIf senIf = new SentenciaDeControl.SenteciaIf(this.entorno);
 
                         senIf.analizar(temp[0], false);
+
+                    }
+                    else if (temp[0].getNombre() == "WHILE")
+                    {
+                        SentenciaDeControl.sentenciaWhile senWhile = new SentenciaDeControl.sentenciaWhile(this.entorno);
+
+                        senWhile.analizar(temp[0]);
+
+                    }
+                    else if (temp[0].getNombre() == "FOR")
+                    {
+                        FuncsProcs.cicloFor cicloFor = new FuncsProcs.cicloFor(this.entorno);
+
+                        cicloFor.analizar(temp[0]);
+
+                    }
+                    else if (temp[0].getNombre() == "CASE")
+                    {
+                        SentenciaDeControl.SentenciaCase sentenciaCase = new SentenciaDeControl.SentenciaCase(this.entorno);
+
+                        sentenciaCase.analizar(temp[0], "");
+
+                    }
+                    else if (temp[0].getNombre() == "WRITE" || temp[0].getNombre() == "WRITELN")
+                    {
+                        Write write = new Write(this.entorno);
+
+                        write.analizar(temp[0], "");
 
                     }
                     else if (temp[0].getNombre()=="LLAMADA")
@@ -366,7 +402,7 @@ namespace Proyecto1.Semantica
             }
             else if (temp[n].getNodos()[0].getNombre() == "EXP_LOG")
             {
-                ExpresionLogica expL = new ExpresionLogica(this.entorno);
+                ExpresionLogica expL = new ExpresionLogica(ref this.entorno);
                 cadena += expL.noce(temp[n].getNodos()[0]);
             }
             else
@@ -741,7 +777,7 @@ namespace Proyecto1.Semantica
                 {
                     if (proc.getParametro(indice).getVariable().getValor().getTipo() == Terminal.TipoDato.BOOLEANO)
                     {
-                        ExpresionLogica expl = new ExpresionLogica(this.entorno);
+                        ExpresionLogica expl = new ExpresionLogica(ref this.entorno);
 
                         bool resp = expl.noce(temp[n].getNodos()[0]);
                         //proc.getParametro(indice).getVariable().getValor().setValor(resp);
@@ -799,7 +835,7 @@ namespace Proyecto1.Semantica
                 {
                     double valorRetorno = 0;
 
-                    Instruccion inst = new Instruccion(this.entorno);
+                    Instruccion inst = new Instruccion(ref this.entorno);
 
                     FuncsProcs.Funcion funcion = inst.llamadasFunciones(temp[1], null, 0);
 
@@ -851,7 +887,7 @@ namespace Proyecto1.Semantica
                 {
                     if (func.getParametro(indice).getVariable().getValor().getTipo() == Terminal.TipoDato.BOOLEANO)
                     {
-                        ExpresionLogica expl = new ExpresionLogica(this.entorno);
+                        ExpresionLogica expl = new ExpresionLogica(ref this.entorno);
 
                         bool resp = expl.noce(temp[n].getNodos()[0]);
                         //func.getParametro(indice).getVariable().getValor().setValor(resp);
@@ -883,6 +919,59 @@ namespace Proyecto1.Semantica
                 return "";
             }
         }
+
+
+        //REPORTNA EL VALOR DE UNA PRODUCCION VALOR 
+        public string valor(AST.Nodo[] temp, int n)
+        {
+            string resultado = "";
+
+            if (temp[n].getHoja()!=null)
+            {
+
+                resultado = temp[n].getHoja().getValor().getValor() + "";
+
+                string resp = "";
+
+                for (int i = 1; i < resultado.Length-1; i++)
+                {
+                    resp += resultado[i];
+                }
+
+                return resp;
+
+
+            }
+            else
+            {
+                if (temp[n].getNombre() == "ASIGNACION1")
+                {
+
+                    return validarAsignacionAVariable(temp[n].getNodos()[1], temp[n].getNodos()[0].getHoja().getValor().getValor()+"");
+                    //RETORNA UN RESULTADO
+                }
+                else if (temp[n].getNombre() == "EXP")
+                {
+                    Expresion exp = new Expresion(this.entorno);
+                    resultado = exp.noce(temp[n]) + "";
+                    return resultado;
+                }
+                else if (temp[n].getNombre() == "EXP_LOG")
+                {
+                    ExpresionLogica expL = new ExpresionLogica(ref this.entorno);
+                    resultado = expL.noce(temp[n]) + "";
+                    return resultado;
+                }
+                else
+                {
+                    resultado = temp[n].getNodos().ToArray()[0].getHoja().getValor().getValor() + "";
+                    return resultado;
+                }
+            }
+
+
+        }
+
 
     }
 }
