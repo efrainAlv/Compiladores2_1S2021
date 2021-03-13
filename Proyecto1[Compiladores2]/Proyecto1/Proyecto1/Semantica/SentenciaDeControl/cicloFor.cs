@@ -37,11 +37,20 @@ namespace Proyecto1.Semantica.FuncsProcs
                     {
                         while (Double.Parse(getResultadoDeVariable(new String[] { nombreID })) <= valorFinal)
                         {
-                            Instruccion inst = new Instruccion(ref this.entorno);
-                            inst.analizar(temp[9]);
+                            if (Form1.indiceCiclos[Form1.indiceCiclos.Count - 1])
+                            {
+                                Instruccion inst = new Instruccion(ref this.entorno);
+                                inst.analizar(temp[9]);
 
-                            this.entorno[this.entorno.Count - 1].actualizarValorDeVariable(nombreID, Double.Parse(getResultadoDeVariable(new String[] { nombreID })) + 1);
+                                this.entorno[this.entorno.Count - 1].actualizarValorDeVariable(nombreID, Double.Parse(getResultadoDeVariable(new String[] { nombreID })) + 1);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                            
                         }
+
                     }
 
                 }

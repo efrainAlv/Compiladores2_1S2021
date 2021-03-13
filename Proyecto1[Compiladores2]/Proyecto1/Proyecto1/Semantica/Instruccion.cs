@@ -58,23 +58,51 @@ namespace Proyecto1.Semantica
                     }
                     else if (temp[0].getNombre() == "WHILE")
                     {
+                        Form1.indiceCiclos.Add(true);
+
+
                         SentenciaDeControl.sentenciaWhile senWhile = new SentenciaDeControl.sentenciaWhile(this.entorno);
 
                         senWhile.analizar(temp[0]);
 
+
+                        Form1.indiceCiclos.RemoveAt(Form1.indiceCiclos.Count - 1);
                     }
                     else if (temp[0].getNombre() == "FOR")
                     {
+                        Form1.indiceCiclos.Add(true);
+
                         FuncsProcs.cicloFor cicloFor = new FuncsProcs.cicloFor(this.entorno);
 
                         cicloFor.analizar(temp[0]);
 
+
+                        Form1.indiceCiclos.RemoveAt(Form1.indiceCiclos.Count - 1);
+
                     }
                     else if (temp[0].getNombre() == "CASE")
                     {
+                        Form1.indiceCiclos.Add(true);
+
+
                         SentenciaDeControl.SentenciaCase sentenciaCase = new SentenciaDeControl.SentenciaCase(this.entorno);
 
                         sentenciaCase.analizar(temp[0], "");
+
+
+                        Form1.indiceCiclos.RemoveAt(Form1.indiceCiclos.Count - 1);
+
+                    }
+                    else if (temp[0].getNombre() == "REPEAT")
+                    {
+                        Form1.indiceCiclos.Add(true);
+
+                        SentenciaDeControl.Repeat repeat = new SentenciaDeControl.Repeat(this.entorno);
+
+                        repeat.analizar(temp[0]);
+
+
+                        Form1.indiceCiclos.RemoveAt(Form1.indiceCiclos.Count - 1);
 
                     }
                     else if (temp[0].getNombre() == "WRITE" || temp[0].getNombre() == "WRITELN")
@@ -83,6 +111,10 @@ namespace Proyecto1.Semantica
 
                         write.analizar(temp[0], "");
 
+                    }
+                    else if (temp[0].getNombre() == "break")
+                    {
+                        Form1.indiceCiclos[Form1.indiceCiclos.Count-1] = false;
                     }
                     else if (temp[0].getNombre()=="LLAMADA")
                     {

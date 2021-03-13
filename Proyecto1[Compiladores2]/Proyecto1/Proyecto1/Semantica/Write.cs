@@ -34,7 +34,7 @@ namespace Proyecto1.Semantica
             {
                 valor = analizar(temp[2], valor);
 
-                Form1.richTextBox2.Text = Form1.richTextBox2.Text + "\n" + valor;
+                Form1.richTextBox2.Text = Form1.richTextBox2.Text + valor + "\n";
 
                 return "";
             }

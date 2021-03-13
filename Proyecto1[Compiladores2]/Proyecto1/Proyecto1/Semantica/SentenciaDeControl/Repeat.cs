@@ -4,12 +4,13 @@ using System.Text;
 
 namespace Proyecto1.Semantica.SentenciaDeControl
 {
-    public class sentenciaWhile
+    public class Repeat
     {
 
-        private List<Entorno> entorno;
+        List<Entorno> entorno;
 
-        public sentenciaWhile(List<Entorno> entorno)
+
+        public Repeat(List<Entorno> entorno)
         {
             this.entorno = entorno;
         }
@@ -17,25 +18,33 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
         public void analizar(AST.Nodo nodoAct)
         {
-
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
             string tipo = nodoAct.getNombre();
             int len = temp.Length;
 
-            if (len>0)
+            if (len > 0)
             {
 
-                if (tipo=="WHILE")
+                if (tipo == "REPEAT")
                 {
 
                     ExpresionLogica e = new ExpresionLogica(ref this.entorno);
+                    bool paso = true;
 
-                    while (e.noce(temp[1].getNodos()[0]))
+                    while (paso)
                     {
-                        if (Form1.indiceCiclos[Form1.indiceCiclos.Count-1])
+                        if (Form1.indiceCiclos[Form1.indiceCiclos.Count - 1])
                         {
-                            Instruccion inst = new Instruccion(ref this.entorno);
-                            inst.analizar(temp[4]);
+                            if (e.noce(temp[5].getNodos()[0]))
+                            {
+                                paso = false;
+                                break;
+                            }
+                            else
+                            {
+                                Instruccion inst = new Instruccion(ref this.entorno);
+                                inst.analizar(temp[2]);
+                            }
                         }
                         else
                         {
@@ -44,9 +53,11 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         
                     }
 
+                    
                 }
 
             }
+
 
         }
 

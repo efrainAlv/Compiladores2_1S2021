@@ -31,6 +31,8 @@ namespace Proyecto1
         public static List<Semantica.FuncsProcs.Funcion> funciones = new List<Semantica.FuncsProcs.Funcion>();
         public Semantica.Entorno entorno;
 
+        public static List<bool> indiceCiclos = new List<bool>();
+
         public Form1()
         {
             InitializeComponent();
@@ -118,6 +120,9 @@ namespace Proyecto1
             objetos = new List<Semantica.Objeto>();
             procedimientos = new List<Semantica.FuncsProcs.Procedimiento>();
             funciones = new List<Semantica.FuncsProcs.Funcion>();
+            richTextBox2.Text = "";
+
+            indiceCiclos = new List<bool>();
 
 
             this.relaciones = "";

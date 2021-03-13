@@ -102,6 +102,10 @@ namespace Proyecto1.Gramatica
             var t_write = "write";
             var t_writeln = "writeln";
 
+            var t_break = "break";
+            var t_continue = "continue";
+            var t_exit = "Exit";
+
             #endregion
 
 
@@ -168,6 +172,9 @@ namespace Proyecto1.Gramatica
             NonTerminal REPEAT = new NonTerminal("REPEAT");
             NonTerminal WRITE = new NonTerminal("WRITE");
             NonTerminal WRITELN = new NonTerminal("WRITELN");
+
+            NonTerminal FIN = new NonTerminal("FIN");
+
             #endregion
 
             #region Gramatica
@@ -255,7 +262,7 @@ namespace Proyecto1.Gramatica
             PARAMETROS2.Rule = LISTA_DEC
                                     | t_var + LISTA_DEC;
 
-            LLAMADA.Rule = id + t_parentesisApertura + LLAMADA1 + t_parentesisCierre + t_puntoComa;
+            LLAMADA.Rule = id + t_parentesisApertura + LLAMADA1 + t_parentesisCierre + FIN;
 
             LLAMADA1.Rule = LLAMADA1 + t_coma + VALOR
                           | VALOR
@@ -332,11 +339,14 @@ namespace Proyecto1.Gramatica
                              | CASE
                              | WRITE
                              | WRITELN
+                             | REPEAT
+                             |t_break + FIN
+                             |t_continue + FIN
                              | Empty;
 
 
-            ASIGNACIONES.Rule = ASIGNACIONES + ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa
-                                | ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + t_puntoComa;
+            ASIGNACIONES.Rule = ASIGNACIONES + ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + FIN
+                                | ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + FIN;
 
             ASIGNACION.Rule = ASIGNACION + punto + id
                             | id;
@@ -352,25 +362,26 @@ namespace Proyecto1.Gramatica
 
             CASE.Rule = t_case + id + t_of + LISTA_CASE + ELSE_CASE + t_end + t_puntoComa;
 
-            LISTA_CASE.Rule = LISTA_CASE + LISTA_CASE1 + t_dosPuntos + t_begin + INSTRUCCIONES + t_end + t_puntoComa
-                            | LISTA_CASE1 + t_dosPuntos + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
+            LISTA_CASE.Rule = LISTA_CASE + LISTA_CASE1 + t_dosPuntos + t_begin + INSTRUCCIONES + t_end + FIN
+                            | LISTA_CASE1 + t_dosPuntos + t_begin + INSTRUCCIONES + t_end + FIN;
 
             LISTA_CASE1.Rule = LISTA_CASE1 + t_coma + VALOR
                                 | VALOR;
 
-            ELSE_CASE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + t_puntoComa
+            ELSE_CASE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + FIN
                             | Empty;
 
 
-            REPEAT.Rule = t_repeat + t_begin + INSTRUCCIONES + t_end + t_until + CONDICION + t_puntoComa;
+            REPEAT.Rule = t_repeat + ToTerm("begin") + INSTRUCCIONES + t_end + t_until + CONDICION + t_puntoComa;
 
 
+            WRITE.Rule = t_write + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + FIN;
 
-            WRITE.Rule = t_write + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + t_puntoComa;
-
-            WRITELN.Rule = t_writeln + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + t_puntoComa;
+            WRITELN.Rule = t_writeln + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + FIN;
 
 
+            FIN.Rule = t_puntoComa
+                        | Empty;
 
             #endregion
 

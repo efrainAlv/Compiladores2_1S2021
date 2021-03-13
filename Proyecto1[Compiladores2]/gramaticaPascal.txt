@@ -160,8 +160,8 @@ ELSE -> else begin INSTRUCCIONES end;
 
 CASE -> case id of LISTA_CASE ELSE_CASE end;
 
-LISTA_CASE -> LISTA_CASE LISTA_CASE' : INSTRUCCIONES
-			| LISTA_CASE' : INSTRUCCIONES
+LISTA_CASE -> LISTA_CASE LISTA_CASE' : begin INSTRUCCIONES end ;
+			| LISTA_CASE' : begin INSTRUCCIONES end ;
 			
 LISTA_CASE' -> LISTA_CASE , VALOR
 			| VALOR
@@ -468,7 +468,9 @@ program hola;
 var uno:integer;
 
 begin
-
+	
+	uno:=8;
+	
 	case uno of
 		1,2,3:
 			begin
@@ -478,12 +480,32 @@ begin
 			begin
 				writeln('El valor es menor a 7');
 			end;
-		7,8,9:
-			begin
-				writeln('El valor es menor a 10');
-			end;
 		else
 			begin
-				writeln('El valor es mayor a 10');				
+				writeln('El valor es mayor a 6');				
 			end;
+	end;
+end.
+
+
+program hola;
+
+var uno:integer;
+var i:integer = 10;
+
+begin
+	
+	uno:=8;
+	for uno:=i to 20 do
+		begin
+			if uno=15 then
+				begin
+					break
+				end
+			else
+				begin
+					writeln(uno);
+				end;
+		end;
+	
 end.
