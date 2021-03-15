@@ -32,7 +32,6 @@ namespace Proyecto1
             this.components = new System.ComponentModel.Container();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -59,23 +58,6 @@ namespace Proyecto1
             this.button1.Text = "ANALIZAR";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // richTextBox2
-            // 
-            this.richTextBox2.AcceptsTab = true;
-            this.richTextBox2.AccessibleName = "public static";
-            this.richTextBox2.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
-            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox2.BackColor = System.Drawing.SystemColors.WindowText;
-            this.richTextBox2.ForeColor = System.Drawing.SystemColors.InactiveBorder;
-            this.richTextBox2.Location = new System.Drawing.Point(12, 495);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(1058, 120);
-            this.richTextBox2.TabIndex = 2;
-            this.richTextBox2.Text = "";
             // 
             // button2
             // 
@@ -133,7 +115,6 @@ namespace Proyecto1
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.richTextBox1);
             this.Name = "Form1";
@@ -152,7 +133,6 @@ namespace Proyecto1
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        public System.Windows.Forms.RichTextBox richTextBox2;
     }
 }
 

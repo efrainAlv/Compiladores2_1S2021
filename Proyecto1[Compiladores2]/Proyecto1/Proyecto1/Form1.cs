@@ -44,10 +44,15 @@ namespace Proyecto1
         public static List<Semantica.FuncsProcs.Procedimiento> procemientoAnalizado = new List<Semantica.FuncsProcs.Procedimiento>();
         public static List<Semantica.FuncsProcs.Funcion> funcionAnalizada = new List<Semantica.FuncsProcs.Funcion>();
 
+        public static RichTextBox richTextBox2 = new RichTextBox();
+
 
         public Form1()
         {
             InitializeComponent();
+            AST.Consola con = new AST.Consola();
+            richTextBox2 = con.richTextBox2;
+            this.Controls.Add(richTextBox2);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -229,6 +234,8 @@ namespace Proyecto1
 
             if (arbol.Root!=null)
             {
+                MessageBox.Show("Sintaxis correcta");
+
                 formarArbol(arbol);
 
                 arbol = null;
@@ -244,6 +251,17 @@ namespace Proyecto1
                 //***********************************************************************************
 
                 ejecutar(this.raiz.getNodos()[0]);
+
+            }
+            else
+            {
+                MessageBox.Show("Error en la sintaxis");
+                richTextBox2.Text = ">>>> Error en la fila: " + arbol.ParserMessages[0].Location.Line + " Columna: " + arbol.ParserMessages[0].Location.Column+"\n";
+                richTextBox2.Text += ">>>> Se esperaba: \n";
+                for (int i = 0; i < arbol.ParserMessages[0].ParserState.ExpectedTerminals.Count; i++)
+                {
+                    richTextBox2.Text += ">> "+ arbol.ParserMessages[0].ParserState.ExpectedTerminals.ElementAt(i).Name+"\n";
+                }
 
             }
 
@@ -415,9 +433,7 @@ namespace Proyecto1
 
         private void button3_Click(object sender, EventArgs e)
         {
-
             
-
         }
 
 

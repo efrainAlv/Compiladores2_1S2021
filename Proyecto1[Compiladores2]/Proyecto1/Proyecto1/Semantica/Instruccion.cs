@@ -1318,6 +1318,7 @@ namespace Proyecto1.Semantica
                 tabla += "<th>Nombre</th>\n";
                 tabla += "<th>Tipo</th>\n";
                 tabla += "<th>Valor</th>\n";
+                tabla += "<th>Ambito</th>\n";
                 tabla += "</thead>\n";
                 tabla += "<tbody>\n";
 
@@ -1334,6 +1335,19 @@ namespace Proyecto1.Semantica
                     tabla += "<td>\n";
                     tabla += entorno[i].getVariables()[j].getValor().getValor();
                     tabla += "<t/d>\n";
+
+                    if (j== entorno[i].getVariables().Count-1)
+                    {
+                        tabla += "<td>\n";
+                        tabla += "GLOBAL";
+                        tabla += "<t/d>\n";
+                    }
+                    else
+                    {
+                        tabla += "<td>\n";
+                        tabla += "LOCAL";
+                        tabla += "<t/d>\n";
+                    }
 
                     tabla += "</tr>\n";
                 }
