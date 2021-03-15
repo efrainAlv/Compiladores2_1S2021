@@ -11,12 +11,21 @@ namespace Proyecto1.Semantica.SentenciaDeControl
         
         private List<Entorno> entorno;
 
+        private List<string> valoresParametros = new List<string>();
+        private List<string> valoresFunciones = new List<string>();
+
+
         public SenteciaIf(List<Entorno> entorno)
         {
             this.entorno = entorno;
         }
 
-
+        public SenteciaIf(List<Entorno> entorno, List<string> procs, List<string> funcs)
+        {
+            this.entorno = entorno;
+            this.valoresParametros = procs;
+            this.valoresFunciones = funcs;
+        }
 
         public bool analizar(AST.Nodo nodoAct, bool flag)
         {
@@ -34,7 +43,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     {
                         //MessageBox.Show("If verdadero");
 
-                        Instruccion ins = new Instruccion(ref this.entorno);
+                        Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                         ins.analizar(temp[4]);
 
                         return true;
@@ -42,9 +51,9 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     else
                     {
                         //cambiar a 6 cuando esten las instrucciones
-                        return analizar(temp[6], false);
+                        return analizar(temp[7], false);
                     }
-
+                    e = null;
                 }
                 else if (tipo == "IF1")
                 {
@@ -80,7 +89,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                 {
                     ExpresionLogica e = new ExpresionLogica(ref this.entorno);
 
-                    if (len == 8)
+                    if (len ==9)
                     {
                         flag = analizar(temp[0], flag); // ELSE_IF
 
@@ -88,7 +97,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         {
                             //MessageBox.Show("Else if verdadero");
 
-                            Instruccion ins = new Instruccion(ref this.entorno);
+                            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                             ins.analizar(temp[6]);
 
                             return true;
@@ -97,7 +106,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         {
                             return flag;//flag
                         }
-
+                        e = null;
                     }
                     else
                     {
@@ -105,7 +114,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         {
                             //MessageBox.Show("Else if verdadero");
 
-                            Instruccion ins = new Instruccion(ref this.entorno);
+                            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                             ins.analizar(temp[5]);
 
                             return true;
@@ -114,6 +123,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         {
                             return false;
                         }
+                        e = null;
                     }
 
                 }
@@ -124,10 +134,18 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     {
                         //MessageBox.Show("Else verdadero");
 
-                        Instruccion ins = new Instruccion(ref this.entorno);
-                        ins.analizar(temp[2]);
+                        if (tipo=="ELSE")
+                        {
+                            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
+                            ins.analizar(temp[2]);
+                            ins = null;
 
-                        return true;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else
                     {

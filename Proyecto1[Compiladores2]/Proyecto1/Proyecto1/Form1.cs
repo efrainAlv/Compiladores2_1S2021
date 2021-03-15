@@ -13,6 +13,8 @@ using System.Collections;
 using Irony.Parsing;
 using Irony.Ast;
 
+using System.Diagnostics;
+
 using System.IO;
 using System.Threading.Tasks;
 
@@ -32,6 +34,16 @@ namespace Proyecto1
         public Semantica.Entorno entorno;
 
         public static List<bool> indiceCiclos = new List<bool>();
+
+        public static List<bool> indiceFunciones = new List<bool>();
+
+        public static bool continueIns = false;
+
+        public static bool exitIns = false;
+
+        public static List<Semantica.FuncsProcs.Procedimiento> procemientoAnalizado = new List<Semantica.FuncsProcs.Procedimiento>();
+        public static List<Semantica.FuncsProcs.Funcion> funcionAnalizada = new List<Semantica.FuncsProcs.Funcion>();
+
 
         public Form1()
         {
@@ -57,28 +69,102 @@ namespace Proyecto1
             return null; 
         }
 
-        public static Semantica.FuncsProcs.Procedimiento buscarProcedimiento(string nombre)
+        public static Semantica.FuncsProcs.Procedimiento buscarProcedimiento(string nombre, string tipo)
         {
-            for (int i = 0; i < procedimientos.Count; i++)
+            
+            if (procemientoAnalizado.Count > 0)
             {
-                if (procedimientos[i].getNombre() == nombre)
+                for (int i = 0; i < procemientoAnalizado[procemientoAnalizado.Count - 1].getProcedimientos().Count; i++)
                 {
-                    return procedimientos[i];
+                    if (procemientoAnalizado[procemientoAnalizado.Count - 1].getProcedimientos()[i].getNombre() == nombre)
+                    {
+                        return procemientoAnalizado[procemientoAnalizado.Count - 1].getProcedimientos()[i];
+                    }
                 }
             }
+            else
+            {
+                for (int i = 0; i < procedimientos.Count; i++)
+                {
+                    if (procedimientos[i].getNombre() == nombre)
+                    {
+                        return procedimientos[i];
+                    }
+                }
+            }
+            
+            
+            if (funcionAnalizada.Count > 0)
+            {
+                for (int i = 0; i < funcionAnalizada[funcionAnalizada.Count - 1].getProcedimientos().Count; i++)
+                {
+                    if (funcionAnalizada[funcionAnalizada.Count - 1].getProcedimientos()[i].getNombre() == nombre)
+                    {
+                        return funcionAnalizada[funcionAnalizada.Count - 1].getProcedimientos()[i];
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < procedimientos.Count; i++)
+                {
+                    if (procedimientos[i].getNombre() == nombre)
+                    {
+                        return procedimientos[i];
+                    }
+                }
+            }
+            
 
             return null;
         }
 
-        public static Semantica.FuncsProcs.Funcion buscarFuncion(string nombre)
+        public static Semantica.FuncsProcs.Funcion buscarFuncion(string nombre, string tipo)
         {
-            for (int i = 0; i < funciones.Count; i++)
+
+
+            if (funcionAnalizada.Count > 0)
             {
-                if (funciones[i].getNombre() == nombre)
+                for (int i = 0; i < funcionAnalizada[funcionAnalizada.Count - 1].getFunciones().Count; i++)
                 {
-                    return funciones[i];
+                    if (funcionAnalizada[funcionAnalizada.Count - 1].getFunciones()[i].getNombre() == nombre)
+                    {
+                        return funcionAnalizada[funcionAnalizada.Count - 1].getFunciones()[i];
+                    }
                 }
             }
+            else
+            {
+                for (int i = 0; i < funciones.Count; i++)
+                {
+                    if (funciones[i].getNombre() == nombre)
+                    {
+                        return funciones[i];
+                    }
+                }
+            }
+
+            if (procemientoAnalizado.Count > 0)
+            {
+                for (int i = 0; i < procemientoAnalizado[procemientoAnalizado.Count - 1].getFunciones().Count; i++)
+                {
+                    if (procemientoAnalizado[procemientoAnalizado.Count - 1].getFunciones()[i].getNombre() == nombre)
+                    {
+                        return procemientoAnalizado[procemientoAnalizado.Count - 1].getFunciones()[i];
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < funciones.Count; i++)
+                {
+                    if (funciones[i].getNombre() == nombre)
+                    {
+                        return funciones[i];
+                    }
+                }
+            }
+
 
             return null;
         }
@@ -123,6 +209,11 @@ namespace Proyecto1
             richTextBox2.Text = "";
 
             indiceCiclos = new List<bool>();
+            indiceFunciones = new List<bool>();
+            continueIns = false;
+            exitIns = false;
+            procemientoAnalizado = new List<Semantica.FuncsProcs.Procedimiento>();
+            funcionAnalizada = new List<Semantica.FuncsProcs.Funcion>();
 
 
             this.relaciones = "";
@@ -139,6 +230,9 @@ namespace Proyecto1
             if (arbol.Root!=null)
             {
                 formarArbol(arbol);
+
+                arbol = null;
+                GC.Collect();
 
                 EscrbirArchivo(this.declaraciones + this.relaciones);
 
@@ -254,7 +348,7 @@ namespace Proyecto1
 
                     variableGlobales = cabecera.getVariables();
                     entorno = new Semantica.Entorno(ref variableGlobales);
-                    objetos = cabecera.getObjetos();
+                    //objetos = cabecera.getObjetos();
                 }
                 if (temp[4].getNombre() == "CUERPO")
                 {
@@ -267,6 +361,9 @@ namespace Proyecto1
                 }
                 if (temp[6].getNombre()=="INSTRUCCIONES")
                 {
+
+                    GC.Collect();
+
                     List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
                     entornos.Add(entorno);
 
@@ -281,32 +378,53 @@ namespace Proyecto1
         }
 
 
-        public static void buscarID()
+
+        public void graficarAST()
         {
+            string path = "dot -Tpng " + "c:\\compiladores2\\ast.txt" + " -o " + " c:\\compiladores2\\ast.png";
+
+            using (var dot = new Process())
+            {
+                dot.StartInfo.Verb = "runas"; // Run process as admin.
+                dot.StartInfo.FileName = "cmd.exe";
+                dot.StartInfo.Arguments = "/C "+path;
+                dot.Start();
+                dot.WaitForExit();
+            }
 
         }
 
-     
-        
         public async Task EscrbirArchivo(string text)
         {
-            await File.WriteAllTextAsync("c:\\compiladores2\\hola.txt", text);
+            text = "digraph G{ \n" + text + " \n}";
+
+            await File.WriteAllTextAsync("c:\\compiladores2\\ast.txt", text);
         }
 
 
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            graficarAST();
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+            
+
+        }
+
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
     }
 }
 
-
-
-/*
- 
- 
- 1.     2, 0    
- 2.         1, 1    0, (1, 0)
- 
- 
- 
- 
- 
- */

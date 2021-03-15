@@ -9,11 +9,21 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
         private List<Entorno> entorno;
 
+        private List<string> valoresParametros = new List<string>();
+        private List<string> valoresFunciones = new List<string>();
+
         public sentenciaWhile(List<Entorno> entorno)
         {
             this.entorno = entorno;
         }
 
+
+        public sentenciaWhile(List<Entorno> entorno, List<string> procs, List<string> funcs)
+        {
+            this.entorno = entorno;
+            this.valoresParametros = procs;
+            this.valoresFunciones = funcs;
+        }
 
         public void analizar(AST.Nodo nodoAct)
         {
@@ -32,9 +42,11 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
                     while (e.noce(temp[1].getNodos()[0]))
                     {
+                        Form1.continueIns = false;
+
                         if (Form1.indiceCiclos[Form1.indiceCiclos.Count-1])
                         {
-                            Instruccion inst = new Instruccion(ref this.entorno);
+                            Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                             inst.analizar(temp[4]);
                         }
                         else
@@ -43,6 +55,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         }
                         
                     }
+                    Form1.continueIns = false;
 
                 }
 

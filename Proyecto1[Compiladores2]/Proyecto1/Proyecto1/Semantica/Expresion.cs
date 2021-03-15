@@ -33,7 +33,7 @@ namespace Proyecto1.Semantica
         public void evaluarExpresion(AST.Nodo nodo)
         {
 
-            MessageBox.Show("El resultado es: " + noce(nodo));
+            //MessageBox.Show("El resultado es: " + noce(nodo));
 
         }
 
@@ -83,7 +83,7 @@ namespace Proyecto1.Semantica
                 }
                 else if (temp.Length == 2)
                 {
-                    return -1*noce(temp[0]);
+                    return -1*noce(temp[1]);
                 }
                 else
                 {
@@ -96,6 +96,8 @@ namespace Proyecto1.Semantica
                         
                         Cabecera c = new Cabecera();
                         string valor = c.validarAsignacionAVariable(temp[0], "", ins);
+                        c = null;
+                        ins = null;
 
                         try
                         {
@@ -108,45 +110,6 @@ namespace Proyecto1.Semantica
 
                         temp[0].setValorExp(resultado);
                         return resultado;
-                    }
-                    else if (temp[0].getNombre() == "LLAMADA")
-                    {
-                        double resultado = 0;
-
-                        Instruccion inst = new Instruccion(ref this.entorno);
-
-                        FuncsProcs.Procedimiento proc = inst.llamadasProcedimientos(temp[0], null, 0);
-                        if (proc!=null)
-                        {
-                            proc.ejecutar();
-                            return 0;
-                        }
-                        else
-                        {
-                            FuncsProcs.Funcion func = inst.llamadasFunciones(temp[0], null, 0);
-
-                            if (func!=null)
-                            {
-                                func.ejecutar();
-
-                                try
-                                {
-                                    resultado = Double.Parse(func.getEntorno()[func.getEntorno().Count - 1].buscarVariable(func.getNombre()).getValor().getValor()+"");
-                                    return resultado;
-                                }
-                                catch (FormatException e)
-                                {
-                                    return 0;
-                                }
-                            }
-                            else
-                            {
-                                return 0;
-                            }
-
-                        }
-
-
                     }
                     else
                     {

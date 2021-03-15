@@ -18,7 +18,7 @@ namespace Proyecto1.Gramatica
             RegexBasedTerminal entero = new RegexBasedTerminal("[0-9]+");
             RegexBasedTerminal real = new RegexBasedTerminal("[0-9]+[.][0-9]+");
             IdentifierTerminal id = new IdentifierTerminal("id");
-            CommentTerminal cadena = new CommentTerminal("string", "'", ".", "'");
+            CommentTerminal cadena = new CommentTerminal("string", "'", "'");
 
             #endregion
 
@@ -82,11 +82,8 @@ namespace Proyecto1.Gramatica
             var menor = "<";
 
             var if_t = "if";
-            var elseIf_t = "else if";
             var else_t = "else";
             var then_t = "then";
-            var writeln = "writeln";
-            var write = "write";
 
             var while_t = "while";
             var do_t = "do";
@@ -104,7 +101,8 @@ namespace Proyecto1.Gramatica
 
             var t_break = "break";
             var t_continue = "continue";
-            var t_exit = "Exit";
+            var t_exit = "exit";
+            var graficar_ts = "graficar_ts";
 
             #endregion
 
@@ -173,7 +171,11 @@ namespace Proyecto1.Gramatica
             NonTerminal WRITE = new NonTerminal("WRITE");
             NonTerminal WRITELN = new NonTerminal("WRITELN");
 
+            NonTerminal EXIT = new NonTerminal("EXIT");
+
             NonTerminal FIN = new NonTerminal("FIN");
+
+            NonTerminal ASIG_ARREGLO = new NonTerminal("DEC_ARREGLO");
 
             #endregion
 
@@ -255,7 +257,8 @@ namespace Proyecto1.Gramatica
             PROCEDIMIENTO.Rule = t_procedure + id + PARAMETROS + t_puntoComa + VARIABLE + ANIDAR + t_begin + INSTRUCCIONES + t_end + t_puntoComa;
 
             PARAMETROS.Rule = t_parentesisApertura + PARAMETROS1 + t_parentesisCierre
-                                    | Empty;
+                             | t_parentesisApertura + ToTerm(")")
+                             | Empty;
 
             PARAMETROS1.Rule = PARAMETROS1 + ToTerm(";") + PARAMETROS2 | PARAMETROS2;
 
@@ -263,6 +266,7 @@ namespace Proyecto1.Gramatica
                                     | t_var + LISTA_DEC;
 
             LLAMADA.Rule = id + t_parentesisApertura + LLAMADA1 + t_parentesisCierre + FIN;
+
 
             LLAMADA1.Rule = LLAMADA1 + t_coma + VALOR
                           | VALOR
@@ -281,9 +285,9 @@ namespace Proyecto1.Gramatica
                      | ASIGNACION1;
 
 
-            EXP_LOG.Rule = EXP_LOG + and + EXP_LOG
+            EXP_LOG.Rule =  ToTerm("(") + EXP_LOG + ToTerm(")")
+                          | EXP_LOG + and + EXP_LOG
                           | EXP_LOG + or + EXP_LOG
-                          | ToTerm("(") + EXP_LOG + ToTerm(")")
                           | ToTerm("(") + EXP_LOG + CONDICION_LOG + EXP_LOG + ToTerm(")")
                           | ToTerm("(") + EXP + CONDICION_NUM + EXP + ToTerm(")")
                           | EXP + CONDICION_NUM + EXP
@@ -309,7 +313,7 @@ namespace Proyecto1.Gramatica
             //******************************************* SENTENCIAS DE CONTROL ***************************************************
 
 
-            IF.Rule = if_t + CONDICION + ToTerm("then") + t_begin + INSTRUCCIONES + t_end + IF1;
+            IF.Rule = if_t + CONDICION + ToTerm("then") + t_begin + INSTRUCCIONES + t_end + FIN + IF1;
 
             IF1.Rule = ELSE_IF + IF2
                         | ELSE
@@ -318,10 +322,10 @@ namespace Proyecto1.Gramatica
             IF2.Rule = ELSE
                       | Empty;
 
-            ELSE_IF.Rule = ELSE_IF + else_t + if_t + CONDICION + then_t + t_begin + INSTRUCCIONES + t_end
-                        | ToTerm("else") + if_t + CONDICION + then_t + t_begin + INSTRUCCIONES + t_end;
+            ELSE_IF.Rule = ELSE_IF + else_t + if_t + CONDICION + then_t + t_begin + INSTRUCCIONES + t_end + FIN
+                        | ToTerm("else") + if_t + CONDICION + then_t + t_begin + INSTRUCCIONES + t_end +FIN ;
 
-            ELSE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + ToTerm(";")
+            ELSE.Rule = else_t + ToTerm("begin") + INSTRUCCIONES + t_end + FIN
                         | Empty;
 
 
@@ -332,8 +336,8 @@ namespace Proyecto1.Gramatica
                                 | INSTRUCCION;
 
             INSTRUCCION.Rule = IF
-                             | ASIGNACIONES
                              | LLAMADA
+                             | ASIGNACIONES
                              | WHILE
                              | FOR
                              | CASE
@@ -342,11 +346,15 @@ namespace Proyecto1.Gramatica
                              | REPEAT
                              |t_break + FIN
                              |t_continue + FIN
+                             | EXIT
+                             | ASIG_ARREGLO
+                             |graficar_ts
                              | Empty;
 
 
-            ASIGNACIONES.Rule = ASIGNACIONES + ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + FIN
-                                | ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + FIN;
+            ASIGNACIONES.Rule = ASIGNACION + t_dosPuntos + t_igualAritmetico + VALOR + FIN;
+
+            ASIG_ARREGLO.Rule = ASIGNACION + ToTerm("[") + EXP + ToTerm("]") + t_dosPuntos + t_igualAritmetico + VALOR + FIN;
 
             ASIGNACION.Rule = ASIGNACION + punto + id
                             | id;
@@ -355,6 +363,7 @@ namespace Proyecto1.Gramatica
             
             ASIGNACION2.Rule =  punto + ASIGNACION
                               | ToTerm("(") + LLAMADA1 + ToTerm(")")
+                              | ToTerm("[") + EXP + ToTerm("]")
                               | Empty ;
 
 
@@ -380,11 +389,12 @@ namespace Proyecto1.Gramatica
             WRITELN.Rule = t_writeln + ToTerm("(") + LISTA_CASE1 + ToTerm(")") + FIN;
 
 
+            EXIT.Rule = t_exit + ToTerm("(") + VALOR + ToTerm(")") + FIN ;
+
             FIN.Rule = t_puntoComa
                         | Empty;
 
             #endregion
-
 
             RegisterOperators(6, Associativity.Left, menos, not);
             RegisterOperators(5, mult, div);

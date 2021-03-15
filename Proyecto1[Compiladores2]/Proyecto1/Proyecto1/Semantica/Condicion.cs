@@ -18,7 +18,7 @@ namespace Proyecto1.Semantica
         public void evaluarExpresion(AST.Nodo nodo)
         {
 
-            MessageBox.Show("El resultado es: " + verificar(nodo));
+            //MessageBox.Show("El resultado es: " + verificar(nodo));
 
         }
 

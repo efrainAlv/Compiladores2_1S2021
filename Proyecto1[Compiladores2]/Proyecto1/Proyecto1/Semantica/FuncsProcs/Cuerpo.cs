@@ -113,6 +113,7 @@ namespace Proyecto1.Semantica.FuncsProcs
                     Cuerpo cuer = new Cuerpo(proc.getEntorno());
                     cuer.anidarFuncionProcedimiento(temp[5]);
                     proc.addProcedimientos(cuer.getProcedimientos());
+                    proc.addFunciones(cuer.getFunciones());
 
                     //cuer = null;
 
@@ -165,6 +166,7 @@ namespace Proyecto1.Semantica.FuncsProcs
 
                         for (int i = 0; i < vars.Count; i++)
                         {
+
                             parametros.Add(new Parametro(vars.ElementAt(i), "referencia"));
                         }
 
@@ -402,7 +404,7 @@ namespace Proyecto1.Semantica.FuncsProcs
                 {
                     if (temp[0].getNombre()=="FUNCION")
                     {
-
+                        agregarFuncion(temp[0], new List<Parametro>());
                     }
                     else if (temp[0].getNombre() == "PROCEDIMIENTO")
                     {

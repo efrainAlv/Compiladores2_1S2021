@@ -9,6 +9,8 @@ namespace Proyecto1.Semantica
 
         private List<Variable> atributos;
         private string nombre;
+        private Arreglo arreglo;
+
 
         public Objeto(string nombre)
         {
@@ -16,6 +18,13 @@ namespace Proyecto1.Semantica
             this.atributos = new List<Variable>(); ;
         }
 
+
+        public Objeto(string nombre, Arreglo arreglo)
+        {
+            this.nombre = nombre;
+            this.atributos = new List<Variable>(); ;
+            this.arreglo = arreglo;
+        }
 
 
         public void agregarAtributo(Variable var)

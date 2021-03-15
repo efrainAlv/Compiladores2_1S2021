@@ -36,7 +36,7 @@ DECLARACION_OBJETOS -> type id = DECLARACION_OBJETOS'
 DECLARACION_OBJETOS' -> ARREGLO
 						| OBJETO
 
-ARREGLO -> array[num..num] of TIPO ;
+ARREGLO -> array [ num .. num ] of TIPO ;
 
 OBJETO -> object VARIABLE end ;
 
@@ -110,6 +110,8 @@ INSTRUCCIONES -> INSTRUCCIONES INSTRUCCION
 				
 INSTRUCCION -> IF
 			| ASIGNACIONES
+			| LLAMADA
+			| Exit( VALOR ) ;
 				
 CONDICION -> EXP_LOG  
 
@@ -189,11 +191,17 @@ ASIGNACION -> ASIGNACION . id
 ASIGNACION1 -> id ASIGNACION2;
 
 ASIGNACION2 ->  . ASIGNACION
-				  | ( LLAMADA' )
-				  | epsilon
-				  
+				| ( LLAMADA' )
+				| [ EXP ] 
+				| epsilon
+				
+EXIT -> exit ( VALOR ) FIN
+
+ASIG_ARREGLO -> ASIGNACION [  EXP  ]  : =  VALOR  ;
+
 
 /*
+
 ASIGNACIONES -> ASIGNACIONES ASIGNACION : = VALOR ;
 			| ASIGNACION : = VALOR ;
 
@@ -408,8 +416,8 @@ function ackermann(m,n: integer): integer;
 		end
 		else
 		begin
-				ackermann := ackermann(m - 1, ackermann(m,n - 1));
-		end;
+;
+		end;				ackermann := ackermann(m - 1, ackermann(m,n - 1))
 	end;
 
 
@@ -488,6 +496,9 @@ begin
 end.
 
 
+
+
+
 program hola;
 
 var uno:integer;
@@ -495,17 +506,29 @@ var i:integer = 10;
 
 begin
 	
-	uno:=8;
-	for uno:=i to 20 do
-		begin
-			if uno=15 then
-				begin
-					break
-				end
-			else
-				begin
-					writeln(uno);
-				end;
-		end;
+end.
+
+
+
+program hola;
+
+type 
+    Cuadrado = object
+        var
+            altura:integer;
+end;
+ 
+cursos = array[1..4] of Cuadrado;
+	
+var rects:cursos;
+	
+var rect:Cuadrado;
+	
+begin
+	
+	
+	rect.altura:=10;
+	
+	rects[0]:=rect;
 	
 end.

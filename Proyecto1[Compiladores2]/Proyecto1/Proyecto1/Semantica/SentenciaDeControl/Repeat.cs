@@ -9,10 +9,20 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
         List<Entorno> entorno;
 
+        private List<string> valoresParametros = new List<string>();
+        private List<string> valoresFunciones = new List<string>();
+
 
         public Repeat(List<Entorno> entorno)
         {
             this.entorno = entorno;
+        }
+
+        public Repeat(List<Entorno> entorno, List<string> procs, List<string> funcs)
+        {
+            this.entorno = entorno;
+            this.valoresParametros = procs;
+            this.valoresFunciones = funcs;
         }
 
 
@@ -31,8 +41,9 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     ExpresionLogica e = new ExpresionLogica(ref this.entorno);
                     bool paso = true;
 
-                    while (paso)
+                    while (paso && !Form1.continueIns)
                     {
+                        Form1.continueIns = false;
                         if (Form1.indiceCiclos[Form1.indiceCiclos.Count - 1])
                         {
                             if (e.noce(temp[5].getNodos()[0]))
@@ -42,7 +53,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                             }
                             else
                             {
-                                Instruccion inst = new Instruccion(ref this.entorno);
+                                Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                                 inst.analizar(temp[2]);
                             }
                         }
@@ -53,7 +64,8 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                         
                     }
 
-                    
+                    Form1.continueIns = false;
+
                 }
 
             }

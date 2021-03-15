@@ -17,6 +17,8 @@ namespace Proyecto1.Semantica.FuncsProcs
         private List<Procedimiento> procedimientos;
         private List<Funcion> funciones;
 
+        private List<string> valoresParametros;
+        private List<string> valoresFunciones;
 
         public Funcion()
         {
@@ -33,6 +35,11 @@ namespace Proyecto1.Semantica.FuncsProcs
             this.instrucciones = instrucciones;
             this.entorno = entorno;
 
+            this.valoresParametros = new List<string>();
+            this.valoresFunciones = new List<string>();
+            this.procedimientos = new List<Procedimiento>();
+            this.funciones = new List<Funcion>();
+
             if (this.parametros.Count > 0)
             {
                 //List<Variable> vars = new List<Variable>();
@@ -43,6 +50,12 @@ namespace Proyecto1.Semantica.FuncsProcs
                 this.variablesLocales.Add(new Variable(nombre, valor));
                 this.entorno.Add(new Entorno(ref variablesLocales));
             }
+            else
+            {
+                this.variablesLocales.Add(new Variable(nombre, valor));
+                this.entorno.Add(new Entorno(ref variablesLocales));
+            }
+            
 
         }
 
@@ -93,11 +106,36 @@ namespace Proyecto1.Semantica.FuncsProcs
         }
 
 
+        public List<Procedimiento> getProcedimientos()
+        {
+            return this.procedimientos;
+        }
+
+
+        public List<Funcion> getFunciones()
+        {
+            return this.funciones;
+        }
+
+
+        public List<Parametro> getParametros()
+        {
+            return this.parametros;
+        }
+
+
+
         public void ejecutar()
         {
-            Instruccion ins = new Instruccion(ref this.entorno);
+            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
+
+            Form1.indiceFunciones.Add(true);
 
             ins.analizar(this.instrucciones);
+
+            Form1.indiceFunciones.RemoveAt(Form1.indiceFunciones.Count - 1);
+
+            Form1.continueIns = false;
 
             ins = null;
         }

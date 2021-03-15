@@ -8,12 +8,18 @@ namespace Proyecto1.Semantica
     {
 
         private string nombre;
-        private Terminal valor;
+        private Terminal valor; 
+
 
         public Variable(string nombre, Terminal valor)
         {
             this.nombre = nombre;
             this.valor = valor;
+
+        }
+
+        public Variable()
+        {
 
         }
 

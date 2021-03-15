@@ -9,11 +9,22 @@ namespace Proyecto1.Semantica
 
         List<Entorno> entorno;
 
+        private List<string> valoresParametros = new List<string>();
+        private List<string> valoresFunciones = new List<string>();
+
+
         public Write(List<Entorno> entorno)
         {
             this.entorno = entorno;
         }
 
+
+        public Write(List<Entorno> entorno, List<string> procs, List<string> funcs)
+        {
+            this.entorno = entorno;
+            this.valoresParametros = procs;
+            this.valoresFunciones = funcs;
+        }
 
         public string analizar(AST.Nodo nodoAct, string valor)
         {
@@ -45,7 +56,7 @@ namespace Proyecto1.Semantica
                 {
                     valor += analizar(temp[0], valor);
 
-                    Instruccion inst = new Instruccion(ref this.entorno);
+                    Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
                     string valorCase = inst.valor(temp[2].getNodos().ToArray(), 0);
 
                     return valor += valorCase;
@@ -53,7 +64,7 @@ namespace Proyecto1.Semantica
                 }
                 else
                 {
-                    Instruccion inst = new Instruccion(ref this.entorno);
+                    Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
                     string valorCase = inst.valor(temp[0].getNodos().ToArray(), 0);
 
                     return valor += valorCase;

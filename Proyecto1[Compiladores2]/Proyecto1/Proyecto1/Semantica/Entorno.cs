@@ -21,6 +21,7 @@ namespace Proyecto1.Semantica
         }
 
 
+
         public Variable buscarVariable(string nombre)
         {
             for (int i = 0; i < this.variables.Count; i++)

@@ -8,12 +8,22 @@ namespace Proyecto1.Semantica.SentenciaDeControl
     {
         List<Entorno> entorno;
 
+        private List<string> valoresParametros = new List<string>();
+        private List<string> valoresFunciones = new List<string>();
+
 
         public SentenciaCase(List<Entorno> entorno)
         {
             this.entorno = entorno;
         }
 
+
+        public SentenciaCase(List<Entorno> entorno, List<string> procs, List<string> funcs)
+        {
+            this.entorno = entorno;
+            this.valoresParametros = procs;
+            this.valoresFunciones = funcs;
+        }
 
         public bool analizar(AST.Nodo nodoAct, string valorID)
         {
@@ -43,7 +53,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                 {
                     if (!analizar(temp[0], valorID))
                     {
-                        Instruccion inst = new Instruccion(ref this.entorno);
+                        Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
 
                         if (analizar(temp[1], valorID))
                         {
@@ -66,7 +76,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                 {
                     if (analizar(temp[0], valorID))
                     {
-                        Instruccion inst = new Instruccion(ref this.entorno);
+                        Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                         inst.analizar(temp[3]);
 
                         return true;
@@ -84,7 +94,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                     if (!analizar(temp[0], valorID))
                     {
                         
-                        Instruccion inst = new Instruccion(ref this.entorno);
+                        Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                         string valorCase = inst.valor(temp[2].getNodos().ToArray(), 0);
 
                         if (valorCase == valorID)
@@ -104,7 +114,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
                 }
                 else
                 {
-                    Instruccion inst = new Instruccion(ref this.entorno);
+                    Instruccion inst = new Instruccion(ref this.entorno , this.valoresParametros, valoresFunciones);
                     string valorCase = inst.valor(temp[0].getNodos().ToArray(), 0);
 
                     if (valorCase == valorID)
@@ -121,7 +131,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
             }
             else
             {
-                Instruccion inst = new Instruccion(ref this.entorno);
+                Instruccion inst = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                 inst.analizar(temp[2]);
 
                 return true;
@@ -140,7 +150,7 @@ namespace Proyecto1.Semantica.SentenciaDeControl
 
                 if (varEntorno != null)
                 {
-                    Instruccion ins = new Instruccion(ref this.entorno);
+                    Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
                     object resultado = ins.asignarAVariable1(ids, 0, this.entorno[i].buscarVariable(ids[0]), null);
 
                     return resultado + "";

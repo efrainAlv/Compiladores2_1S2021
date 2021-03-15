@@ -15,7 +15,10 @@ namespace Proyecto1.Semantica.FuncsProcs
 
         private List<Procedimiento> procedimientos;
         private List<Funcion> funciones;
-        
+
+        private List<string> valoresParametros;
+        private List<string> valoresFunciones;
+
         public Procedimiento()
         {
             this.variablesLocales = new List<Variable>();
@@ -30,6 +33,10 @@ namespace Proyecto1.Semantica.FuncsProcs
             this.parametros = parametros;
             this.instrucciones = instrucciones;
             this.entorno = entorno;
+            this.valoresParametros = new List<string>();
+            this.valoresFunciones = new List<string>();
+            this.procedimientos = new List<Procedimiento>();
+            this.funciones = new List<Funcion>();
 
             if (this.parametros.Count>0)
             {
@@ -40,7 +47,34 @@ namespace Proyecto1.Semantica.FuncsProcs
                 }
                 this.entorno.Add(new Entorno(ref variablesLocales));
             }
+            else
+            {
+                this.entorno.Add(new Entorno(ref variablesLocales));
+            }
             
+        }
+
+
+        public void setValoresParametros(List<string> lista)
+        {
+            this.valoresParametros = lista;
+        }
+
+        public void setValorParametro(string valor)
+        {
+            this.valoresParametros.Add(valor);
+        }
+
+
+        public List<Procedimiento> getProcedimientos()
+        {
+            return this.procedimientos;
+        }
+
+
+        public List<Funcion> getFunciones()
+        {
+            return this.funciones;
         }
 
         public void setNombre(string nombre)
@@ -85,6 +119,11 @@ namespace Proyecto1.Semantica.FuncsProcs
             return this.parametros[n];
         }
 
+        public List<Parametro> getParametros()
+        {
+            return this.parametros;
+        }
+
 
         public int getLongParams()
         {
@@ -94,12 +133,14 @@ namespace Proyecto1.Semantica.FuncsProcs
 
         public void ejecutar()
         {
-            Instruccion ins = new Instruccion(ref this.entorno);
+            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
 
             ins.analizar(this.instrucciones);
 
-            ins = null;
+            //ins = null;
         }
+
+
 
     }
 }

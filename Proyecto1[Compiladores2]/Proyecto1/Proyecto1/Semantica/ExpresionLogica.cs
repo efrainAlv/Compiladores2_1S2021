@@ -34,7 +34,7 @@ namespace Proyecto1.Semantica
         public void evaluarExpresion(AST.Nodo nodo)
         {
 
-            MessageBox.Show("El resultado es: " + noce(nodo));
+            //MessageBox.Show("El resultado es: " + noce(nodo));
 
         }
 
@@ -54,6 +54,8 @@ namespace Proyecto1.Semantica
 
                         Cabecera c = new Cabecera();
                         string valor = c.validarAsignacionAVariable(temp[0], "", ins);
+                        c = null;
+                        ins = null;
 
                         if (valor == "false")
                         {
@@ -67,47 +69,6 @@ namespace Proyecto1.Semantica
                         {
                             return false;
                         }
-
-                    }
-                    else if (temp[0].getNombre() == "LLAMADA")
-                    {
-                        Instruccion inst = new Instruccion(ref this.entorno);
-
-                        FuncsProcs.Procedimiento proc = inst.llamadasProcedimientos(temp[0], null, 0);
-                        if (proc != null)
-                        {
-                            proc.ejecutar();
-                            return false;
-                        }
-                        else
-                        {
-                            FuncsProcs.Funcion func = inst.llamadasFunciones(temp[0], null, 0);
-
-                            if (func != null)
-                            {
-                                func.ejecutar();
-                                string resultado = func.getEntorno()[func.getEntorno().Count - 1].buscarVariable(func.getNombre()).getValor().getValor()+"";
-
-                                if (resultado=="false")
-                                {
-                                    return false;
-                                }
-                                else if (resultado == "true")
-                                {
-                                    return true;
-                                }
-                                else
-                                {
-                                    return false;
-                                }
-                            }
-                            else
-                            {
-                                return false;
-                            }
-
-                        }
-
 
                     }
                     else

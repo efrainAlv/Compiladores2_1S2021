@@ -21,6 +21,8 @@ namespace Proyecto1.Semantica
         private object valor;
         private TipoDato tipo;
         private Objeto valorObjeto;
+        private Arreglo arreglo;
+
 
         public Terminal()
         {
@@ -32,6 +34,7 @@ namespace Proyecto1.Semantica
             this.tipo = tipo;
             this.valor = valor;
             this.valorObjeto = null;
+            this.arreglo = null;
         }
 
 
@@ -40,6 +43,7 @@ namespace Proyecto1.Semantica
             this.tipo = tipo;
             this.valor = valor;
             this.valorObjeto = obj;
+            this.arreglo = null;
         }
 
         public void setValor(object valor)
@@ -70,6 +74,17 @@ namespace Proyecto1.Semantica
         public void setValorObjeto(Objeto obj)
         {
             this.valorObjeto = obj;
+        }
+
+
+        public void setArreglo(Arreglo arreglo)
+        {
+            this.arreglo = arreglo;
+        }
+
+        public Arreglo getArreglo()
+        {
+            return this.arreglo;
         }
 
 

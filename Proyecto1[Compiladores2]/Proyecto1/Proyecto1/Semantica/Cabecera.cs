@@ -73,7 +73,72 @@ namespace Proyecto1.Semantica
                     }
                     else if (temp[0].getNombre() == "DECLARACION_OBJETOS")
                     {
-                        agregarObjetos(temp[0]);
+
+                        if (temp[0].getNodos()[3].getNodos()[0].getNombre()=="OBJETO")
+                        {
+                            agregarObjetos(temp[0]);
+                        }
+                        else
+                        {
+                            string nombreTipo;
+                            nombreTipo = temp[0].getNodos()[1].getHoja().getValor().getValor()+"";
+
+                            int inicio = Int32.Parse(temp[0].getNodos()[3].getNodos()[0].getNodos()[2].getHoja().getValor().getValor() + "");
+
+                            int fin = Int32.Parse(temp[0].getNodos()[3].getNodos()[0].getNodos()[4].getHoja().getValor().getValor()+"");
+
+                            string tipoObj = temp[0].getNodos()[3].getNodos()[0].getNodos()[7].getNodos()[0].getHoja().getValor().getValor() + "";
+
+                            List<Variable> vars = new List<Variable>();
+
+                            if (tipoObj=="integer")
+                            {
+                                for (int j = inicio; j <= fin; j++)
+                                {
+                                    vars.Add(new Variable("", new Terminal(0 ,Terminal.TipoDato.ENTERO)));
+                                }
+                                Objeto o = new Objeto(nombreTipo, new Arreglo(tipoObj, vars));
+                                Form1.objetos.Add(o);
+                            }
+                            else if (tipoObj=="string")
+                            {
+                                vars.Add(new Variable("", new Terminal(0, Terminal.TipoDato.CADENA)));
+                                Objeto o = new Objeto(nombreTipo, new Arreglo(tipoObj, vars));
+                                Form1.objetos.Add(o);
+                            }
+                            else if (tipoObj == "real")
+                            {
+                                vars.Add(new Variable("", new Terminal(0, Terminal.TipoDato.REAL)));
+                                Objeto o = new Objeto(nombreTipo, new Arreglo(tipoObj, vars));
+                                Form1.objetos.Add(o);
+                            }
+                            else if (tipoObj == "boolean")
+                            {
+                                vars.Add(new Variable("", new Terminal(0, Terminal.TipoDato.BOOLEANO)));
+                                Objeto o = new Objeto(nombreTipo, new Arreglo(tipoObj, vars));
+                                Form1.objetos.Add(o);
+                            }
+                            else
+                            {
+                                for (int i = 0; i < Form1.objetos.Count; i++)
+                                {
+                                    if (Form1.objetos[i].getNombre() == tipoObj)
+                                    {
+                                        for (int j = inicio; j <= fin; j++)
+                                        {
+                                            vars.Add(new Variable("", new Terminal(null, Terminal.TipoDato.OBJETO, Form1.objetos[i])));
+                                        }
+                                    }
+                                }
+
+                                Objeto o = new Objeto(nombreTipo, new Arreglo(tipoObj, vars));
+                                Form1.objetos.Add(o);
+                            }
+
+
+                        }
+
+                        
                     }
 
                 }
@@ -106,7 +171,50 @@ namespace Proyecto1.Semantica
                     nombreTipo = temp[1].getHoja().getValor().getValor() + "";
                     Objeto o = new Objeto(nombreTipo);
                     o.agregarAtributos(agregarObjetos(temp[3]));
-                    this.objetos.Add(o);
+                    Form1.objetos.Add(o);
+                    return null;
+
+                }
+                else
+                {
+
+                    if (temp[0].getNombre() == "OBJETO")
+                    {
+                        Cabecera c = new Cabecera(this.entorno);
+                        c.agregarVaraibles(temp[0].getNodos().ToArray()[1], this.objetos);
+                        return c.getVariables();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+            }
+            else
+            {
+                return new List<Variable>();
+            }
+
+
+        }
+
+
+        public List<Variable> agregarArreglos(AST.Nodo nodoAct)
+        {
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            string tipo = nodoAct.getNombre();
+            int len = temp.Length;
+
+            if (len > 0)
+            {
+                if (tipo == "DECLARACION_OBJETOS")
+                {
+                    string nombreTipo;
+                    nombreTipo = temp[1].getHoja().getValor().getValor() + "";
+                    Objeto o = new Objeto(nombreTipo);
+                    Form1.objetos.Add(o);
                     return null;
 
                 }
@@ -238,7 +346,7 @@ namespace Proyecto1.Semantica
                 tipoDato = Terminal.TipoDato.OBJETO;
                 valor = tipoVar;
 
-                Objeto[] tempO = objetos.ToArray();
+                Objeto[] tempO = Form1.objetos.ToArray();
                 for (int i = 0; i < tempO.Length; i++)
                 {
                     if (tempO[i].getNombre() == tipoVar)
@@ -388,7 +496,7 @@ namespace Proyecto1.Semantica
 
                     Instruccion inst = new Instruccion(ref this.entorno);
 
-                    FuncsProcs.Funcion funcion = Form1.buscarFuncion(referencia);
+                    FuncsProcs.Funcion funcion = Form1.buscarFuncion(referencia, "funcion");
 
                     if (funcion != null)
                     {
