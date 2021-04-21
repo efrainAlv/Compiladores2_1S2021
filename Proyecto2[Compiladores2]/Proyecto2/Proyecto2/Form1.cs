@@ -87,11 +87,11 @@ namespace Proyecto2
             richTextBox2.Text += temp.getOP();
             if (temp.getT2() == null)
             {
-                richTextBox2.Text += " "+temp.getArg2() + '\n';
+                richTextBox2.Text += " "+temp.getArg2() + "; \n";
             }
             else
             {
-                richTextBox2.Text += " T" + temp.getT2().indice+'\n';
+                richTextBox2.Text += " T" + temp.getT2().indice+"; \n";
             }
 
             temps.Add(temp);
@@ -283,7 +283,7 @@ namespace Proyecto2
 
 
 
-                //EscrbirArchivo(this.declaraciones + this.relaciones);
+                EscrbirArchivo(this.declaraciones + this.relaciones);
 
                 //***********************************************************************************
 
@@ -294,11 +294,18 @@ namespace Proyecto2
 
                 List<Semantica.Entorno> ent = new List<Semantica.Entorno>();
 
-                Semantica.ExpresionLogica exp = new Semantica.ExpresionLogica(ref ent);
+                //Semantica.ExpresionLogica cf = new Semantica.ExpresionLogica(ref ent);
+                //Semantica.FuncsProcs.cicloFor cf = new Semantica.FuncsProcs.cicloFor(ent);
+                //Semantica.SentenciaDeControl.Repeat cf = new Semantica.SentenciaDeControl.Repeat(ent);
+                //Semantica.SentenciaDeControl.sentenciaWhile cf = new Semantica.SentenciaDeControl.sentenciaWhile(ent);
+                //Semantica.SentenciaDeControl.SenteciaIf cf = new Semantica.SentenciaDeControl.SenteciaIf(ent);
+                //Semantica.Cabecera cf = new Semantica.Cabecera(ent);
 
-                exp.generarEtiquetas(this.raiz.getNodos()[0]);
+                //cf.traducir(this.raiz.getNodos()[0]);
+                //cf.imptimirVeraderas();
+                //cf.imprimirFalsas();
 
-                //ejecutar(this.raiz.getNodos()[0]);
+                traducir(this.raiz.getNodos()[0]);
 
             }
             else
@@ -330,15 +337,15 @@ namespace Proyecto2
                 for (int i = 0; i < nodoArbol.ChildNodes.Count; i++)
                 {
 
-                    //this.declaraciones += '"' + nodoAct.getId() + '"' + "[label=" + '"' + nodoAct.getNombre() + '"' + "shape=" + '"' + "rectangle" + '"' + "];\n";
+                    this.declaraciones += '"' + nodoAct.getId() + '"' + "[label=" + '"' + nodoAct.getNombre() + '"' + "shape=" + '"' + "rectangle" + '"' + "];\n";
 
                     AST.Nodo nodo = new AST.Nodo(nodoArbol.ChildNodes[i].Term.Name);
 
-                    //this.declaraciones += '"' + nodo.getId() + '"' + "[label=" + '"' + nodo.getNombre() + '"' + "shape=" + '"' + "rectangle" + '"' + "];\n";
+                    this.declaraciones += '"' + nodo.getId() + '"' + "[label=" + '"' + nodo.getNombre() + '"' + "shape=" + '"' + "rectangle" + '"' + "];\n";
 
                     nodoAct.addNodo(recorrerArbol(nodoArbol.ChildNodes[i], nodo));
 
-                    //this.relaciones += '"' + nodoAct.getId() + '"' + "->" + '"' + nodo.getId() + '"' + ";\n";
+                    this.relaciones += '"' + nodoAct.getId() + '"' + "->" + '"' + nodo.getId() + '"' + ";\n";
                 }
             }
             else
@@ -383,9 +390,9 @@ namespace Proyecto2
                     AST.Hoja tempH = new AST.Hoja(tempT);
                     nodoAct.setHoja(tempH);
 
-                    //this.relaciones += '"' + nodoAct.getId() + '"' + "->" + '"' + nodoAct.getHoja().getId() + '"' + ";\n";
+                    this.relaciones += '"' + nodoAct.getId() + '"' + "->" + '"' + nodoAct.getHoja().getId() + '"' + ";\n";
 
-                    //this.declaraciones += '"' + nodoAct.getHoja().getId() + '"' + "[label=" + '"' + nodoAct.getHoja().getValor().getValor() + '"' + "shape=" + '"' + "circle" + '"' + "style=" + '"' + "filled" + '"' + " fillcolor=green];\n";
+                    this.declaraciones += '"' + nodoAct.getHoja().getId() + '"' + "[label=" + '"' + nodoAct.getHoja().getValor().getValor() + '"' + "shape=" + '"' + "circle" + '"' + "style=" + '"' + "filled" + '"' + " fillcolor=green];\n";
                 }
             }
 
@@ -409,7 +416,7 @@ namespace Proyecto2
                     cabecera.analizar(temp[3]);
 
                     variableGlobales = cabecera.getVariables();
-                    entorno = new Semantica.Entorno(ref variableGlobales);
+                    entorno = new Semantica.Entorno(ref variableGlobales, 0, variableGlobales.Count, variableGlobales.Count, 0, 0);
                     //objetos = cabecera.getObjetos();
                 }
                 if (temp[4].getNombre() == "CUERPO")
@@ -439,6 +446,52 @@ namespace Proyecto2
 
         }
 
+
+
+        private void traducir(AST.Nodo nodoAct)
+        {
+            string tipo = nodoAct.getNombre();
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+            int len = temp.Length;
+
+            if (tipo == "PROYECTO")
+            {
+                if (temp[3].getNombre() == "CABECERA") //CABECERA
+                {
+                    List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
+                    Semantica.Cabecera cabecera = new Semantica.Cabecera(entornos);
+                    cabecera.traducir(temp[3]);
+
+                    variableGlobales = cabecera.getVariables();
+                    entorno = new Semantica.Entorno(ref variableGlobales, 0, variableGlobales.Count, variableGlobales.Count, 0, 0);
+                    //objetos = cabecera.getObjetos();
+                }
+                if (temp[4].getNombre() == "CUERPO")
+                {
+                    List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
+                    entornos.Add(entorno);
+                    //Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo(entornos);
+                    //cuerpo.analizar(temp[4]);
+
+                    //procedimientos = cuerpo.getProcedimientos();
+                }
+                if (temp[6].getNombre() == "INSTRUCCIONES")
+                {
+
+                    GC.Collect();
+
+                    List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
+                    entornos.Add(entorno);
+
+                    Semantica.Instruccion ins = new Semantica.Instruccion(ref entornos);
+
+                    ins.analizar(temp[6]);
+
+                }
+
+            }
+
+        }
 
 
         public void graficarAST()

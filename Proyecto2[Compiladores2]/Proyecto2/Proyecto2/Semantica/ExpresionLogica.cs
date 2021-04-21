@@ -18,6 +18,7 @@ namespace Proyecto2.Semantica
         private List<Entorno> entorno;
         private List<int> verdaderas;
         private List<int> falsas;
+        bool fin = true;
 
         public ExpresionLogica(ref List<Entorno> entorno)
         {
@@ -179,222 +180,243 @@ namespace Proyecto2.Semantica
         }
 
 
-        public int traducir(AST.Nodo nodoAct, int sigEtiqueta)
+
+        public int[] generarEtiquetas(AST.Nodo nodoAct, int[] etiquetas)
         {
 
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
 
-            if (temp.Length>0)
+            if (temp.Length > 0)
             {
 
-                if (temp.Length==3)
+                if (temp.Length == 3)
                 {
-                    if (temp[0].getNombre()=="EXP_LOG")
+                    if (temp[0].getNombre() == "EXP_LOG")
                     {
-                        
-                        if (temp[1].getHoja().getValor().getValor()+""=="or")
+
+                        etiquetas = generarEtiquetas(temp[0], etiquetas);
+
+                        if (temp[1].getHoja().getValor().getValor() + "" == "or")
                         {
-
-                            sigEtiqueta = traducir(temp[0], sigEtiqueta);
-
-                            if (sigEtiqueta == 0)
+                            if (etiquetas[1]!=1)
                             {
-                                Form1.etiquetas++;
-                                Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                Form1.etiquetas++;
-                                Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es falso
-                                sigEtiqueta = Form1.etiquetas;
 
-                                Form1.richTextBox2.Text += "L" + Form1.etiquetas + ": "; //si es verdadero
-                                sigEtiqueta = traducir(temp[2], sigEtiqueta);
-
-                                if (sigEtiqueta==0)
+                                for (int i = 0; i < this.falsas.Count; i++)
                                 {
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es falso
+                                    Form1.richTextBox2.Text += "L" + falsas[i] + ": "; //si es falso
                                 }
+                                this.falsas.Clear();
 
-                                sigEtiqueta = Form1.etiquetas;
                             }
                             else
                             {
-                                Form1.richTextBox2.Text += "L" + sigEtiqueta + ": "; //si es verdadero
-                                sigEtiqueta = traducir(temp[2], sigEtiqueta);
-
-                                if (sigEtiqueta==0)
-                                {
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es falso
-                                }
-
-                                sigEtiqueta = Form1.etiquetas;
+                                Form1.richTextBox2.Text += "L" + etiquetas[0] + ": "; //si es falso
+                                this.falsas.Remove(etiquetas[0]);
                             }
+
+
+                            etiquetas = generarEtiquetas(temp[2], etiquetas);
+
                         }
                         else
                         {
-                            sigEtiqueta = traducir(temp[0], sigEtiqueta);
 
-                            if (sigEtiqueta==0)
+                            if (etiquetas[1]!=1)
                             {
-                                Form1.etiquetas++;
-                                Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                Form1.etiquetas++;
-                                Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                sigEtiqueta = Form1.etiquetas;
-
-                                Form1.richTextBox2.Text += "L" + (Form1.etiquetas - 1) + ": "; //si es verdadero
-                                sigEtiqueta = traducir(temp[2], sigEtiqueta);
-
-                                if (sigEtiqueta==0)
+                                for (int i = 0; i < this.verdaderas.Count; i++)
                                 {
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es falso
+                                    Form1.richTextBox2.Text += "L" + verdaderas[i] + ": "; //si es verdadero
                                 }
+                                this.verdaderas.Clear();
 
-                                sigEtiqueta = Form1.etiquetas;
                             }
                             else
                             {
-                                Form1.richTextBox2.Text += "L" + (sigEtiqueta) + ": "; //si es verdadero
-                                sigEtiqueta = traducir(temp[2], sigEtiqueta);
-
-                                if (sigEtiqueta==0)
-                                {
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es verdadero
-                                    Form1.etiquetas++;
-                                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + '\n'; //si es falso
-                                }
-
-                                sigEtiqueta = Form1.etiquetas;
+                                Form1.richTextBox2.Text += "L" + etiquetas[1] + ": "; //si es verdadero
+                                this.verdaderas.Remove(etiquetas[1]);
                             }
+                            
+                            etiquetas = generarEtiquetas(temp[2], etiquetas);
+
                         }
 
+                        return new int[] { etiquetas[0], etiquetas[1], 1 };
+
+                    }
+                    else if (temp[0].getNombre() == "(")
+                    {
+                        return generarEtiquetas(temp[1], etiquetas);
                     }
                     else
                     {
-                        if (temp[0].getHoja()==null)
+                        if (temp[0].getHoja() == null)
                         {
                             Expresion e = new Expresion(this.entorno);
-                            CodigoI.Temporal t1 = e.traducir(temp[0]);
-                            object r1 = e.resultado;
-                            CodigoI.Temporal t2 = e.traducir(temp[2]);
-                            object r2 = e.resultado;
+                            e.traducir(temp[0], temp[2], temp[1]);
 
-                            Form1.richTextBox2.Text += "if ( ";
+                            Form1.etiquetas+=2;
+                            
+                            Form1.richTextBox2.Text += "goto L" + (Form1.etiquetas - 1) + ";\n"; //si es verdadero
+                            this.verdaderas.Add((Form1.etiquetas - 1));
+                            Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + ";\n"; //si es falso
+                            this.falsas.Add(Form1.etiquetas);
 
-                            if (t1 == null)
-                            {
-                                Form1.richTextBox2.Text += r1 + " ";
-                            }
-                            else
-                            {
-                                Form1.richTextBox2.Text += "T" + t1.indice + " ";
-                            }
-
-                            if (temp[1].getNodos()[0].getHoja() != null)
-                            {
-                                Form1.richTextBox2.Text += temp[1].getNodos()[0].getHoja().getValor().getValor();
-                            }
-                            else
-                            {
-                                Form1.richTextBox2.Text += temp[1].getNodos()[0].getNodos()[0].getHoja().getValor().getValor();
-                            }
-
-                            if (t2 == null)
-                            {
-                                Form1.richTextBox2.Text += " " + r2;
-                            }
-                            else
-                            {
-                                Form1.richTextBox2.Text += " T" + t2.indice;
-                            }
-
-                            Form1.richTextBox2.Text += " ) ";
-
-                            sigEtiqueta = 0;
+                            etiquetas = new int[] { Form1.etiquetas, Form1.etiquetas - 1, 0 };
                         }
                         else
                         {
-                            sigEtiqueta = traducir(temp[1], sigEtiqueta);
+                            etiquetas = generarEtiquetas(temp[1], etiquetas);
                         }
+
+                        return etiquetas;
 
                     }
 
-                    return sigEtiqueta;
+                }
+                else if (temp.Length == 5)
+                {
+
+                    if (temp[1].getNombre()=="EXP")
+                    {
+                        Expresion e = new Expresion(this.entorno);
+                        e.traducir(temp[1], temp[3], temp[2]);
+                        
+                        Form1.etiquetas += 2;
+
+                        Form1.richTextBox2.Text += "goto L" + (Form1.etiquetas-1) + ";\n"; //si es verdadero
+                        this.verdaderas.Add((Form1.etiquetas - 1));
+                        Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + ";\n"; //si es falso
+                        this.falsas.Add(Form1.etiquetas);
+
+                        return new int[] { Form1.etiquetas, Form1.etiquetas - 1, 0 }; ;
+                    }
+                    else
+                    {
+                       
+                        CodigoI.Temporal temporal1 = new CodigoI.Temporal(0, 0, "+");
+                        temporal1.indice = Form1.temps.Count;
+                        Form1.temps.Add(temporal1);
+
+                        CodigoI.Temporal temporal2 = new CodigoI.Temporal(0, 0, "+");
+                        temporal2.indice = Form1.temps.Count;
+                        Form1.temps.Add(temporal2);
+
+                        //*******************************************
+
+                        ExpresionLogica e1 = new ExpresionLogica(ref this.entorno);
+                        e1.traducir(temp[1]);
+
+                        e1.imptimirVeraderas();
+                        Form1.richTextBox2.Text += "T" + temporal1.indice + " = 1; \n";
+
+                        Form1.etiquetas++;
+                        int n = Form1.etiquetas;
+                        Form1.richTextBox2.Text += "goto L" + n + "; \n";
+
+                        e1.imprimirFalsas();
+                        Form1.richTextBox2.Text += "T"+temporal1.indice +" = 0; \n";
+
+                        Form1.richTextBox2.Text += "L" + n + ": ";
+
+                        //*******************************************
+
+                        ExpresionLogica e2 = new ExpresionLogica(ref this.entorno);
+                        e2.traducir(temp[3]);
+
+                        e2.imptimirVeraderas();
+                        Form1.richTextBox2.Text += "T" + temporal2.indice + " = 1; \n";
+
+                        Form1.etiquetas++;
+                        int m = Form1.etiquetas;
+                        Form1.richTextBox2.Text += "goto L" + m + "; \n";
+
+                        e2.imprimirFalsas();
+                        Form1.richTextBox2.Text += "T" + temporal2.indice + " = 0; \n";
+
+                        Form1.richTextBox2.Text += "L" + m + ": ";
+
+                        //**************************************************************************************
+
+                        Form1.etiquetas++;
+                        etiquetas[1] = Form1.etiquetas;
+                        Form1.richTextBox2.Text += "if ( T" + temporal1.indice + " == T" + temporal2.indice + " ) goto L" + Form1.etiquetas +"; \n";
+                        this.verdaderas.Add(Form1.etiquetas);
+                        Form1.etiquetas++;
+                        etiquetas[0] = Form1.etiquetas;
+                        Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + "; \n";
+                        this.falsas.Add(Form1.etiquetas);
+
+                    }
+
+                }
+                else if (temp.Length == 2)
+                {
+                    etiquetas = generarEtiquetas(temp[1], etiquetas);
+
+                    List<int> listaTemp = this.verdaderas;
+                    this.verdaderas = this.falsas;
+                    this.falsas = listaTemp;
+
+                    int v = etiquetas[1];
+                    etiquetas[1] = etiquetas[0];
+                    etiquetas[0] = v;
+
                 }
                 else
                 {
-                    Expresion e = new Expresion(this.entorno);
-                    CodigoI.Temporal t1 = e.traducir(temp[1]);
-                    object r1 = e.resultado;
-                    CodigoI.Temporal t2 = e.traducir(temp[3]);
-                    object r2 = e.resultado;
 
-                    Form1.richTextBox2.Text += "if ( ";
-
-                    if (t1==null)
+                    Form1.etiquetas+=2;
+                    if (temp[0].getHoja().getValor().getValor()+"" == "true")
                     {
-                        Form1.richTextBox2.Text += r1 + " ";
+                        Form1.richTextBox2.Text += "if ( 1 == 1 ) goto L" + (Form1.etiquetas-1) + "; \n";
+                        this.verdaderas.Add(Form1.etiquetas -1);
+
                     }
                     else
                     {
-                        Form1.richTextBox2.Text +=  "T"+t1.indice+ " ";
+                        Form1.richTextBox2.Text += "if ( 1 == 0 ) goto L" + (Form1.etiquetas - 1) + "; \n";
+                        this.verdaderas.Add(Form1.etiquetas - 1);
                     }
+                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + "; \n";
+                    this.falsas.Add(Form1.etiquetas);
 
-                    if (temp[2].getNodos()[0].getHoja() != null)
-                    {
-                        Form1.richTextBox2.Text += temp[2].getNodos()[0].getHoja().getValor().getValor();
-                    }
-                    else
-                    {
-                        Form1.richTextBox2.Text += temp[2].getNodos()[0].getNodos()[0].getHoja().getValor().getValor();
-                    }
-
-                    if (t2 == null)
-                    {
-                        Form1.richTextBox2.Text += " "+r2;
-                    }
-                    else
-                    {
-                        Form1.richTextBox2.Text += " T" + t2.indice;
-                    }
-
-                    Form1.richTextBox2.Text += " ) ";
-
-                    return 0;
+                    etiquetas = new int[] { Form1.etiquetas, Form1.etiquetas - 1 , 0};
                 }
-
 
             }
 
-            return sigEtiqueta;
+            return etiquetas;
         }
 
 
-        public void generarEtiquetas(AST.Nodo nodoAct)
-        {
-            int sigEtiqueta = traducir(nodoAct, 0);
 
-            /*
-            verdaderas.Add(sigEtiqueta);
+        public void traducir(AST.Nodo nodoAct)
+        {
+            generarEtiquetas(nodoAct, new int[]{ 0,0,0 }) ;
+        }
+
+
+        public void imptimirVeraderas()
+        {
+            Form1.richTextBox2.Text += "\n";
+
             for (int i = 0; i < this.verdaderas.Count; i++)
             {
-                Form1.richTextBox2.Text += "L" + this.verdaderas[i] + ": \n";
+                Form1.richTextBox2.Text += "L" + this.verdaderas[i] + ": ";
             }
+        }
+
+
+
+        public void imprimirFalsas()
+        {
             Form1.richTextBox2.Text += "\n";
             for (int i = 0; i < this.falsas.Count; i++)
             {
-                Form1.richTextBox2.Text += "L" + this.falsas[i] + ": \n";
+                Form1.richTextBox2.Text += "L" + this.falsas[i] + ": ";
             }
-            */
         }
+
 
     }
 }

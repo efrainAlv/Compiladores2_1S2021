@@ -143,7 +143,47 @@ namespace Proyecto2.Semantica
         }
 
 
-        public CodigoI.Temporal traducir(AST.Nodo nodoAct)
+        public void traducir(AST.Nodo nodoAct, AST.Nodo nodoSig, AST.Nodo Simbolo)
+        {
+            CodigoI.Temporal t1 = generarTemporales(nodoAct);
+            object r1 = this.resultado;
+            CodigoI.Temporal t2 = generarTemporales(nodoSig);
+            object r2 = this.resultado;
+
+            Form1.richTextBox2.Text += "if ( ";
+
+            if (t1 == null)
+            {
+                Form1.richTextBox2.Text += r1 + " ";
+            }
+            else
+            {
+                Form1.richTextBox2.Text += "T" + t1.indice + " ";
+            }
+
+            if (Simbolo.getNodos()[0].getHoja() != null)
+            {
+                Form1.richTextBox2.Text += Simbolo.getNodos()[0].getHoja().getValor().getValor();
+            }
+            else
+            {
+                Form1.richTextBox2.Text += Simbolo.getNodos()[0].getNodos()[0].getHoja().getValor().getValor();
+            }
+
+            if (t2 == null)
+            {
+                Form1.richTextBox2.Text += " " + r2;
+            }
+            else
+            {
+                Form1.richTextBox2.Text += " T" + t2.indice;
+            }
+
+            Form1.richTextBox2.Text += " ) ";
+        }
+
+
+        public CodigoI.Temporal generarTemporales(AST.Nodo nodoAct)
         {
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
 
@@ -192,7 +232,7 @@ namespace Proyecto2.Semantica
                         }
                         else if (h1!=null && h2==null)
                         {
-                            CodigoI.Temporal t2 = traducir(temp[2]);
+                            CodigoI.Temporal t2 = generarTemporales(temp[2]);
 
                             CodigoI.Temporal t1 = new CodigoI.Temporal(Convert.ToDouble(h1.getValor().getValor()), t2, temp[1].getHoja().getValor().getValor() + "");
                             t2 = Form1.agregarTemporal(t1);
@@ -202,22 +242,19 @@ namespace Proyecto2.Semantica
                         }
                         else if (h1 == null && h2 != null)
                         {
-                            CodigoI.Temporal t1 = traducir(temp[0]);
+                            CodigoI.Temporal t1 = generarTemporales(temp[0]);
 
                             CodigoI.Temporal t2 = new CodigoI.Temporal(t1, Convert.ToDouble(h2.getValor().getValor()), temp[1].getHoja().getValor().getValor() + "");
                             t1 = Form1.agregarTemporal(t2);
-                            t2 = null;
                             return t1;
                         }
                         else
                         {
-                            CodigoI.Temporal t1 = traducir(temp[0]);
-                            CodigoI.Temporal t2 = traducir(temp[2]);
+                            CodigoI.Temporal t1 = generarTemporales(temp[0]);
+                            CodigoI.Temporal t2 = generarTemporales(temp[2]);
 
                             CodigoI.Temporal t3 = new CodigoI.Temporal(t1, t2, temp[1].getHoja().getValor().getValor() + "");
                             t3 = Form1.agregarTemporal(t3);
-                            t1 = null;
-                            t2 = null;
                             return t3;
                         }
 
@@ -225,7 +262,7 @@ namespace Proyecto2.Semantica
                     }
                     else
                     {
-                        return traducir(temp[1]);
+                        return generarTemporales(temp[1]);
                     }
 
                 }

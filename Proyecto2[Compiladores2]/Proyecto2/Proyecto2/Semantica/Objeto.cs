@@ -68,6 +68,17 @@ namespace Proyecto2.Semantica
             }
         }
 
+        public int getTamanioObjeto()
+        {
+            int tamanio = 0;
+
+            for (int i = 0; i < this.atributos.Count; i++)
+            {
+                tamanio += this.atributos[i].tamanio;
+            }
+
+            return tamanio;
+        }
 
         public string getNombre()
         {

@@ -8,10 +8,26 @@ namespace Proyecto2.Semantica
     {
 
         List<Variable> variables;
+        public int inicioStack;
+        public int tamanio;
+        public int finStack;
+        public int finHeap;
+        public int inicioHeap;
 
         public Entorno(ref List<Variable> variables) 
         {
             this.variables = variables;
+        }
+
+
+        public Entorno(ref List<Variable> variables, int inicioStack, int finStack, int tamanio, int finHeap, int inicioHeap)
+        {
+            this.variables = variables;
+            this.inicioStack = inicioStack;
+            this.finStack = finStack;
+            this.tamanio = tamanio;
+            this.finHeap = finHeap;
+            this.inicioHeap = inicioHeap;
         }
 
 

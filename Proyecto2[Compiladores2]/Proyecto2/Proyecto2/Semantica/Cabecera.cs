@@ -181,7 +181,7 @@ namespace Proyecto2.Semantica
                     if (temp[0].getNombre() == "OBJETO")
                     {
                         Cabecera c = new Cabecera(this.entorno);
-                        c.agregarVaraibles(temp[0].getNodos().ToArray()[1], this.objetos);
+                        c.agregarVaraibles(temp[0].getNodos()[1], this.objetos);
                         return c.getVariables();
                     }
                     else
@@ -243,6 +243,8 @@ namespace Proyecto2.Semantica
         }
 
 
+
+        //Agregar variables de forma global --> VARIABLE
         public List<string> agregarVariableGlobal(AST.Nodo nodoAct, List<string>variables, List<Objeto> objetos)
         {
             AST.Nodo[] temp = nodoAct.getNodos().ToArray();
@@ -320,24 +322,29 @@ namespace Proyecto2.Semantica
             string valor;
             Terminal.TipoDato tipoDato;
             Objeto o = null;
+            int tamanioVariable = 0;
 
             if (tipoVar.ToLower() == "integer")
             {
                 valor = "0";
+                tamanioVariable = 1;
                 tipoDato = Terminal.TipoDato.ENTERO;
             }
             else if (tipoVar.ToLower() == "real")
             {
                 valor = "0.0";
+                tamanioVariable = 1;
                 tipoDato = Terminal.TipoDato.REAL;
             }
             else if (tipoVar.ToLower() == "boolean")
             {
+                tamanioVariable = 1;
                 valor = "false";
                 tipoDato = Terminal.TipoDato.BOOLEANO;
             }
             else if (tipoVar.ToLower() == "string")
             {
+                tamanioVariable = 20;
                 valor = "";
                 tipoDato = Terminal.TipoDato.CADENA;
             }
@@ -352,6 +359,7 @@ namespace Proyecto2.Semantica
                     if (tempO[i].getNombre() == tipoVar)
                     {
                         o = tempO[i];
+                        tamanioVariable = o.getTamanioObjeto();
                         break;
                     }
                 }
@@ -371,40 +379,44 @@ namespace Proyecto2.Semantica
 
                         if (resultado == "false")
                         {
-                            tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                            tipoDato = Terminal.TipoDato.BOOLEANO;
                         }
                         else if (resultado == "true")
                         {
-                            tipoDato = Semantica.Terminal.TipoDato.BOOLEANO;
+                            tipoDato = Terminal.TipoDato.BOOLEANO;
                         }
                         else if (resultado.Contains("'"))
                         {
-                            tipoDato = Semantica.Terminal.TipoDato.CADENA;
+                            tipoDato = Terminal.TipoDato.CADENA;
                         }
                         else if (resultado.Contains("."))
                         {
-                            tipoDato = Semantica.Terminal.TipoDato.REAL;
+                            tipoDato = Terminal.TipoDato.REAL;
                         }
                         else
                         {
                             try
                             {
                                 int result = Int32.Parse(tipoVar);
-                                tipoDato = Semantica.Terminal.TipoDato.ENTERO;
+                                tipoDato = Terminal.TipoDato.ENTERO;
                             }
                             catch (FormatException)
                             {
-                                tipoDato = Semantica.Terminal.TipoDato.ID;
+                                tipoDato = Terminal.TipoDato.ID;
                             }
                         }
 
 
                         valor = resultado + "";
+
+                        //this.variablesGLobales.Add(new Variable(vars[0], new Terminal(valor, tipoDato, o), this.variablesGLobales.Count, 1));
                     }
                     else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP")
                     {
                         Expresion exp = new Expresion(this.entorno);
                         valor = exp.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
+
+                        CodigoI.Temporal t = exp.generarTemporales(temp[n].getNodos()[1].getNodos()[0]);
 
                         if (valor.ToString().Contains("."))
                         {
@@ -415,26 +427,65 @@ namespace Proyecto2.Semantica
                             tipoDato = Terminal.TipoDato.ENTERO;
                         }
 
+
+                        if (t != null)
+                        {
+                            Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1) + "] = T" + t.indice + "; \n";
+                        }
+                        else
+                        {
+                            Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1) + "] = " + valor + "; \n";
+                        }
+
+
                     }
                     else if (temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getNombre() == "EXP_LOG")
                     {
                         ExpresionLogica expL = new ExpresionLogica(ref this.entorno);
                         valor = expL.noce(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]) + "";
                         tipoDato = Terminal.TipoDato.BOOLEANO;
+
+                        expL.traducir(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]);
+                        expL.imptimirVeraderas();
+                        Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1) + "] =  1; \n";
+                        expL.imprimirFalsas();
+                        Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1)+ "] =  0; \n";
+
                     }
                     else
                     {
-                        valor = temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getHoja().getValor().getValor() + "";
+                        valor = temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0].getHoja().getValor().getValor() + ""; //cadena
+
                     }
 
                 }
             }
 
 
-            for (int i = 0; i < vars.Length; i++)
+            if (this.entorno.Count > 0)
             {
-                this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o)));
+                this.entorno[this.entorno.Count - 1].inicioStack = this.entorno[this.entorno.Count - 1].finStack;
+                for (int i = 0; i < vars.Length; i++)
+                {
+                    this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o), this.entorno[this.entorno.Count - 1].finStack, tamanioVariable));
+                    this.entorno[this.entorno.Count - 1].finStack++;
+                }
             }
+            else
+            {
+                for (int i = 0; i < vars.Length; i++)
+                {
+                    if (this.variablesGLobales.Count>0)
+                    {
+                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o), (this.variablesGLobales[this.variablesGLobales.Count-1].indiceFinStackHeap + tamanioVariable), tamanioVariable));
+                    }
+                    else
+                    {
+                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o), tamanioVariable, tamanioVariable));
+                    }
+                }
+            }
+
 
         }
 
@@ -543,6 +594,98 @@ namespace Proyecto2.Semantica
 
 
         }
+
+
+
+
+
+
+        public void traducir(AST.Nodo nodoAct)
+        {
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            if (temp.Length > 0)
+            {
+                if (nodoAct.getNombre() == "CABECERA")
+                {
+                    if (temp.Length == 2)
+                    {
+                        traducir(temp[0]); //CABECERA
+
+                        traducir(temp[1]); //CABECERA1
+                    }
+                    else
+                    {
+                        if (temp[0].getNombre() == "CABECERA1")
+                        {
+                            traducir(temp[0]); //CABECERA1
+                        }
+                        else
+                        {
+                            //episilon
+                        }
+                    }
+                }
+                else if (nodoAct.getNombre() == "CABECERA1")
+                {
+                    if (temp[0].getNombre() == "VARIABLE")
+                    {
+                        agregarVariableGlobal(temp[0], new List<string>(), this.objetos);
+
+                    }
+                    else if (temp[0].getNombre() == "DECLARACION_OBJETOS")
+                    {
+
+                        if (temp[0].getNodos()[3].getNodos()[0].getNombre() == "OBJETO")
+                        {
+                            agregarObjetos(temp[0]);
+                        }
+                        else
+                        {
+                            
+
+                        }
+
+
+                    }
+
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    //epsilon
+                }
+
+            }
+
+        }
+
+
+        //PRODUCCION VARIABLE
+        public void traducirVariable(AST.Nodo nodoAct)
+        {
+
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            if (nodoAct.getNombre()=="VARIABLE")
+            {
+
+            }
+            else if (nodoAct.getNombre() == "VARIABLE")
+            {
+
+            }
+            else
+            {
+
+            }
+
+
+        }
+
 
 
     }

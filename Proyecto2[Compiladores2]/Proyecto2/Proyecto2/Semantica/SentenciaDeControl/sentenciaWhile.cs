@@ -64,5 +64,23 @@ namespace Proyecto2.Semantica.SentenciaDeControl
         }
 
 
+        public void traducir(AST.Nodo nodoAct)
+        {
+
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            Form1.etiquetas++;
+            int inicio = Form1.etiquetas;
+            Form1.richTextBox2.Text += "L" + inicio + ": \n";
+
+            ExpresionLogica el = new ExpresionLogica(ref this.entorno);
+            el.traducir(temp[1].getNodos()[0]);
+
+            el.imptimirVeraderas();
+            Form1.richTextBox2.Text += "goto L" + inicio + ";\n";
+
+            el.imprimirFalsas();
+        }
+
     }
 }

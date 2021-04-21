@@ -181,7 +181,7 @@ namespace Proyecto2.Gramatica
 
             #region Gramatica
 
-            INICIO.Rule = EXP_LOG;
+            INICIO.Rule = PROYECTO;
 
             PROYECTO.Rule = t_program + id + t_puntoComa + CABECERA + CUERPO + t_begin + INSTRUCCIONES + t_end + punto;
 

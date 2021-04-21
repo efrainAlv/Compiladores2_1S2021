@@ -448,9 +448,9 @@ namespace Proyecto2.Semantica
                     cadena += temp[1].getHoja().getValor().getValor();
                     cadena += temp[2].getHoja().getValor().getValor();
 
-                    //numero 3
+                    //LA CADENA QUE RETORNA ES LA VARIABLE POR EJ. cuadrado:=, cuadrado.altura:=, cuadrilatero.cadrado.altura:=
 
-                    asignarValor(temp, cadena, 3);
+                    asignarValor(temp, cadena, 3); //Actualiza el valor de la variable en el entorno
 
                     return "";
                 }
@@ -542,7 +542,7 @@ namespace Proyecto2.Semantica
                 }
                 else
                 {
-                    Semantica.Variable v = obj.buscarAtributo(ids[indice]);
+                    Semantica.Variable v = obj.buscarAtributo(ids[indice]); //Buscar un atributo de un objeto y regresa la variable atributo si la encuentra
 
                     if (v != null)
                     {
@@ -550,7 +550,7 @@ namespace Proyecto2.Semantica
 
                         if (vari!=null)
                         {
-                            var.getValor().getValorObjeto().actualizarVariable(ids[indice], vari);
+                            var.getValor().getValorObjeto().actualizarVariable(ids[indice], vari); //Actualiza la varaible junto a su atributo, dandole un nuevo valor
                             return var;
                         }
                         else
@@ -668,16 +668,6 @@ namespace Proyecto2.Semantica
             if (temp[n].getNodos()[0].getNombre() == "ASIGNACION1")
             {
 
-                /*for (int i = 0; i < Form1.variableGlobales.Count; i++)
-                {
-                    if (Form1.variableGlobales.ElementAt(i).getNombre() == ids[0])
-                    {
-                        resultado = asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
-
-                        break;
-                    }
-                }*/
-
                 cadena += validarAsignacionAVariable(temp[n].getNodos()[0], "");
                 //RETORNA UN RESULTADO
             }
@@ -700,38 +690,11 @@ namespace Proyecto2.Semantica
                 cadena += temp[n].getNodos().ToArray()[0].getHoja().getValor().getValor();
             }
 
-            //cadena += temp[5].getHoja().getValor().getValor();
 
+            string[] idss = cadena.Split(":=")[0].Split('.');  //SE SEPARA LA DECLARACION DE VARIABLE EN UNA LISTA DE VARIABLES Y UN RESULTADO
+            string valor = cadena.Split(":=")[1];              //POR EJ. Lista(cuadrilatero, cuadrado, altura), valor           Lista(contador), valor
 
-            string[] idss = cadena.Split(":=")[0].Split('.');
-            string valor = cadena.Split(":=")[1];
-
-            buscarVariableEnEntornos(idss, valor);
-
-            /*
-            for (int i = 0; i < Form1.variableGlobales.Count; i++)
-            {
-                if (Form1.variableGlobales.ElementAt(i).getNombre() == idss[0])
-                {
-                    Variable var = asignarAVariable(idss, valor, 0, Form1.variableGlobales.ElementAt(i), null);
-                    //object nose = asignarAVariable1(ids, 0, Form1.variableGlobales.ElementAt(i), null);
-                    //MessageBox.Show("Valor " + nose);
-
-                    if (var != null)
-                    {
-                        Form1.variableGlobales.ElementAt(i).setValorObjeto(var.getValor().getValorObjeto());
-                        //MessageBox.Show("LA VARIABLE SI EXISTE");
-                    }
-                    else
-                    {
-                        //MessageBox.Show("LA VARIABLE NO EXISTE");
-                    }
-
-                    break;
-                }
-            }*/
-
-
+            buscarVariableEnEntornos(idss, valor); //Busca la varaible en el entorno y actualiza su valor
 
         }
 
@@ -775,7 +738,7 @@ namespace Proyecto2.Semantica
                 else if (temp.Length == 3)
                 {
 
-                    if (temp[0].getHoja().getValor().getValor()=="(")
+                    if (temp[0].getHoja().getValor().getValor()+""=="(")
                     {
                         double valorRetorno = 0;
 
@@ -857,11 +820,11 @@ namespace Proyecto2.Semantica
 
                 if (varEntorno!=null)
                 {
-                    Variable var = asignarAVariable(idss, valor, 0, varEntorno, null);
+                    Variable var = asignarAVariable(idss, valor, 0, varEntorno, null); //Devuelve una variable con los valores seteados
 
                     if (var!=null)
                     {
-                        this.entorno[i].buscarVariable(idss[0]).setValorObjeto(var.getValor().getValorObjeto());
+                        this.entorno[i].buscarVariable(idss[0]).setValorObjeto(var.getValor().getValorObjeto()); //Si la variable existe la actualiza en el entorno
                     }
                     else
                     {
@@ -1290,7 +1253,6 @@ namespace Proyecto2.Semantica
         }
 
 
-
         public void graficarTabla(List<Semantica.Entorno> entorno)
         {
 
@@ -1367,6 +1329,38 @@ namespace Proyecto2.Semantica
 
         }
 
+
+
+        public void traducirAsignaciones()
+        {
+
+
+        }
+
+
+        //Produccion Valor
+        public void VALOR(AST.Nodo nodoAct)
+        {
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            if (temp[0].getNombre()=="ASIGNACION1")
+            {
+
+            }
+            else if (temp[0].getNombre() == "EXP")
+            {
+
+            }
+            else if (temp[0].getNombre() == "EXP_LOG")
+            {
+
+            }
+            else
+            {
+
+            }
+
+        }
 
 
 

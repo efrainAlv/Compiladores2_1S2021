@@ -169,7 +169,7 @@ ASIG_ARREGLO -> ASIGNACION [  EXP  ]  : =  VALOR  ;
 // **************************** SENTENCIAS DE CONTROL *****************************
 
 
-IF -> if CONDICION then begin INSTRUCCIONES end 'IF
+IF -> if CONDICION then begin INSTRUCCIONES end ; 'IF
 
 IF' ->   ELSE_IF IF''
 		|ELSE
@@ -178,10 +178,10 @@ IF' ->   ELSE_IF IF''
 IF'' -> ELSE
 		|epsilon
 
-ELSE_IF -> ELSE_IF else if CONDICION then begin INSTRUCCIONES end
-		| else if CONDICION then begin INSTRUCCIONES end 
+ELSE_IF -> ELSE_IF else if CONDICION then begin INSTRUCCIONES end ;
+		| else if CONDICION then begin INSTRUCCIONES end ;
 
-ELSE -> else begin INSTRUCCIONES end;
+ELSE -> else begin INSTRUCCIONES end ;
 		| epsilon
 
 CASE -> case id of LISTA_CASE ELSE_CASE end;
@@ -210,6 +210,18 @@ FOR -> for id : = EXP to EXP do begin INSTRUCCIONES end ;
 
 
 
+type Cuadrado = object
+	var altura:int;
+end;
+
+type Rectangulo = object
+	var altura, ancho:int;
+end;
+
+type Cuadrilatero = object
+	var cuadrado:Cuadrado;
+	var rectangulo:Rectangulo ;
+end;
 
 
 
@@ -241,8 +253,8 @@ T3 = T2 + T1
 
 
 (5*(2+1))=(5*(2+1)) or 10>=10 and 5<>10
-
-
+repeat begin end until (5*(2+1))=(5*(2+1)) or 10>=10 and 5<>10;
+while ((10<100 or 10>200 and 10<>20) or (5>0)) or (5=0) do begin  end ;
 
  
 ((10<100 or 10>200 and 10<>20) or (5>0)) or (5=0) ***********************************************
@@ -258,8 +270,10 @@ goto L8
 L8: if 5=0 goto L9
 goto L10
 
+
 L1:
 L5:
+L7:
 L9:
 
 L4:
@@ -271,16 +285,15 @@ if 10<100 goto L1
 goto L2
 L2: if 10>200 goto L3
 goto L4
-L3: if 10<>20 goto L5
+L1, L3: if 10<>20 goto L5
 goto L6
-L6: if 5>0 goto L7
+L4, L6: if 5>0 goto L7
 goto L8
 
-L1:
+468
 L5:
 L7:
 
-L4:
 L8:
 
 (10<100 and 10>200) and 10<>20 ***********************************************
@@ -297,6 +310,7 @@ L5:
 L2:
 L4:
 L6:
+
 
 
 (10<100 or 10>200 and 10<>20) ***********************************************
@@ -376,3 +390,266 @@ L3:
 L2:
 L4:
 
+
+if(10>10 and 10>5) then
+begin
+
+end
+else if (10=10 and 10>5) then
+begin
+
+end
+else
+begin
+
+end;
+
+((10>1 and 5>5) or (true=1) = false) ***********************************************
+
+if 10>1 goto L1;
+goto L2;
+L1: if (5>5) goto L3;
+goto L4;
+L2, L4: if (true = 1) goto L5;
+goto L6;
+
+L3:verdadero
+
+
+
+
+(10<100 and 10>200) or 5>1
+
+if(10<100) goto L1
+goto L2
+L1: if (10>200) goto L3
+goto L4:
+L2, L4: if (5>1) goto L5
+goto L6
+
+L3:
+L5:
+
+L6:
+
+
+((10<100 and 10>200) == (10<100 and 10>200)) and  5!=10 **********************************************
+
+
+if(10<100) goto L1
+goto L2
+L2: if(10>200) goto L3
+goto L4
+
+L3: T = 1
+
+L2: L4: T = 0
+
+
+if(10<100) goto L5
+goto L6
+L6: if(10>200) goto L7
+goto L8
+
+L7: 
+
+L6: L8: 
+
+
+if (T==T)
+
+///********************************************************
+
+
+program Main;
+
+type Cuadrado = object
+	var altura:int;
+end;
+
+type Rectangulo = object
+	var altura, ancho:int;
+end;
+
+type Cuadrilatero = object
+	var cuadrado:Cuadrado;
+	var rectangulo:Rectangulo;
+	var nombre:String;
+end;
+
+var
+	c:Cuadrilatero;
+
+
+begin
+
+	c.cuadrado.altura := 10;
+	
+end.
+
+
+STACK [1] = 0; 
+STACK [2] = 0; 
+STACK [3] = 0; 
+T1 = 1 * 0; 
+T2 = T1 + T1; 
+T3 = T2 - T2; 
+STACK [4] = T3; 
+
+if ( 10 > 1 ) goto L1;
+goto L2;
+L1: if ( 5 > 5 ) goto L3;
+goto L4;
+L2: L4: if ( 1 == 1 ) goto L5; 
+goto L6; 
+
+L3: L5: T3 = 1; 
+goto L7; 
+
+L6: T3 = 0; 
+L7: if ( 1 == 0 ) goto L8; 
+goto L9; 
+
+L8: T4 = 1; 
+goto L10; 
+
+L9: T4 = 0; 
+L10: if ( T3 == T4 ) goto L11; 
+goto L12; 
+
+L11: STACK [5] =  1; 
+
+L12: STACK [5] =  0; 
+
+
+
+
+
+((5>10)=(5<>0))
+
+
+5>10 and true|false
+
+if ( 5>10 ) goto L1
+goto L2
+L1: if( 1 = true|false ) goto L3
+goto L4
+
+
+5>10 or true|false
+
+if ( 5>10 ) goto L1
+goto L2
+L2: if( 1 = true|false ) goto L3
+goto L4
+
+
+L1: L3:
+
+L4:
+
+
+
+(2*(5+2)>15) and (5>10)
+
+
+false or true
+
+
+
+((10>1 and 5>5) or (true) = false)
+
+if ( 10 > 1 ) goto L1;
+goto L2;
+L1: if ( 5 > 5 ) goto L3;
+goto L4;
+L2: L4: if ( 1 == 1 ) goto L5; 
+goto L6; 
+
+L3: 
+L5: 
+T0 = 1; 
+goto L7; 
+
+L6: 
+T0 = 0; 
+L7: if ( 1 == 0 ) goto L8; 
+goto L9; 
+
+L8: 
+T1 = 1; 
+goto L10; 
+
+L9: 
+T1 = 0; 
+L10: if ( T0 == T1 ) goto L11; 
+goto L12; 
+
+L11: 
+
+L12: 
+
+
+
+
+((10>1 and 5>5) or (true) = false)
+
+
+if ( 10>1 ) goto L1;
+goto L2;
+L1: if ( 5>5 ) goto L3;
+goto L4;
+L2: L4: if ( 1 == 1 ) goto L5;
+goto L6;
+
+L3: L5: T0 = 1;
+goto L7;
+L6: T0 = 0;
+L7: if ( T0 == 0 ) goto L8;
+goto L9;
+
+L8:
+
+L9:
+
+
+
+
+
+for id : = 10*(5+5) to 20*(2*4) do begin end ;
+
+T1 = 5 + 5; 
+T2 = 10 * T1; 
+T3 = 2 * 4; 
+T4 = 20 * T3; 
+id=T2 
+L1: if ( T2 > T4 ) goto L2;
+goto L1;
+L2: 
+
+
+
+
+
+
+
+
+
+Roles
+	Admin
+		Todo
+	Maestro
+		Cursos
+		Publicaciones
+			Avisos
+			Actividades
+				Examenes --> Despues de calificar envia notificacion
+				Tarea
+	Alumno
+		Cursos
+		Publicaciones
+		Actividades
+			Resolver examenes
+			Entregar tareas
+		Notas
+		Notificaciones

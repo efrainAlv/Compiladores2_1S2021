@@ -9,7 +9,17 @@ namespace Proyecto2.Semantica
 
         private string nombre;
         private Terminal valor; 
+        public int indiceFinStackHeap;
+        public int tamanio;
 
+        public Variable(string nombre, Terminal valor, int indice, int tamanio)
+        {
+            this.nombre = nombre;
+            this.valor = valor;
+            this.indiceFinStackHeap = indice;
+            this.tamanio = tamanio;
+
+        }
 
         public Variable(string nombre, Terminal valor)
         {

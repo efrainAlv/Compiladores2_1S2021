@@ -163,7 +163,7 @@ namespace Proyecto2.Semantica.SentenciaDeControl
         }
 
 
-        public void traducir(AST.Nodo nodoAct)
+        public void traducir(AST.Nodo nodoAct, int etiqueta)
         {
 
             string tipo = nodoAct.getNombre();
@@ -174,19 +174,35 @@ namespace Proyecto2.Semantica.SentenciaDeControl
             {
                 if (tipo == "IF")
                 {
-                    
+                    ExpresionLogica el = new ExpresionLogica(ref this.entorno);
+                    el.traducir(temp[1].getNodos()[0]);
+
+                    el.imptimirVeraderas();
+                    //instrucciones
+
+                    Form1.etiquetas++;
+                    etiqueta = Form1.etiquetas;
+                    Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
+
+                    el.imprimirFalsas();
+                    traducir(temp[7], etiqueta);
+
+                    Form1.richTextBox2.Text += "L"+ etiqueta +": \n";
+
                 }
                 else if (tipo == "IF1")
                 {
                     if (len == 2)
                     {
+                        traducir(temp[0], etiqueta);
 
+                        traducir(temp[1], etiqueta);
                     }
                     else
                     {
                         if (temp[0].getNombre() == "ELSE")
                         {
-                            
+                            traducir(temp[0], etiqueta);
                         }
                         else
                         {
@@ -198,7 +214,7 @@ namespace Proyecto2.Semantica.SentenciaDeControl
                 {
                     if (temp[0].getNombre() == "ELSE")
                     {
-                        
+                        traducir(temp[0], etiqueta);
                     }
                     else
                     {
@@ -210,11 +226,29 @@ namespace Proyecto2.Semantica.SentenciaDeControl
 
                     if (len == 9)
                     {
-                        
+                        traducir(temp[0], etiqueta);
+
+                        ExpresionLogica el = new ExpresionLogica(ref this.entorno);
+                        el.traducir(temp[3].getNodos()[0]);
+
+                        el.imptimirVeraderas();
+                        //instrucciones
+
+                        Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
+
+                        el.imprimirFalsas();
                     }
                     else
                     {
-                        
+                        ExpresionLogica el = new ExpresionLogica(ref this.entorno);
+                        el.traducir(temp[2].getNodos()[0]);
+
+                        el.imptimirVeraderas();
+                        //instrucciones
+
+                        Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
+
+                        el.imprimirFalsas();
                     }
 
                 }
@@ -223,7 +257,9 @@ namespace Proyecto2.Semantica.SentenciaDeControl
 
                     if (tipo == "ELSE")
                     {
-                        
+                        //instrucciones
+
+                        Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
                     }
                     else
                     {
