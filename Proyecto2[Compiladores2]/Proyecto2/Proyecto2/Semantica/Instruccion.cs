@@ -484,6 +484,7 @@ namespace Proyecto2.Semantica
             {
                 if (var.getValor().getValorObjeto()==null)
                 {
+                    Form1.richTextBox2.Text += "STACK[" + (var.indiceFinStackHeap - var.tamanio) + "] = " + valor + " ;\n";
                     var.getValor().setValor(valor);
                     return var;
                 }
@@ -513,13 +514,16 @@ namespace Proyecto2.Semantica
 
                     if (objeto!=null)
                     {
-                        Semantica.Variable v = objeto.buscarAtributo(ids[indice]);
+                        Semantica.Variable v = objeto.buscarAtributo(ids[indice]);//agregar heap
 
                         if (v != null)
                         {
 
                             if (v.getValor().getValorObjeto() == null)
                             {
+
+                                Form1.richTextBox2.Text += "HEAP["+(v.indiceFinStackHeap-v.tamanio)+"] = "+valor+" ;\n";
+                                  
                                 v.getValor().setValor(valor);
                                 return var;
                             }

@@ -16,6 +16,7 @@ namespace Proyecto2.Semantica
         {
             this.nombre = nombre;
             this.atributos = new List<Variable>(); ;
+
         }
 
 
@@ -24,6 +25,23 @@ namespace Proyecto2.Semantica
             this.nombre = nombre;
             this.atributos = new List<Variable>(); ;
             this.arreglo = arreglo;
+        }
+
+
+        public void actualizarIndices()
+        {
+            for (int k = 1; k < this.atributos.Count; k++)
+            {
+                if (this.atributos[k].getValor().getValorObjeto() != null)
+                {
+                    this.atributos[k].getValor().getValorObjeto().getAtributo(0).indiceFinStackHeap = this.atributos[k].indiceFinStackHeap - this.atributos[k].getValor().getValorObjeto().getAtributo(0).indiceFinStackHeap;
+                    for (int i = 1; i < this.atributos[k].getValor().getValorObjeto().getAtributosLength(); i++)
+                    {
+                        this.atributos[k].getValor().getValorObjeto().getAtributo(i).indiceFinStackHeap = this.atributos[k].getValor().getValorObjeto().getAtributo(i - 1).indiceFinStackHeap + this.atributos[k].getValor().getValorObjeto().getAtributo(i).tamanio;
+                    }
+                    //this.atributos[k].getValor().getValorObjeto().getTamanioObjeto() + this.atributos[k].indiceFinStackHeap;
+                }
+            }
         }
 
 
@@ -39,6 +57,7 @@ namespace Proyecto2.Semantica
             {
                 this.atributos.Add(vrs[i]);
             }
+            actualizarIndices();
         }
 
         public Variable buscarAtributo(string nombre)
@@ -90,7 +109,20 @@ namespace Proyecto2.Semantica
         }
 
 
+        public List<Variable> getAtributos()
+        {
+            return this.atributos;
+        }
 
+        public Variable getAtributo(int i)
+        {
+            return this.atributos[i];
+        }
+
+        public int getAtributosLength()
+        {
+            return this.atributos.Count;
+        }
 
     }
 }

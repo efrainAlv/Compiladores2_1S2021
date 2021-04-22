@@ -173,7 +173,6 @@ namespace Proyecto2.Semantica
                     o.agregarAtributos(agregarObjetos(temp[3]));
                     Form1.objetos.Add(o);
                     return null;
-
                 }
                 else
                 {
