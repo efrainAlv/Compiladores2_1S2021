@@ -478,7 +478,7 @@ namespace Proyecto2.Semantica
         }
 
 
-        public Semantica.Variable asignarAVariable(string[] ids, string valor, int indice, Semantica.Variable var, Semantica.Objeto obj)
+        public Variable asignarAVariable(string[] ids, string valor, int indice, Variable var, Objeto obj)
         {
             if (ids.Length == 1)
             {
@@ -509,21 +509,36 @@ namespace Proyecto2.Semantica
                 }
                 else if (indice == ids.Length - 1)
                 {
-                    Semantica.Objeto objeto = var.getValor().getValorObjeto();
+                    Objeto objeto = var.getValor().getValorObjeto();
                     
 
                     if (objeto!=null)
                     {
-                        Semantica.Variable v = objeto.buscarAtributo(ids[indice]);//agregar heap
+                        Variable v = objeto.buscarAtributo(ids[indice]);//agregar heap
 
                         if (v != null)
                         {
 
                             if (v.getValor().getValorObjeto() == null)
                             {
-
-                                Form1.richTextBox2.Text += "HEAP["+(v.indiceFinStackHeap-v.tamanio)+"] = "+valor+" ;\n";
-                                  
+                                if (v.getValor().getTipo()==Terminal.TipoDato.CADENA)
+                                {
+                                    int indiceHeap = v.indiceFinStackHeap - v.tamanio;
+                                    //Form1.richTextBox2.Text += "PTR = " + indiceHeap  +";\n";
+                                    for (int i = 1; i < valor.Length-1; i++)
+                                    {
+                                        Form1.richTextBox2.Text += "HEAP["+(indiceHeap)+"] = " + valor[i] + " ;\n";
+                                        //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor[i] + " ;\n";
+                                        //Form1.richTextBox2.Text += "PTR = PTR + 1" +" ;\n";
+                                        indiceHeap++;
+                                    }
+                                }
+                                else
+                                {
+                                    Form1.richTextBox2.Text += "HEAP [" + (v.indiceFinStackHeap - v.tamanio) + "]" +valor+ ";\n";
+                                    //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor + " ;\n";
+                                }
+  
                                 v.getValor().setValor(valor);
                                 return var;
                             }
@@ -546,11 +561,20 @@ namespace Proyecto2.Semantica
                 }
                 else
                 {
-                    Semantica.Variable v = obj.buscarAtributo(ids[indice]); //Buscar un atributo de un objeto y regresa la variable atributo si la encuentra
-
+                    Variable v;
+                    
+                    try
+                    {
+                        v = obj.buscarAtributo(ids[indice]); //Buscar un atributo de un objeto y regresa la variable atributo si la encuentra
+                    }
+                    catch (NullReferenceException e)
+                    {
+                        v = null;
+                    }
+                    
                     if (v != null)
                     {
-                        Semantica.Variable vari = asignarAVariable(ids, valor, indice + 1, v, v.getValor().getValorObjeto());
+                        Variable vari = asignarAVariable(ids, valor, indice + 1, v, v.getValor().getValorObjeto());
 
                         if (vari!=null)
                         {

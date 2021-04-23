@@ -28,20 +28,45 @@ namespace Proyecto2.Semantica
         }
 
 
-        public void actualizarIndices()
+        public void actualizarIndices(int inicio, bool paso)
         {
             for (int k = 1; k < this.atributos.Count; k++)
             {
                 if (this.atributos[k].getValor().getValorObjeto() != null)
                 {
-                    this.atributos[k].getValor().getValorObjeto().getAtributo(0).indiceFinStackHeap = this.atributos[k].indiceFinStackHeap - this.atributos[k].getValor().getValorObjeto().getAtributo(0).indiceFinStackHeap;
+                    this.atributos[k].getValor().getValorObjeto().getAtributo(0).indiceFinStackHeap = this.atributos[k-1].indiceFinStackHeap + this.atributos[k].getValor().getValorObjeto().getAtributo(0).tamanio;
                     for (int i = 1; i < this.atributos[k].getValor().getValorObjeto().getAtributosLength(); i++)
                     {
                         this.atributos[k].getValor().getValorObjeto().getAtributo(i).indiceFinStackHeap = this.atributos[k].getValor().getValorObjeto().getAtributo(i - 1).indiceFinStackHeap + this.atributos[k].getValor().getValorObjeto().getAtributo(i).tamanio;
+                        this.atributos[k].getValor().getValorObjeto().actualizarIndices(this.atributos[k].indiceFinStackHeap, true);
                     }
-                    //this.atributos[k].getValor().getValorObjeto().getTamanioObjeto() + this.atributos[k].indiceFinStackHeap;
+
+                }
+                else
+                {
+                    this.atributos[k].indiceFinStackHeap = this.atributos[k - 1].indiceFinStackHeap + this.atributos[k].tamanio;
                 }
             }
+
+            if (this.atributos[0].getValor().getValorObjeto()!=null)
+            {
+                this.atributos[0].getValor().getValorObjeto().getAtributo(0).indiceFinStackHeap = this.atributos[0].indiceFinStackHeap-this.atributos[0].tamanio + this.atributos[0].getValor().getValorObjeto().getAtributo(0).tamanio;
+
+                this.atributos[0].getValor().getValorObjeto().actualizarIndices(0, true);
+            }
+            
+        }
+
+
+        public void moverIndices(Variable var)
+        {
+
+            if (var.getValor().getValorObjeto()!=null)
+            {
+
+                
+            }
+
         }
 
 
@@ -57,7 +82,7 @@ namespace Proyecto2.Semantica
             {
                 this.atributos.Add(vrs[i]);
             }
-            actualizarIndices();
+            actualizarIndices(0, false);
         }
 
         public Variable buscarAtributo(string nombre)

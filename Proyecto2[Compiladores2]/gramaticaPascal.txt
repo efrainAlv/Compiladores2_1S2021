@@ -464,26 +464,43 @@ if (T==T)
 program Main;
 
 type Cuadrado = object
-	var altura:int;
+	var altura:integer;
 end;
 
 type Rectangulo = object
-	var altura, ancho:int;
+	var altura, ancho:integer;
+end;
+
+type Circulo = object
+	var radio:integer;
 end;
 
 type Cuadrilatero = object
 	var cuadrado:Cuadrado;
-	var rectangulo:Rectangulo;
+	var rectangulo:Rectangulo;	
 	var nombre:String;
 end;
 
+
+type Geometria = object
+	var circulo:Circulo;
+	var cuadrilatero:Cuadrilatero;
+end;
+
+
 var
-	c:Cuadrilatero;
+	g:Geometria;
+	b:string;
 
 
 begin
 
-	c.cuadrado.altura := 10;
+	g.cuadrilatero.cuadrado.altura := 10;
+	g.cuadrilatero.rectangulo.altura := 20;
+	g.cuadrilatero.rectangulo.ancho := 30;
+	g.cuadrilatero.nombre := 'Cuadrilatero1'
+	g.circulo.radio := 2.5;
+	b := 'Variable'
 	
 end.
 
@@ -653,3 +670,110 @@ Roles
 			Entregar tareas
 		Notas
 		Notificaciones
+		
+		
+		
+
+
+Geometria
+	Circulo
+		radio
+	Cuadrilatero
+		Cuadrado
+			altura
+		Rectangulo
+			altura
+			ancho
+		Nombre
+		
+Nombre --> 4, 24		valor = 'Cuadrilatero1'
+ancho  --> 3, 4			valor = 30
+altura --> 2, 3			valor = 20
+altura --> 1, 2			valor = 10
+radio  --> 0, 1		valor =  2.5
+
+
+		
+program Main;
+
+type Cuadrado = object
+	var altura:integer;
+end;
+
+type Rectangulo = object
+	var altura, ancho:integer;
+end;
+
+type Circulo = object
+	var radio:integer;
+	var perimetro:integer;
+end;
+
+type Cuadrilatero = object
+	var cuadrado:Cuadrado;
+	var rectangulo:Rectangulo;	
+	var nombre:String;
+end;
+
+
+type Geometria = object
+	var cuadrilatero:Cuadrilatero;
+	var circulo:Circulo;
+end;
+
+
+var
+	g:Geometria;
+	b:string;
+
+
+begin
+
+	g.cuadrilatero.cuadrado.altura := 10;
+	g.cuadrilatero.rectangulo.altura := 20;
+	g.cuadrilatero.rectangulo.ancho := 30;
+	g.cuadrilatero.nombre := 'Cuadrilatero1'
+	g.circulo.radio := 2.5;
+	b := 'Variable'
+	
+end.
+
+
+
+
+
+
+
+Nombre --> 4, 24		valor = 'Cuadrilatero1'
+ancho  --> 3, 4			valor = 30
+altura --> 2, 3			valor = 20
+altura --> 1, 2			valor = 10
+radio  --> 0, 1			valor =  2.5
+
+program Main;
+
+type Cuadrado = object
+	var altura:integer;
+end;
+
+type Rectangulo = object
+	var altura, ancho:integer;
+end;
+
+type Circulo = object
+	var radio:integer;
+	var perimetro:integer;
+end;
+
+
+var
+	g:Circulo;
+	b:string;
+
+
+begin
+
+	g.radio := 2.5;
+	b := 'Variable'
+	
+end.
