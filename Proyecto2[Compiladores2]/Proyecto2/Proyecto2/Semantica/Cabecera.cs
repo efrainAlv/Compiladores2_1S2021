@@ -357,7 +357,7 @@ namespace Proyecto2.Semantica
                 {
                     if (tempO[i].getNombre() == tipoVar)
                     {
-                        o = tempO[i];
+                        o = tempO[i].clonar();
                         tamanioVariable = o.getTamanioObjeto();
                         break;
                     }

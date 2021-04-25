@@ -19,6 +19,17 @@ namespace Proyecto2.Semantica
 
         }
 
+        public Objeto()
+        {
+            this.atributos = new List<Variable>(); ;
+        }
+
+        public Objeto(string nombre, List<Variable> vars)
+        {
+            this.nombre = nombre;
+            this.atributos = vars;
+            this.arreglo = null;
+        }
 
         public Objeto(string nombre, Arreglo arreglo)
         {
@@ -26,7 +37,6 @@ namespace Proyecto2.Semantica
             this.atributos = new List<Variable>(); ;
             this.arreglo = arreglo;
         }
-
 
         public void actualizarIndices(int inicio, bool paso)
         {
@@ -58,17 +68,27 @@ namespace Proyecto2.Semantica
         }
 
 
-        public void moverIndices(Variable var)
+        public void moverIndices(int fin)
         {
-
-            if (var.getValor().getValorObjeto()!=null)
+            for (int i = 0; i < this.atributos.Count; i++)
             {
-
-                
+                this.atributos[i].actualizarIndices(fin);
             }
 
         }
 
+
+        public Objeto clonar()
+        {
+            Objeto temp = new Objeto(this.nombre);
+
+            for (int i = 0; i < this.atributos.Count; i++)
+            {
+                temp.atributos.Add(this.atributos[i].clonar());
+            }
+
+            return temp;
+        }
 
         public void agregarAtributo(Variable var)
         {

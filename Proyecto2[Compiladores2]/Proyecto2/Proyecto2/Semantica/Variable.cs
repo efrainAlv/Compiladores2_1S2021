@@ -10,6 +10,7 @@ namespace Proyecto2.Semantica
         private string nombre;
         private Terminal valor; 
         public int indiceFinStackHeap;
+        public int indiceStack;
         public int tamanio;
 
         public Variable(string nombre, Terminal valor, int indice, int tamanio)
@@ -18,6 +19,8 @@ namespace Proyecto2.Semantica
             this.valor = valor;
             this.tamanio = tamanio;
             this.indiceFinStackHeap = indice;
+            this.indiceStack = indice;
+            
         }
 
         public Variable(string nombre, Terminal valor)
@@ -43,9 +46,49 @@ namespace Proyecto2.Semantica
         }
 
 
+        public void actualizarIndicesObjeto(int i)
+        {
+            if (this.getValor().getValorObjeto()!=null)
+            {
+                if (Form1.variableGlobales.Count>1)
+                {
+                    this.getValor().getValorObjeto().actualizarIndices(0, false);
+                }
+                
+            }
+        }
+
+
         public void setValorTerminal(object valor)
         {
             this.valor.setValor(valor);
+        }
+
+
+        public void actualizarIndices(int fin)
+        {
+            this.indiceFinStackHeap = fin + this.indiceFinStackHeap;
+            if (this.getValor().getValorObjeto()!=null)
+            {
+                this.getValor().getValorObjeto().moverIndices(fin);
+            }
+        }
+
+
+        public Variable clonar()
+        {
+            Terminal temp = new Terminal();
+
+            if (this.valor.getValorObjeto()!=null)
+            {
+                temp = new Terminal(this.valor.getValor(), this.valor.getTipo(), this.valor.getValorObjeto().clonar());
+            }
+            else
+            {
+                temp = new Terminal(this.valor.getValor(), this.valor.getTipo());
+            }
+
+            return (new Variable(this.nombre, temp, this.indiceFinStackHeap, this.tamanio));
         }
 
 

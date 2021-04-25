@@ -447,7 +447,6 @@ namespace Proyecto2
         }
 
 
-
         private void traducir(AST.Nodo nodoAct)
         {
             string tipo = nodoAct.getNombre();
@@ -463,7 +462,25 @@ namespace Proyecto2
                     cabecera.traducir(temp[3]);
 
                     variableGlobales = cabecera.getVariables();
-                    entorno = new Semantica.Entorno(ref variableGlobales, 0, variableGlobales.Count, variableGlobales.Count, 0, 0);
+                    for (int i = 0; i < variableGlobales.Count; i++)
+                    {
+                        variableGlobales[i].indiceStack = i;
+                        if (i != 0 && variableGlobales[i].getValor().getValorObjeto() != null) 
+                        {
+                            variableGlobales[i].indiceFinStackHeap = variableGlobales[i].tamanio;
+                            variableGlobales[i].actualizarIndices(variableGlobales[i-1].indiceFinStackHeap);
+                        };
+                        
+                    }
+                    if (variableGlobales.Count>0)
+                    {
+                        entorno = new Semantica.Entorno(ref variableGlobales, 0, variableGlobales.Count, variableGlobales.Count, variableGlobales[variableGlobales.Count-1].indiceFinStackHeap, 0);
+                    }
+                    else
+                    {
+                        entorno = new Semantica.Entorno(ref variableGlobales, 0, variableGlobales.Count, variableGlobales.Count, 0, 0);
+                    }
+                    
                     //objetos = cabecera.getObjetos();
                 }
                 if (temp[4].getNombre() == "CUERPO")

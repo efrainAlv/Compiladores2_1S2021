@@ -672,26 +672,6 @@ Roles
 		Notificaciones
 		
 		
-		
-
-
-Geometria
-	Circulo
-		radio
-	Cuadrilatero
-		Cuadrado
-			altura
-		Rectangulo
-			altura
-			ancho
-		Nombre
-		
-Nombre --> 4, 24		valor = 'Cuadrilatero1'
-ancho  --> 3, 4			valor = 30
-altura --> 2, 3			valor = 20
-altura --> 1, 2			valor = 10
-radio  --> 0, 1		valor =  2.5
-
 
 		
 program Main;
@@ -717,15 +697,30 @@ end;
 
 
 type Geometria = object
-	var cuadrilatero:Cuadrilatero;
 	var circulo:Circulo;
+	var cuadrilatero:Cuadrilatero;
+end;
+
+
+type Persona = object
+	var nombre:string;
+	var edad:integer;
+end;
+
+
+type Trabajador = object
+	var persona:Persona;
+	var puesto:string;
 end;
 
 
 var
 	g:Geometria;
 	b:string;
-
+	c, d: integer;
+	godin:Trabajador;
+	godin1:Trabajador;
+	numero:integer;
 
 begin
 
@@ -734,46 +729,88 @@ begin
 	g.cuadrilatero.rectangulo.ancho := 30;
 	g.cuadrilatero.nombre := 'Cuadrilatero1'
 	g.circulo.radio := 2.5;
-	b := 'Variable'
+	b := 'Variable'  //--> 45
+	c:=777;
+	d:=34886677;
+	godin.persona.nombre := 'Helmut'; //-->65
+	godin.persona.edad := 20; //-->66
+	godin.puesto:='Jefe'; //--> 67
+	
+	numero:=g.cuadrilatero.cuadrado.altura;
+	
+	godin1.persona.nombre := 'Efrain'; //-->87
+	godin1.persona.edad := 21;  //--> 88
+	godin1.puesto:='Jefe de jefes'; //--> 98
 	
 end.
 
 
+617
+
+883
 
 
 
 
+HEAP[2] = 10;
+HEAP[3] = 20;
+HEAP[4] = 30;
+HEAP[5] = c ;
+HEAP[6] = u ;
+HEAP[7] = a ;
+HEAP[8] = d ;
+HEAP[9] = r ;
+HEAP[10] = i ;
+HEAP[11] = l ;
+HEAP[12] = a ;
+HEAP[13] = t ;
+HEAP[14] = e ;
+HEAP[15] = r ;
+HEAP[16] = o ;
+HEAP[17] = 1 ;
+HEAP[0] = 2.5;
+HEAP[25] = v ;
+HEAP[26] = a ;
+HEAP[27] = r ;
+HEAP[28] = i ;
+HEAP[29] = a ;
+HEAP[30] = b ;
+HEAP[31] = l ;
+HEAP[32] = e ;
+STACK[2] = 777 ;
+STACK[3] = 34886677 ;
+HEAP[88] = h ;
+HEAP[89] = e ;
+HEAP[90] = l ;
+HEAP[91] = m ;
+HEAP[92] = u ;
+HEAP[93] = t ;
+HEAP[108] = 20;
+HEAP[109] = j ;
+HEAP[110] = e ;
+HEAP[111] = f ;
+HEAP[112] = e ;
 
-Nombre --> 4, 24		valor = 'Cuadrilatero1'
-ancho  --> 3, 4			valor = 30
-altura --> 2, 3			valor = 20
-altura --> 1, 2			valor = 10
-radio  --> 0, 1			valor =  2.5
+STACK[6] = 10 ;
 
-program Main;
+HEAP[88] = e ;
+HEAP[89] = f ;
+HEAP[90] = r ;
+HEAP[91] = a ;
+HEAP[92] = i ;
+HEAP[93] = n ;
+HEAP[108] = 20;
+HEAP[109] = j ;
+HEAP[110] = e ;
+HEAP[111] = f ;
+HEAP[112] = e ;
+HEAP[113] =   ;
+HEAP[114] = d ;
+HEAP[115] = e ;
+HEAP[116] =   ;
+HEAP[117] = j ;
+HEAP[118] = e ;
+HEAP[119] = f ;
+HEAP[120] = e ;
+HEAP[121] = s ;
 
-type Cuadrado = object
-	var altura:integer;
-end;
-
-type Rectangulo = object
-	var altura, ancho:integer;
-end;
-
-type Circulo = object
-	var radio:integer;
-	var perimetro:integer;
-end;
-
-
-var
-	g:Circulo;
-	b:string;
-
-
-begin
-
-	g.radio := 2.5;
-	b := 'Variable'
-	
-end.

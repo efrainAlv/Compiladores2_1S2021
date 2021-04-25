@@ -484,7 +484,21 @@ namespace Proyecto2.Semantica
             {
                 if (var.getValor().getValorObjeto()==null)
                 {
-                    Form1.richTextBox2.Text += "STACK[" + (var.indiceFinStackHeap - var.tamanio) + "] = " + valor + " ;\n";
+                    if (var.getValor().getTipo()==Terminal.TipoDato.CADENA)
+                    {
+                        int indiceHeap = var.indiceFinStackHeap - var.tamanio;
+                        for (int i = 1; i < valor.Length - 1; i++)
+                        {
+                            Form1.richTextBox2.Text += "HEAP[" + (indiceHeap) + "] = " + valor[i] + " ;\n";
+                            //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor[i] + " ;\n";
+                            //Form1.richTextBox2.Text += "PTR = PTR + 1" +" ;\n";
+                            indiceHeap++;
+                        }
+                    }
+                    else
+                    {
+                        Form1.richTextBox2.Text += "STACK[" + var.indiceStack + "] = " + valor + " ;\n";
+                    }
                     var.getValor().setValor(valor);
                     return var;
                 }
@@ -535,7 +549,7 @@ namespace Proyecto2.Semantica
                                 }
                                 else
                                 {
-                                    Form1.richTextBox2.Text += "HEAP [" + (v.indiceFinStackHeap - v.tamanio) + "]" +valor+ ";\n";
+                                    Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " +valor+ ";\n";
                                     //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor + " ;\n";
                                 }
   
