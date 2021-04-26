@@ -29,6 +29,7 @@ namespace Proyecto2.Semantica.FuncsProcs
             return this.funciones;
         }
 
+
         public void analizar(AST.Nodo nodoAct)
         {
             string tipo = nodoAct.getNombre();
@@ -80,8 +81,6 @@ namespace Proyecto2.Semantica.FuncsProcs
         }
 
 
-
-        
         public List<Parametro> agregarProcedimiento(AST.Nodo nodoAct, List<Parametro> parametros)
         {
             string tipo = nodoAct.getNombre();
@@ -97,6 +96,31 @@ namespace Proyecto2.Semantica.FuncsProcs
 
                     parametros = agregarProcedimiento(temp[2], parametros);
 
+                    if (parametros.Count>0)
+                    {
+                        for (int i = 0; i < parametros.Count; i++)
+                        {
+                            parametros[i].getVariable().indiceStack = Form1.finStack;
+                            if (parametros[i].getVariable().getValor().getTipo() == Terminal.TipoDato.CADENA)
+                            {
+                                parametros[i].getVariable().indiceFinStackHeap = Form1.finHeap + parametros[i].getVariable().tamanio;
+                                Form1.finHeap += parametros[i].getVariable().tamanio;
+                            }
+                            else if (parametros[i].getVariable().getValor().getValorObjeto() != null )
+                            {
+                                parametros[i].getVariable().actualizarIndices(Form1.finHeap);
+                                Form1.finHeap += parametros[i].getVariable().tamanio;
+                            }
+                            else
+                            {
+                                parametros[i].getVariable().indiceFinStackHeap = 0;
+                            }
+                            Form1.finStack++;
+                        }
+                        
+                    }
+
+                    
                     List<Entorno> ent = new List<Entorno>();
                     for (int i = 0; i < this.entorno.Count; i++)
                     {
@@ -106,20 +130,17 @@ namespace Proyecto2.Semantica.FuncsProcs
                     Cabecera c = new Cabecera(ent);
                     c.agregarVariableGlobal(temp[4], new List<string>(), Form1.objetos);
 
+
                     Procedimiento proc = new Procedimiento(nombre, c.getVariables(), parametros, temp[7], ent);
-                    //c = null;
-                    //ent = null;
 
                     Cuerpo cuer = new Cuerpo(proc.getEntorno());
                     cuer.anidarFuncionProcedimiento(temp[5]);
                     proc.addProcedimientos(cuer.getProcedimientos());
                     proc.addFunciones(cuer.getFunciones());
 
-                    //cuer = null;
 
                     this.procedimientos.Add(proc);
 
-                    //proc = null;
 
                     return null;
 
@@ -183,6 +204,7 @@ namespace Proyecto2.Semantica.FuncsProcs
 
 
         }
+
 
         public List<Parametro> agregarFuncion(AST.Nodo nodoAct, List<Parametro> parametros)
         {
@@ -285,6 +307,7 @@ namespace Proyecto2.Semantica.FuncsProcs
 
         }
 
+
         public List<Variable> agregarParametro(AST.Nodo nodoAct, List<Variable> vars)
         {
             string tipo = nodoAct.getNombre();
@@ -307,7 +330,7 @@ namespace Proyecto2.Semantica.FuncsProcs
             }
             else
             {
-                List<string>ids = getIds(temp[0], new List<string>());
+                List<string> ids = getIds(temp[0], new List<string>());
 
                 string tipoTerminal = temp[2].getNodos().ToArray()[0].getHoja().getValor().getValor() + "";
                 Terminal.TipoDato tipoDato;
@@ -316,37 +339,54 @@ namespace Proyecto2.Semantica.FuncsProcs
                 Objeto o = null;
                 object valor;
 
+                int indiceFinHeapStack = 0;
+                int tamanio = 0;
+
                 if (tipoTerminal.ToLower() == "string")
                 {
+                    indiceFinHeapStack = 20;
+                    tamanio = 20;
                     tipoDato = Terminal.TipoDato.CADENA;
                     valor = "";
                 }
                 else if (tipoTerminal.ToLower() == "integer")
                 {
+                    indiceFinHeapStack = 1;
+                    tamanio = 1;
                     tipoDato = Terminal.TipoDato.ENTERO;
                     valor = 0;
                 }
                 else if (tipoTerminal.ToLower() == "real")
                 {
+                    indiceFinHeapStack = 1;
+                    tamanio = 1;
                     tipoDato = Terminal.TipoDato.REAL;
                     valor = 0;
                 }
                 else if (tipoTerminal.ToLower() == "boolean")
                 {
+                    indiceFinHeapStack = 1;
+                    tamanio = 1;
                     tipoDato = Terminal.TipoDato.BOOLEANO;
                     valor = false;
                 }
                 else
                 {
                     tipoDato = Terminal.TipoDato.OBJETO;
-                    o = Form1.buscarObjeto(tipoTerminal);
+                    o = Form1.buscarObjeto(tipoTerminal).clonar();
                     valor = tipoDato;
-
+                    indiceFinHeapStack = o.getTamanioObjeto();
+                    tamanio = o.getTamanioObjeto();
                 }
 
+                Objeto obj = null;
                 for (int i = 0; i < nombres.Length; i++)
                 {
-                    vars.Add(new Variable(nombres[i], new Terminal(valor, tipoDato, o)));
+                    if (o!=null)
+                    {
+                        obj = o.clonar();
+                    }
+                    vars.Add(new Variable(nombres[i], new Terminal(valor, tipoDato, obj), indiceFinHeapStack, tamanio));
                 }
 
                 return vars;
@@ -357,6 +397,7 @@ namespace Proyecto2.Semantica.FuncsProcs
 
 
         }
+
 
         public List<string> getIds(AST.Nodo nodoAct, List<string> ids)
         {

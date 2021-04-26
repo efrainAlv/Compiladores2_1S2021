@@ -49,6 +49,9 @@ namespace Proyecto2
 
         public static List<CodigoI.Temporal> temps = new List<CodigoI.Temporal>();
 
+        public static int finHeap = 0;
+        public static int finStack = 0;
+
         public Form1()
         {
             InitializeComponent();
@@ -465,12 +468,24 @@ namespace Proyecto2
                     for (int i = 0; i < variableGlobales.Count; i++)
                     {
                         variableGlobales[i].indiceStack = i;
-                        if (i != 0 && variableGlobales[i].getValor().getValorObjeto() != null) 
+                        if (i != 0 && variableGlobales[i].getValor().getValorObjeto() != null)
                         {
                             variableGlobales[i].indiceFinStackHeap = variableGlobales[i].tamanio;
-                            variableGlobales[i].actualizarIndices(variableGlobales[i-1].indiceFinStackHeap);
-                        };
-                        
+                            variableGlobales[i].actualizarIndices(variableGlobales[i - 1].indiceFinStackHeap);
+                        }
+                        else if(i!=0)
+                        {
+                            if (variableGlobales[i].getValor().getTipo()==Semantica.Terminal.TipoDato.CADENA)
+                            {
+                                variableGlobales[i].indiceFinStackHeap = variableGlobales[i-1].indiceFinStackHeap + variableGlobales[i].tamanio;
+                            }
+                            else
+                            {
+                                variableGlobales[i].indiceFinStackHeap = variableGlobales[i - 1].indiceFinStackHeap;
+                            }
+
+                        }
+                            
                     }
                     if (variableGlobales.Count>0)
                     {
@@ -478,17 +493,18 @@ namespace Proyecto2
                     }
                     else
                     {
-                        entorno = new Semantica.Entorno(ref variableGlobales, 0, variableGlobales.Count, variableGlobales.Count, 0, 0);
+                        entorno = new Semantica.Entorno(ref variableGlobales, 0, 0, 0, 0, 0);
                     }
-                    
+                    finHeap = entorno.finHeap;
+                    finStack = entorno.finStack;
                     //objetos = cabecera.getObjetos();
                 }
                 if (temp[4].getNombre() == "CUERPO")
                 {
                     List<Semantica.Entorno> entornos = new List<Semantica.Entorno>();
                     entornos.Add(entorno);
-                    //Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo(entornos);
-                    //cuerpo.analizar(temp[4]);
+                    Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo(entornos);
+                    cuerpo.analizar(temp[4]);
 
                     //procedimientos = cuerpo.getProcedimientos();
                 }

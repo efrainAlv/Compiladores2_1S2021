@@ -38,19 +38,23 @@ namespace Proyecto2.Semantica.FuncsProcs
             this.procedimientos = new List<Procedimiento>();
             this.funciones = new List<Funcion>();
 
+
+            int inicioHeap = Form1.finHeap;
+            if (variablesLocales.Count > 0)
+            {
+                Form1.finHeap = variablesLocales[variablesLocales.Count-1].indiceFinStackHeap;
+            }
+
             if (this.parametros.Count>0)
             {
-                //List<Variable> vars = new List<Variable>();
                 for (int i = 0; i < this.parametros.Count; i++)
                 {
                     variablesLocales.Add(this.parametros[i].getVariable());
                 }
-                this.entorno.Add(new Entorno(ref variablesLocales));
+                
             }
-            else
-            {
-                this.entorno.Add(new Entorno(ref variablesLocales));
-            }
+            this.entorno.Add(new Entorno(ref variablesLocales, (Form1.finStack - variablesLocales.Count), Form1.finStack, variablesLocales.Count-parametros.Count, Form1.finHeap, inicioHeap));
+
             
         }
 

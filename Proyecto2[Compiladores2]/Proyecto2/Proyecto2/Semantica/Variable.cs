@@ -46,19 +46,6 @@ namespace Proyecto2.Semantica
         }
 
 
-        public void actualizarIndicesObjeto(int i)
-        {
-            if (this.getValor().getValorObjeto()!=null)
-            {
-                if (Form1.variableGlobales.Count>1)
-                {
-                    this.getValor().getValorObjeto().actualizarIndices(0, false);
-                }
-                
-            }
-        }
-
-
         public void setValorTerminal(object valor)
         {
             this.valor.setValor(valor);
@@ -96,6 +83,8 @@ namespace Proyecto2.Semantica
         {
             return this.nombre;
         }
+
+
         public void setValo(string nombre)
         {
             this.nombre = nombre;
@@ -108,4 +97,5 @@ namespace Proyecto2.Semantica
         }
 
     }
+
 }

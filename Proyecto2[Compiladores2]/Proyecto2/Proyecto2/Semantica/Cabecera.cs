@@ -357,7 +357,7 @@ namespace Proyecto2.Semantica
                 {
                     if (tempO[i].getNombre() == tipoVar)
                     {
-                        o = tempO[i].clonar();
+                        o = tempO[i];
                         tamanioVariable = o.getTamanioObjeto();
                         break;
                     }
@@ -461,29 +461,52 @@ namespace Proyecto2.Semantica
             }
 
 
-            if (this.entorno.Count > 0)
+            if (this.entorno.Count > 0 )
             {
-                this.entorno[this.entorno.Count - 1].inicioStack = this.entorno[this.entorno.Count - 1].finStack;
+                
                 for (int i = 0; i < vars.Length; i++)
                 {
-                    this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o), this.entorno[this.entorno.Count - 1].finStack, tamanioVariable));
-                    this.entorno[this.entorno.Count - 1].finStack++;
+                    Variable var = null;
+                    Objeto obj = null;
+                    if (o!=null)
+                    {
+                        obj = o.clonar();
+                    }
+                    var = new Variable(vars[i], new Terminal(valor, tipoDato, obj), tamanioVariable, tamanioVariable);
+                    if (this.variablesGLobales.Count > 0)
+                    {
+                        var.actualizarIndices(this.variablesGLobales[this.variablesGLobales.Count - 1].indiceFinStackHeap);
+                    }
+                    else
+                    {
+                        var.actualizarIndices(Form1.finHeap);
+                    }
+                    this.variablesGLobales.Add(var);
                 }
             }
             else
             {
+
                 for (int i = 0; i < vars.Length; i++)
                 {
+                    Objeto obj = null;
+                    if (o!=null)
+                    {
+                        obj = o.clonar();
+                    }
                     if (this.variablesGLobales.Count>0)
                     {
-                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o), (this.variablesGLobales[this.variablesGLobales.Count-1].indiceFinStackHeap + tamanioVariable), tamanioVariable));
+                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, obj), (this.variablesGLobales[this.variablesGLobales.Count-1].indiceFinStackHeap + tamanioVariable), tamanioVariable));
                     }
                     else
                     {
-                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, o), tamanioVariable, tamanioVariable));
+                        this.variablesGLobales.Add(new Variable(vars[i], new Terminal(valor, tipoDato, obj), tamanioVariable, tamanioVariable));
                     }
+
                 }
             }
+
+            
 
 
         }

@@ -77,6 +77,14 @@ FUNCION -> function id PARAMETROS : TIPO ; VARIABLE ANIDAR begin INSTRUCCIONES e
 			 
 PROCEDIMIENTO -> procedure id PARAMETROS ; VARIABLE ANIDAR begin INSTRUCCIONES end ;
 
+procedure contar(x, y:integer); 
+	
+	var z:integer;
+	
+	begin
+		z:=x+y;
+	end;
+
 ANIDAR -> ANIDAR ANIDAR'
 		| ANIDAR'
 		
@@ -718,9 +726,8 @@ var
 	g:Geometria;
 	b:string;
 	c, d: integer;
-	godin:Trabajador;
-	godin1:Trabajador;
-	numero:integer;
+	godin,godin1:Trabajador;
+	numero, uno:integer;
 
 begin
 
@@ -742,75 +749,38 @@ begin
 	godin1.persona.edad := 21;  //--> 88
 	godin1.puesto:='Jefe de jefes'; //--> 98
 	
+	uno:=1500;
+	
 end.
 
 
-617
+program Procedimientos;
 
-883
+var
+	b:string;
+	c, d: integer;
+	numero:integer;
+
+procedure contar(x, y:integer); 
+	
+	var z:integer;
+	
+	begin
+		z:=x+y;
+	end;
+	
+procedure Hanoi(discos:integer; origen,aux,destino:string; var nuermo:integer);
+	
+	var x,y,z:integer;
+	var saludo:string;
+	
+	begin
+		
+	end;
+	
+begin
+end.
 
 
 
-
-HEAP[2] = 10;
-HEAP[3] = 20;
-HEAP[4] = 30;
-HEAP[5] = c ;
-HEAP[6] = u ;
-HEAP[7] = a ;
-HEAP[8] = d ;
-HEAP[9] = r ;
-HEAP[10] = i ;
-HEAP[11] = l ;
-HEAP[12] = a ;
-HEAP[13] = t ;
-HEAP[14] = e ;
-HEAP[15] = r ;
-HEAP[16] = o ;
-HEAP[17] = 1 ;
-HEAP[0] = 2.5;
-HEAP[25] = v ;
-HEAP[26] = a ;
-HEAP[27] = r ;
-HEAP[28] = i ;
-HEAP[29] = a ;
-HEAP[30] = b ;
-HEAP[31] = l ;
-HEAP[32] = e ;
-STACK[2] = 777 ;
-STACK[3] = 34886677 ;
-HEAP[88] = h ;
-HEAP[89] = e ;
-HEAP[90] = l ;
-HEAP[91] = m ;
-HEAP[92] = u ;
-HEAP[93] = t ;
-HEAP[108] = 20;
-HEAP[109] = j ;
-HEAP[110] = e ;
-HEAP[111] = f ;
-HEAP[112] = e ;
-
-STACK[6] = 10 ;
-
-HEAP[88] = e ;
-HEAP[89] = f ;
-HEAP[90] = r ;
-HEAP[91] = a ;
-HEAP[92] = i ;
-HEAP[93] = n ;
-HEAP[108] = 20;
-HEAP[109] = j ;
-HEAP[110] = e ;
-HEAP[111] = f ;
-HEAP[112] = e ;
-HEAP[113] =   ;
-HEAP[114] = d ;
-HEAP[115] = e ;
-HEAP[116] =   ;
-HEAP[117] = j ;
-HEAP[118] = e ;
-HEAP[119] = f ;
-HEAP[120] = e ;
-HEAP[121] = s ;
 
