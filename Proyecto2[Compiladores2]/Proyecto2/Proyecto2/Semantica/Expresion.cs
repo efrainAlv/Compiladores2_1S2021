@@ -15,6 +15,7 @@ namespace Proyecto2.Semantica
 
         public object resultado;
         private List<Entorno> entorno;
+       
 
         public Expresion(List<Entorno> entorno)
         {
@@ -191,7 +192,57 @@ namespace Proyecto2.Semantica
             {
                 if (temp.Length==1)
                 {
-                    this.resultado = temp[0].getHoja().getValor().getValor();
+
+                    if (temp[0].getHoja()!=null)
+                    {
+                        this.resultado = temp[0].getHoja().getValor().getValor();
+
+                    }
+                    else
+                    {
+                        if (temp[0].getNombre() == "ASIGNACION1")
+                        {
+                            double resultado = 0;
+
+                            string asignacion = generarTemporalesParaAsignaciones(temp[0], "");
+
+                            int indiceEntorno = 0;
+                            string[] ids = asignacion.Split(".");
+                            Variable var = null;
+                            for (int i = this.entorno.Count - 1; i >= 0; i--)
+                            {
+                                var = this.entorno[i].buscarVariable(ids[0]);
+                                if (var!=null)
+                                {
+                                    indiceEntorno = i;
+                                    break;
+                                }
+                            }
+
+                            if (var!=null)
+                            {
+                               var =  var.buscarAtributoDeObjeto(ids, 0);
+                            }
+
+                            if (indiceEntorno == 0)
+                            {
+                                if (ids.Length>1)
+                                {
+                                    return Form1.agregarTemporal(new CodigoI.Temporal("HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]", Convert.ToDouble(var.getValor().getValor())));
+                                }
+                                else
+                                {
+                                    return Form1.agregarTemporal(new CodigoI.Temporal("STACK[" + var.indiceStack + "]", Convert.ToDouble(var.getValor().getValor())));
+                                }
+                            }
+                            else
+                            {
+                                return Form1.agregarTemporal(new CodigoI.Temporal("HEAP[" + (var.indiceFinStackHeap-var.tamanio) + "]", Convert.ToDouble(var.getValor().getValor())));
+                            }
+
+                        }
+                    }
+
                     return null;
                 }
                 else if (temp.Length==2)
@@ -225,7 +276,7 @@ namespace Proyecto2.Semantica
                             
                         if (h1!=null && h2!=null)
                         {
-                            CodigoI.Temporal t = new CodigoI.Temporal(Convert.ToDouble(h1.getValor().getValor()), Convert.ToDouble(h2.getValor().getValor()), temp[1].getHoja().getValor().getValor() + "");
+                            CodigoI.Temporal t = new CodigoI.Temporal(h1.getValor().getValor()+"", h2.getValor().getValor()+"", temp[1].getHoja().getValor().getValor() + "");
                             t = Form1.agregarTemporal(t);
 
                             return t;
@@ -234,7 +285,7 @@ namespace Proyecto2.Semantica
                         {
                             CodigoI.Temporal t2 = generarTemporales(temp[2]);
 
-                            CodigoI.Temporal t1 = new CodigoI.Temporal(Convert.ToDouble(h1.getValor().getValor()), t2, temp[1].getHoja().getValor().getValor() + "");
+                            CodigoI.Temporal t1 = new CodigoI.Temporal(h1.getValor().getValor()+"", t2, temp[1].getHoja().getValor().getValor() + "");
                             t2 = Form1.agregarTemporal(t1);
                             t1 = null;
 
@@ -244,7 +295,7 @@ namespace Proyecto2.Semantica
                         {
                             CodigoI.Temporal t1 = generarTemporales(temp[0]);
 
-                            CodigoI.Temporal t2 = new CodigoI.Temporal(t1, Convert.ToDouble(h2.getValor().getValor()), temp[1].getHoja().getValor().getValor() + "");
+                            CodigoI.Temporal t2 = new CodigoI.Temporal(t1, h2.getValor().getValor()+"", temp[1].getHoja().getValor().getValor() + "");
                             t1 = Form1.agregarTemporal(t2);
                             return t1;
                         }
@@ -279,6 +330,60 @@ namespace Proyecto2.Semantica
 
         }
 
+
+        public string generarTemporalesParaAsignaciones(AST.Nodo nodoAct, string varaible)
+        {
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            if (nodoAct.getNombre()== "ASIGNACION1")
+            {
+                varaible += temp[0].getHoja().getValor().getValor();
+
+                return generarTemporalesParaAsignaciones(temp[1], varaible);
+            }
+            else if(nodoAct.getNombre() == "ASIGNACION2")
+            {
+                if (temp.Length == 2)
+                {
+                    varaible += temp[0].getHoja().getValor().getValor();
+
+                    return generarTemporalesParaAsignaciones(temp[1], varaible);
+                }
+                else if (temp.Length == 3)
+                {
+                    if (temp[0].getHoja()!=null)
+                    {
+                        return varaible;
+                        //llamada
+                    }
+                    else
+                    {
+                        return varaible;
+                        //arreglo
+                    }
+                }
+                else
+                {
+                    return varaible;
+                    //epsilon
+                }
+            }
+            else
+            {
+                if (temp.Length==1)
+                {
+                    return varaible += temp[0].getHoja().getValor().getValor();
+                }
+                else
+                {
+                    varaible += generarTemporalesParaAsignaciones(temp[0], varaible);
+                    varaible += temp[1].getHoja().getValor().getValor();
+
+                    return varaible += temp[2].getHoja().getValor().getValor();
+                }
+            }
+
+        }
 
 
 

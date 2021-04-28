@@ -87,15 +87,20 @@ namespace Proyecto2
             {
                 richTextBox2.Text += "T" + temp.indice + " = T" + temp.getT1().indice+" ";
             }
-            richTextBox2.Text += temp.getOP();
-            if (temp.getT2() == null)
+
+            if (temp.getOP().Length>0)
             {
-                richTextBox2.Text += " "+temp.getArg2() + "; \n";
+                richTextBox2.Text += temp.getOP();
+                if (temp.getT2() == null)
+                {
+                    richTextBox2.Text += " " + temp.getArg2();
+                }
+                else
+                {
+                    richTextBox2.Text += " T" + temp.getT2().indice;
+                }
             }
-            else
-            {
-                richTextBox2.Text += " T" + temp.getT2().indice+"; \n";
-            }
+            richTextBox2.Text+= "; \n";
 
             temps.Add(temp);
             return temp;
@@ -297,6 +302,7 @@ namespace Proyecto2
 
                 List<Semantica.Entorno> ent = new List<Semantica.Entorno>();
 
+                //Semantica.Expresion cf = new Semantica.Expresion(ent);
                 //Semantica.ExpresionLogica cf = new Semantica.ExpresionLogica(ref ent);
                 //Semantica.FuncsProcs.cicloFor cf = new Semantica.FuncsProcs.cicloFor(ent);
                 //Semantica.SentenciaDeControl.Repeat cf = new Semantica.SentenciaDeControl.Repeat(ent);

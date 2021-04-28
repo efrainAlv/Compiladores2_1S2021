@@ -160,7 +160,7 @@ ASIGNACIONES -> ASIGNACION : = VALOR ;
 
 ASIG_AREGLO -> ASIGNACION [ EXP ] : = VALOR ;
 
-ASIGNACION -> ASIGNACION . id
+ASIGNACION -> ASIGNACION . id				
 			| id
 
 ASIGNACION1 -> id ASIGNACION2;
@@ -469,49 +469,6 @@ if (T==T)
 ///********************************************************
 
 
-program Main;
-
-type Cuadrado = object
-	var altura:integer;
-end;
-
-type Rectangulo = object
-	var altura, ancho:integer;
-end;
-
-type Circulo = object
-	var radio:integer;
-end;
-
-type Cuadrilatero = object
-	var cuadrado:Cuadrado;
-	var rectangulo:Rectangulo;	
-	var nombre:String;
-end;
-
-
-type Geometria = object
-	var circulo:Circulo;
-	var cuadrilatero:Cuadrilatero;
-end;
-
-
-var
-	g:Geometria;
-	b:string;
-
-
-begin
-
-	g.cuadrilatero.cuadrado.altura := 10;
-	g.cuadrilatero.rectangulo.altura := 20;
-	g.cuadrilatero.rectangulo.ancho := 30;
-	g.cuadrilatero.nombre := 'Cuadrilatero1'
-	g.circulo.radio := 2.5;
-	b := 'Variable'
-	
-end.
-
 
 STACK [1] = 0; 
 STACK [2] = 0; 
@@ -681,6 +638,60 @@ Roles
 		
 		
 
+
+program Main;
+
+type Cuadrado = object
+	var altura:integer;
+end;
+
+type Rectangulo = object
+	var altura, ancho:integer;
+end;
+
+var uno:Cuadrado;
+var dos:Rectangulo;
+var total:integer;
+
+begin
+
+	uno.altura:=10; //--> 0
+	dos.ancho:=20;	//--> 2
+	total:=uno.altura+dos.ancho;
+	//total:=uno.altura+dos.ancho*(total+dos.altura);
+	
+end.
+
+
+/*
+HEAP[0] = 10;
+HEAP[2] = 20;
+T1 = HEAP[0] ; 
+T2 = HEAP[2] ; 
+T3 = T1 + T2; 
+STACK[2] = T3;
+
+*******************************
+
+HEAP[0] = 10;
+HEAP[2] = 20;
+
+T1 = HEAP[0] ; --> uno.altura
+T2 = HEAP[2] ; --> dos.ancho
+T3 = STACK[2] ; --> total
+T4 = HEAP[1] ; --> dos.altura
+
+T5 = T3 + T4; 
+T6 = T2 * T5; 
+T7 = T1 + T6; 
+STACK[2] = T7;
+
+
+
+*/
+
+
+
 		
 program Main;
 
@@ -728,12 +739,14 @@ var
 	c, d: integer;
 	godin,godin1:Trabajador;
 	numero, uno:integer;
-
+	dos:integer=5+5*(3+(2+69))-5+6*(5+(5*3));
+	flag:boolean = true and false and (false=(5<=(10))) or ((false<>true) and (true or false));
+	
 begin
 
 	g.cuadrilatero.cuadrado.altura := 10;
-	g.cuadrilatero.rectangulo.altura := 20;
-	g.cuadrilatero.rectangulo.ancho := 30;
+	g.cuadrilatero.rectangulo.altura := g.cuadrilatero.cuadrado.altura;
+	g.cuadrilatero.rectangulo.ancho := dos;
 	g.cuadrilatero.nombre := 'Cuadrilatero1'
 	g.circulo.radio := 2.5;
 	b := 'Variable'  //--> 45
@@ -750,6 +763,7 @@ begin
 	godin1.puesto:='Jefe de jefes'; //--> 98
 	
 	uno:=1500;
+	dos:=3;
 	
 end.
 
@@ -757,30 +771,233 @@ end.
 program Procedimientos;
 
 var
-	b:string;
-	c, d: integer;
-	numero:integer;
+	b:string;																			// --> STACK[0], HEAP[0-20]
+	c, d: integer;																		// --> STACK[1], STACK[2]
+	numero:integer;																		// --> STACK[3]
 
-procedure contar(x, y:integer); 
+procedure contar(x, y:integer); 														// --> STACK[4], STACK[5]
 	
-	var z:integer;
+	var z:integer;																		// --> HEAP[20-21]
 	
 	begin
-		z:=x+y;
+		z:=x+y;																				
 	end;
 	
-procedure Hanoi(discos:integer; origen,aux,destino:string; var nuermo:integer);
+function factorial(n: integer): integer;												// --> STACK[6] -->HEAP[44-45]
+
+	var x,y,z:integer;																	// --> HEAP[21-22], HEAP[22-23], HEAP[23-24]
+	var saludo:string;																	// --> HEAP[24-44]
 	
-	var x,y,z:integer;
-	var saludo:string;
+	begin
+	
+	end;	
+
+procedure Hanoi(discos:integer; origen,aux,destino:string; var nuermo:integer);			// --> (STACK[7], HEAP[44-45]), (STACK[8], HEAP[45-65]), (STACK[9], HEAP[65-85]), (STACK[10], HEAP[85-105]), STACK[11]
+	
+	var x,y,z:integer;																	// --> HEAP[105-106], HEAP[106-107], HEAP[107-108]
+	var saludo:string;																	// --> HEAP[108-128]
 	
 	begin
 		
 	end;
+	
 	
 begin
 end.
 
 
 
+ASIGNACIONES -> 
+				ASIGNACION 									--> getAsignaciones(Nodo, string): string (cuadrado:=, cuadrado.altura:=, cuadrilatero.cadrado.altura:=)
+				: 
+				= 
+				VALOR										--> asignarValor(nodo[], string, int):void ()	-->		--> buscarVariableEnEntornos(string[], string):void()	--> asignarAVariable(string[], string, int, Variable, Objeto):Variable (SE HACE LA TRADUCCION)
+					ASIGNACION1								--> validarAsignacionAVariable(nodo, string):string (valor)
+						ASIGNACION2							--> validarAsignacionAVariable(nodo, string):string (valor)
+							. ASIGNACION					--> getAsignaciones(Nodo, string): string (cuadrado:=, cuadrado.altura:=, cuadrilatero.cadrado.altura:=)	--> getResultadoDeVariable(string[]):string ()	--> asignarAVaraible1(string[], int, varaible, objeto):Object (valor)
+							( LLAMADA' )
+							[ EXP ]
+					EXP										--> asignarValor(nodo[], string, int):void ()
+					EXP_LOG									--> asignarValor(nodo[], string, int):void ()
+					CADENA 									--> asignarValor(nodo[], string, int):void ()
+				;					
 
+			
+			
+			
+			
+
+
+T1 = 2 + 69; 
+T2 = 3 + T1; 
+T3 = 5 * T2; 
+T4 = 5 + T3; 
+T5 = T4 - 5; 
+T6 = 5 * 3; 
+T7 = 5 + T6; 
+T8 = 6 * T7; 
+T9 = T5 + T8; 
+STACK [8] = T9; 
+
+if ( 1 == 1 ) goto L1; 
+goto L2; 
+L1: if ( 1 == 0 ) goto L3; 
+goto L4; 
+L3: if ( 1 == 0 ) goto L5; 
+goto L6; 
+
+L5: T10 = 1; 
+goto L7; 
+
+L6: T10 = 0; 
+L7: if ( 5 <= 10 ) goto L8;
+goto L9;
+
+L8: T11 = 1; 
+goto L10; 
+
+L9: T11 = 0; 
+L10: if ( T10 == T11 ) goto L11; 
+goto L12; 
+L2: L4: L12: if ( 1 == 0 ) goto L13; 
+goto L14; 
+
+L13: T12 = 1; 
+goto L15; 
+
+L14: T12 = 0; 
+L15: if ( 1 == 1 ) goto L16; 
+goto L17; 
+
+L16: T13 = 1; 
+goto L18; 
+
+L17: T13 = 0; 
+L18: if ( T12 == T13 ) goto L19; 
+goto L20; 
+L11: L19: if ( 1 == 1 ) goto L21; 
+goto L22; 
+L20: L22: if ( 1 == 0 ) goto L23; 
+goto L24; 
+
+L21: L23: STACK [9] =  1; 
+
+L24: STACK [9] =  0;
+
+HEAP[2] = 10;
+HEAP[3] = HEAP[2];
+HEAP[4] = STACK[8];
+PTR_H = 5;
+HEAP[PTR_H] = c;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = u;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = a;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = d;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = r;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = i;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = l;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = a;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = t;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = r;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = o;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = 1;
+PTR_H = PTR_H + 1;
+HEAP[0] = 2.5;
+PTR_H = 25;
+HEAP[PTR_H] = v;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = a;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = r;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = i;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = a;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = b;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = l;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+STACK[2] = 777;
+STACK[3] = 34886677;
+PTR_H = 45;
+HEAP[PTR_H] = h;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = l;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = m;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = u;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = t;
+PTR_H = PTR_H + 1;
+HEAP[65] = 20;
+PTR_H = 66;
+HEAP[PTR_H] = j;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = f;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+STACK[6] = HEAP[2];
+PTR_H = 86;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = f;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = r;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = a;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = i;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = n;
+PTR_H = PTR_H + 1;
+HEAP[106] = 21;
+PTR_H = 107;
+HEAP[PTR_H] = j;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = f;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] =  ;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = d;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] =  ;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = j;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = f;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = e;
+PTR_H = PTR_H + 1;
+HEAP[PTR_H] = s;
+PTR_H = PTR_H + 1;
+STACK[7] = 1500;
+STACK[8] = 3;

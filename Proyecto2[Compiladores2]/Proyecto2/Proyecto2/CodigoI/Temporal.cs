@@ -9,8 +9,8 @@ namespace Proyecto2.CodigoI
 
         public static int cantidad = 1;
 
-        private double arg1;
-        private double arg2;
+        private string arg1 = "0";
+        private string arg2 = "0";
 
         private Temporal t1;
         private Temporal t2;
@@ -24,7 +24,14 @@ namespace Proyecto2.CodigoI
         public Temporal() { }
 
 
-        public Temporal(double arg1, double arg2, string operacion)
+        public Temporal(string arg1, double valor)
+        {
+            this.arg1 = arg1;
+            this.valor = valor;
+            this.operacion = "";
+        }
+
+        public Temporal(string arg1, string arg2, string operacion)
         {
 
             this.arg1 = arg1;
@@ -34,23 +41,23 @@ namespace Proyecto2.CodigoI
 
         }
 
-        public Temporal(Temporal t1, double arg2, string operacion)
+        public Temporal(Temporal t1, string arg2, string operacion)
         {
 
             this.t1 = t1;
             this.arg2 = arg2;
             this.operacion = operacion;
-            this.valor = operar(t1.getValor(), arg2, operacion);
+            this.valor = operar(t1.getValor()+"", arg2, operacion);
 
         }
 
-        public Temporal(double arg1, Temporal t2, string operacion)
+        public Temporal(string arg1, Temporal t2, string operacion)
         {
 
             this.arg1 = arg1;
             this.t2 = t2;
             this.operacion = operacion;
-            this.valor = operar(arg1, t2.getValor(), operacion);
+            this.valor = operar(arg1, t2.getValor()+"", operacion);
 
         }
 
@@ -60,11 +67,11 @@ namespace Proyecto2.CodigoI
             this.t1 = t1;
             this.t2 = t2;
             this.operacion = operacion;
-            this.valor = operar(t1.getValor(), t2.getValor(), operacion);
+            this.valor = operar(t1.getValor()+"", t2.getValor()+"", operacion);
 
         }
 
-        private double operar(double arg1, double arg2, string operacion)
+        private double operar(string arg1, string arg2, string operacion)
         {
 
             double valor = 0;
@@ -73,25 +80,25 @@ namespace Proyecto2.CodigoI
             {
                 case "+":
 
-                    valor = arg1 + arg2;
+                    valor = Convert.ToDouble(arg1) + Convert.ToDouble(arg2);
 
                     break;
 
                 case "-":
 
-                    valor = arg1 -arg2;
+                    valor = Convert.ToDouble(arg1) - Convert.ToDouble(arg2);
 
                     break;
 
                 case "*":
 
-                    valor = arg1 * arg2;
+                    valor = Convert.ToDouble(arg1) * Convert.ToDouble(arg2);
 
                     break;
 
                 case "/":
 
-                    valor = arg1 / arg2;
+                    valor = Convert.ToDouble(arg1) / Convert.ToDouble(arg2);
 
                     break;
 
@@ -106,7 +113,7 @@ namespace Proyecto2.CodigoI
             return this.valor;
         }
 
-        public double getArg1()
+        public string getArg1()
         {
             return this.arg1;
         }
@@ -121,7 +128,7 @@ namespace Proyecto2.CodigoI
             return this.t2;
         }
 
-        public double getArg2()
+        public string getArg2()
         {
             return this.arg2;
         }
@@ -135,11 +142,11 @@ namespace Proyecto2.CodigoI
 
         public bool comparar(Temporal t)
         {
-            if (t.arg1!=0 && this.arg1!=0)
+            if (t.arg1!="0" && this.arg1!="0")
             {
                 if (t.arg1 == this.arg1)
                 {
-                    if (t.arg2 != 0 && this.arg2 != 0)
+                    if (t.arg2 != "0" && this.arg2 != "0")
                     {
                         if (t.arg2 == this.arg2)
                         {
@@ -158,7 +165,7 @@ namespace Proyecto2.CodigoI
                             return false;
                         }
                     }
-                    else if (t.arg2 == 0 && this.arg2 == 0)
+                    else if (t.arg2 == "0" && this.arg2 == "0")
                     {
                         if (t.t2 != null && this.t2 != null)
                         {
@@ -205,11 +212,11 @@ namespace Proyecto2.CodigoI
                     return false;
                 }
             }
-            else if (t.arg1 == 0 && this.arg1 == 0)
+            else if (t.arg1 == "0" && this.arg1 == "0")
             {
                 if (t.t1.comparar(t1))
                 {
-                    if (t.arg2 != 0 && this.arg2 != 0)
+                    if (t.arg2 != "0" && this.arg2 != "0")
                     {
                         if (t.arg2 == this.arg2)
                         {
@@ -229,7 +236,7 @@ namespace Proyecto2.CodigoI
                             return false;
                         }
                     }
-                    else if (t.arg2 == 0 && this.arg2 == 0)
+                    else if (t.arg2 == "0" && this.arg2 == "0")
                     {
                         if (t.t2 != null && this.t2 != null)
                         {

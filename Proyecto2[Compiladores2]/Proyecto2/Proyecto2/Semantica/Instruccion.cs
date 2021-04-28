@@ -16,6 +16,8 @@ namespace Proyecto2.Semantica
         private List<string> valoresParametros = new List<string>();
         private List<string> valoresFunciones = new List<string>();
 
+        private string referenciaHeapStack = "";
+
         public Instruccion(ref List<Entorno> entorno)
         {
             this.entorno = entorno;
@@ -392,11 +394,11 @@ namespace Proyecto2.Semantica
                 {
                     ids = valoresPorRef(temp[0], ids);
 
-                    return ids = valoresPorRef(temp[2], ids);
+                    return valoresPorRef(temp[2], ids);
                 }
                 else
                 {
-                    return ids = valoresPorRef(temp[0], ids);
+                    return valoresPorRef(temp[0], ids);
                 }
             }
             else
@@ -487,17 +489,26 @@ namespace Proyecto2.Semantica
                     if (var.getValor().getTipo()==Terminal.TipoDato.CADENA)
                     {
                         int indiceHeap = var.indiceFinStackHeap - var.tamanio;
+                        Form1.richTextBox2.Text +=  "PTR_H = "+indiceHeap+";\n";
                         for (int i = 1; i < valor.Length - 1; i++)
                         {
-                            Form1.richTextBox2.Text += "HEAP[" + (indiceHeap) + "] = " + valor[i] + " ;\n";
-                            //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor[i] + " ;\n";
-                            //Form1.richTextBox2.Text += "PTR = PTR + 1" +" ;\n";
+                            Form1.richTextBox2.Text += "HEAP[PTR_H] = " + valor[i] + ";\n";
+                            Form1.richTextBox2.Text += "PTR_H = PTR_H + 1" +";\n";
                             indiceHeap++;
                         }
                     }
                     else
                     {
-                        Form1.richTextBox2.Text += "STACK[" + var.indiceStack + "] = " + valor + " ;\n";
+                        if (this.referenciaHeapStack.Length==0)
+                        {
+                            Form1.richTextBox2.Text += "STACK[" + var.indiceStack + "] = " + valor + ";\n";
+                        }
+                        else
+                        {
+                            Form1.richTextBox2.Text += "STACK[" + var.indiceStack + "] = " + referenciaHeapStack + ";\n";
+                            this.referenciaHeapStack = "";
+                        }
+                        
                     }
                     var.getValor().setValor(valor);
                     return var;
@@ -538,19 +549,26 @@ namespace Proyecto2.Semantica
                                 if (v.getValor().getTipo()==Terminal.TipoDato.CADENA)
                                 {
                                     int indiceHeap = v.indiceFinStackHeap - v.tamanio;
-                                    //Form1.richTextBox2.Text += "PTR = " + indiceHeap  +";\n";
+                                    Form1.richTextBox2.Text += "PTR_H = " + indiceHeap + ";\n";
                                     for (int i = 1; i < valor.Length-1; i++)
                                     {
-                                        Form1.richTextBox2.Text += "HEAP["+(indiceHeap)+"] = " + valor[i] + " ;\n";
-                                        //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor[i] + " ;\n";
-                                        //Form1.richTextBox2.Text += "PTR = PTR + 1" +" ;\n";
+                                        Form1.richTextBox2.Text += "HEAP[PTR_H] = " + valor[i] + ";\n";
+                                        Form1.richTextBox2.Text += "PTR_H = PTR_H + 1" + ";\n";
                                         indiceHeap++;
                                     }
                                 }
                                 else
                                 {
-                                    Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " +valor+ ";\n";
-                                    //Form1.richTextBox2.Text += "HEAP[ PTR ] = " + valor + " ;\n";
+                                    if (this.referenciaHeapStack.Length==0)
+                                    {
+                                        Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " + valor + ";\n";
+                                    }
+                                    else
+                                    {
+                                        Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " + referenciaHeapStack + ";\n";
+                                        this.referenciaHeapStack = "";
+                                    }
+                                    
                                 }
   
                                 v.getValor().setValor(valor);
@@ -613,12 +631,13 @@ namespace Proyecto2.Semantica
 
         //RETORNA EL VALOR DE UNA VARIABLE, POR EJEMPLO RETORNA EL VALOR DE figuraGeometrica.cuadrado.altura
         // O TAMBIEN RETORNA EL VALOR DE altura
-        public Object asignarAVariable1(string[] ids, int indice, Semantica.Variable var, Semantica.Objeto obj)
+        public Object asignarAVariable1(string[] ids, int indice, Variable var, Objeto obj)
         {
             if (ids.Length == 1)
             {
                 if (var.getValor().getValorObjeto()==null)
                 {
+                    this.referenciaHeapStack = "STACK[" + var.indiceStack + "]";
                     return var.getValor().getValor();
                 }
                 else
@@ -634,6 +653,7 @@ namespace Proyecto2.Semantica
                     if (var.getNombre() == ids[indice])
                     {
                         object valor = asignarAVariable1(ids, indice + 1, var, var.getValor().getValorObjeto());
+
                         return valor;
                     }
                     else
@@ -643,18 +663,19 @@ namespace Proyecto2.Semantica
                 }
                 else if (indice == ids.Length - 1)
                 {
-                    Semantica.Objeto objeto = var.getValor().getValorObjeto();
+                    Objeto objeto = var.getValor().getValorObjeto();
 
 
                     if (objeto != null)
                     {
-                        Semantica.Variable v = objeto.buscarAtributo(ids[indice]);
+                        Variable v = objeto.buscarAtributo(ids[indice]);
 
                         if (v != null)
                         {
 
                             if (v.getValor().getValorObjeto() == null)
                             {
+                                this.referenciaHeapStack = "HEAP[" + (var.indiceFinStackHeap-var.tamanio) + "]";
                                 return v.getValor().getValor();
                             }
                             else
@@ -676,7 +697,7 @@ namespace Proyecto2.Semantica
                 }
                 else
                 {
-                    Semantica.Variable v = obj.buscarAtributo(ids[indice]);
+                    Variable v = obj.buscarAtributo(ids[indice]);
 
                     if (v != null)
                     {
@@ -717,6 +738,12 @@ namespace Proyecto2.Semantica
             {
                 Expresion exp = new Expresion(this.entorno);
                 cadena += exp.noce(temp[n].getNodos()[0]);
+                CodigoI.Temporal t = exp.generarTemporales(temp[n].getNodos()[0]);
+
+                if (t!=null)
+                {
+                    referenciaHeapStack = "T" + t.indice;
+                }
 
                 exp = null;
             }
@@ -879,6 +906,8 @@ namespace Proyecto2.Semantica
         }
 
 
+
+        //Obtiene el valor de una variable 
         public string getResultadoDeVariable(string[]ids)
         {
 
@@ -888,10 +917,10 @@ namespace Proyecto2.Semantica
 
                 if (varEntorno != null)
                 {
+                    
                     object resultado = asignarAVariable1(ids, 0, this.entorno[i].buscarVariable(ids[0]), null);
                     
-                    return resultado+"";
-
+                    return resultado + "";
                 }
             }
 
@@ -1197,6 +1226,7 @@ namespace Proyecto2.Semantica
 
                         double resp = exp.noce(temp[n].getNodos()[0]);
                         //func.getParametro(indice).getVariable().getValor().setValor(resp);
+                        exp.generarTemporales(temp[n].getNodos()[0]);
 
                         return resp+"";
                     }
@@ -1276,6 +1306,7 @@ namespace Proyecto2.Semantica
                 {
                     Expresion exp = new Expresion(this.entorno);
                     resultado = exp.noce(temp[n]) + "";
+                    exp.generarTemporales(temp[n].getNodos()[0]);
                     return resultado;
                 }
                 else if (temp[n].getNombre() == "EXP_LOG")

@@ -96,6 +96,35 @@ namespace Proyecto2.Semantica
             this.valor.setValorObjeto(obj);
         }
 
+
+        public Variable buscarAtributoDeObjeto(string[] vars, int indice)
+        {
+            if (vars.Length-1==indice)
+            {
+                if (this.nombre == vars[indice])
+                {
+                    return this;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (this.getValor().getValorObjeto()!=null)
+                {
+                    return this.getValor().getValorObjeto().buscarAtributoDeObjeto(vars, indice+1);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            
+        }
+
+
     }
 
 }

@@ -292,14 +292,11 @@ namespace Proyecto2.Semantica
                     }
                     else
                     {
-                       
-                        CodigoI.Temporal temporal1 = new CodigoI.Temporal(0, 0, "+");
-                        temporal1.indice = Form1.temps.Count;
-                        Form1.temps.Add(temporal1);
+                        int indiceT1 = CodigoI.Temporal.cantidad;
+                        CodigoI.Temporal.cantidad++;
 
-                        CodigoI.Temporal temporal2 = new CodigoI.Temporal(0, 0, "+");
-                        temporal2.indice = Form1.temps.Count;
-                        Form1.temps.Add(temporal2);
+                        int indiceT2 = CodigoI.Temporal.cantidad;
+                        CodigoI.Temporal.cantidad++;
 
                         //*******************************************
 
@@ -307,14 +304,14 @@ namespace Proyecto2.Semantica
                         e1.traducir(temp[1]);
 
                         e1.imptimirVeraderas();
-                        Form1.richTextBox2.Text += "T" + temporal1.indice + " = 1; \n";
+                        Form1.richTextBox2.Text += "T" + indiceT1 + " = 1; \n";
 
                         Form1.etiquetas++;
                         int n = Form1.etiquetas;
                         Form1.richTextBox2.Text += "goto L" + n + "; \n";
 
                         e1.imprimirFalsas();
-                        Form1.richTextBox2.Text += "T"+temporal1.indice +" = 0; \n";
+                        Form1.richTextBox2.Text += "T"+indiceT1 +" = 0; \n";
 
                         Form1.richTextBox2.Text += "L" + n + ": ";
 
@@ -324,14 +321,14 @@ namespace Proyecto2.Semantica
                         e2.traducir(temp[3]);
 
                         e2.imptimirVeraderas();
-                        Form1.richTextBox2.Text += "T" + temporal2.indice + " = 1; \n";
+                        Form1.richTextBox2.Text += "T" + indiceT2 + " = 1; \n";
 
                         Form1.etiquetas++;
                         int m = Form1.etiquetas;
                         Form1.richTextBox2.Text += "goto L" + m + "; \n";
 
                         e2.imprimirFalsas();
-                        Form1.richTextBox2.Text += "T" + temporal2.indice + " = 0; \n";
+                        Form1.richTextBox2.Text += "T" + indiceT2 + " = 0; \n";
 
                         Form1.richTextBox2.Text += "L" + m + ": ";
 
@@ -339,7 +336,7 @@ namespace Proyecto2.Semantica
 
                         Form1.etiquetas++;
                         etiquetas[1] = Form1.etiquetas;
-                        Form1.richTextBox2.Text += "if ( T" + temporal1.indice + " == T" + temporal2.indice + " ) goto L" + Form1.etiquetas +"; \n";
+                        Form1.richTextBox2.Text += "if ( T" + indiceT1 + " == T" + indiceT2 + " ) goto L" + Form1.etiquetas +"; \n";
                         this.verdaderas.Add(Form1.etiquetas);
                         Form1.etiquetas++;
                         etiquetas[0] = Form1.etiquetas;

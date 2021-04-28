@@ -95,6 +95,21 @@ namespace Proyecto2.Semantica
             this.atributos.Add(var);
         }
 
+
+        public Variable buscarAtributoDeObjeto(string[] vars, int indice)
+        {
+            for (int i = 0; i < this.atributos.Count; i++)
+            {
+                if (this.atributos[i].getNombre()==vars[indice])
+                {
+                    return this.atributos[i].buscarAtributoDeObjeto(vars, indice++);
+                }
+            }
+
+            return null;
+        }
+
+
         public void agregarAtributos(List<Variable> vars)
         {
             Variable[] vrs = vars.ToArray();

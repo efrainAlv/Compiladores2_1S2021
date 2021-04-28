@@ -429,11 +429,11 @@ namespace Proyecto2.Semantica
 
                         if (t != null)
                         {
-                            Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1) + "] = T" + t.indice + "; \n";
+                            Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count) + "] = T" + t.indice + "; \n";
                         }
                         else
                         {
-                            Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1) + "] = " + valor + "; \n";
+                            Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count) + "] = " + valor + "; \n";
                         }
 
 
@@ -446,9 +446,9 @@ namespace Proyecto2.Semantica
 
                         expL.traducir(temp[n].getNodos().ToArray()[1].getNodos().ToArray()[0]);
                         expL.imptimirVeraderas();
-                        Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1) + "] =  1; \n";
+                        Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count) + "] =  1; \n";
                         expL.imprimirFalsas();
-                        Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count+1)+ "] =  0; \n";
+                        Form1.richTextBox2.Text += "STACK [" + (this.variablesGLobales.Count)+ "] =  0; \n";
 
                     }
                     else

@@ -221,6 +221,30 @@ namespace Proyecto2.Semantica.FuncsProcs
 
                     parametros = agregarFuncion(temp[2], parametros);
 
+                    if (parametros.Count > 0)
+                    {
+                        for (int i = 0; i < parametros.Count; i++)
+                        {
+                            parametros[i].getVariable().indiceStack = Form1.finStack;
+                            if (parametros[i].getVariable().getValor().getTipo() == Terminal.TipoDato.CADENA)
+                            {
+                                parametros[i].getVariable().indiceFinStackHeap = Form1.finHeap + parametros[i].getVariable().tamanio;
+                                Form1.finHeap += parametros[i].getVariable().tamanio;
+                            }
+                            else if (parametros[i].getVariable().getValor().getValorObjeto() != null)
+                            {
+                                parametros[i].getVariable().actualizarIndices(Form1.finHeap);
+                                Form1.finHeap += parametros[i].getVariable().tamanio;
+                            }
+                            else
+                            {
+                                parametros[i].getVariable().indiceFinStackHeap = 0;
+                            }
+                            Form1.finStack++;
+                        }
+
+                    }
+
                     List<Entorno> ent = new List<Entorno>();
                     for (int i = 0; i < this.entorno.Count; i++)
                     {
@@ -230,20 +254,16 @@ namespace Proyecto2.Semantica.FuncsProcs
                     Cabecera c = new Cabecera(ent);
                     c.agregarVariableGlobal(temp[6], new List<string>(), Form1.objetos);
 
-                    //nombre, c.getVariables(), parametros, temp[7], ent
+
                     Funcion func = new Funcion(nombre, new Terminal(temp[4].getNodos()[0].getHoja().getValor().getValor(), temp[4].getNodos()[0].getHoja().getValor().getTipo()), c.getVariables(), parametros, temp[9], ent);
-                    //c = null;
-                    //ent = null;
+                    
 
                     Cuerpo cuer = new Cuerpo(func.getEntorno());
                     cuer.anidarFuncionProcedimiento(temp[7]);
                     func.addProcedimientos(cuer.getProcedimientos());
                     func.addFunciones(cuer.getFunciones());
-                    //cuer = null;
-
+                    
                     this.funciones.Add(func);
-
-                    //proc = null;
 
                     return null;
 

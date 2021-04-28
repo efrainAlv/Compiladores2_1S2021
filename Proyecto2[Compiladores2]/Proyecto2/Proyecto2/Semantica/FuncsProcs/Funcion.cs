@@ -40,22 +40,36 @@ namespace Proyecto2.Semantica.FuncsProcs
             this.procedimientos = new List<Procedimiento>();
             this.funciones = new List<Funcion>();
 
-            if (this.parametros.Count > 0)
+
+            int inicioHeap = Form1.finHeap;
+            if (variablesLocales.Count > 0)
             {
-                //List<Variable> vars = new List<Variable>();
-                for (int i = 0; i < this.parametros.Count; i++)
-                {
-                    variablesLocales.Add(this.parametros[i].getVariable());
-                }
-                this.variablesLocales.Add(new Variable(nombre, valor));
-                this.entorno.Add(new Entorno(ref variablesLocales));
+                Form1.finHeap = variablesLocales[variablesLocales.Count - 1].indiceFinStackHeap;
+            }
+
+            for (int i = 0; i < this.parametros.Count; i++)
+            {
+                variablesLocales.Add(this.parametros[i].getVariable());
+            }
+
+            if (valor.getTipo()==Terminal.TipoDato.CADENA)
+            {
+                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap+20, 20));
+                Form1.finHeap += 20;
+            }
+            else if (valor.getTipo() == Terminal.TipoDato.OBJETO)
+            {
+                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap+ valor.getValorObjeto().getTamanioObjeto(), valor.getValorObjeto().getTamanioObjeto()));
+                Form1.finHeap += valor.getValorObjeto().getTamanioObjeto();
             }
             else
             {
-                this.variablesLocales.Add(new Variable(nombre, valor));
-                this.entorno.Add(new Entorno(ref variablesLocales));
+                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap+1, 1));
+                Form1.finHeap += 1;
             }
-            
+            Form1.finStack++;
+
+            this.entorno.Add(new Entorno(ref variablesLocales, (Form1.finStack - variablesLocales.Count), Form1.finStack, variablesLocales.Count - parametros.Count, Form1.finHeap, inicioHeap));
 
         }
 
