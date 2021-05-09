@@ -254,6 +254,23 @@ namespace Proyecto2.Semantica
                             Expresion e = new Expresion(this.entorno);
                             e.traducir(temp[0], temp[2], temp[1]);
 
+                            /*if (temp[0].getNodos()[0].getNombre()=="ASIGNACION1" && temp[2].getNodos()[0].getNombre() == "ASIGNACION1")
+                            {
+                                e.traducir(temp[0].getNodos()[0], temp[2].getNodos()[0], temp[1]);
+                            }
+                            else if (temp[0].getNodos()[0].getNombre() != "ASIGNACION1" && temp[2].getNodos()[0].getNombre() == "ASIGNACION1")
+                            {
+                                e.traducir(temp[0], temp[2].getNodos()[0], temp[1]);
+                            }
+                            else if (temp[0].getNodos()[0].getNombre() == "ASIGNACION1" && temp[2].getNodos()[0].getNombre() != "ASIGNACION1")
+                            {
+                                e.traducir(temp[0].getNodos()[0], temp[2], temp[1]);
+                            }
+                            else if (temp[0].getNodos()[0].getNombre() != "ASIGNACION1" && temp[2].getNodos()[0].getNombre() != "ASIGNACION1")
+                            {
+                                e.traducir(temp[0], temp[2], temp[1]);
+                            }*/
+
                             Form1.etiquetas+=2;
                             
                             Form1.richTextBox2.Text += "goto L" + (Form1.etiquetas - 1) + ";\n"; //si es verdadero
@@ -279,8 +296,26 @@ namespace Proyecto2.Semantica
                     if (temp[1].getNombre()=="EXP")
                     {
                         Expresion e = new Expresion(this.entorno);
+
                         e.traducir(temp[1], temp[3], temp[2]);
-                        
+                        /*if (temp[1].getNodos()[0].getNombre() == "ASIGNACION1" && temp[3].getNodos()[0].getNombre() == "ASIGNACION1")
+                        {
+                            e.traducir(temp[1].getNodos()[0], temp[3].getNodos()[0], temp[2]);
+                        }
+                        else if (temp[1].getNodos()[0].getNombre() != "ASIGNACION1" && temp[3].getNodos()[0].getNombre() == "ASIGNACION1")
+                        {
+                            e.traducir(temp[1], temp[3].getNodos()[0], temp[2]);
+                        }
+                        else if (temp[1].getNodos()[0].getNombre() == "ASIGNACION1" && temp[3].getNodos()[0].getNombre() != "ASIGNACION1")
+                        {
+                            e.traducir(temp[1].getNodos()[0], temp[3], temp[2]);
+                        }
+                        else if (temp[1].getNodos()[0].getNombre() != "ASIGNACION1" && temp[3].getNodos()[0].getNombre() != "ASIGNACION1")
+                        {
+                            e.traducir(temp[1], temp[3], temp[2]);
+                        }*/
+
+
                         Form1.etiquetas += 2;
 
                         Form1.richTextBox2.Text += "goto L" + (Form1.etiquetas-1) + ";\n"; //si es verdadero
@@ -361,29 +396,91 @@ namespace Proyecto2.Semantica
                 }
                 else
                 {
-
-                    Form1.etiquetas+=2;
-                    if (temp[0].getHoja().getValor().getValor()+"" == "true")
+                    if (temp[0].getHoja()!=null)
                     {
-                        Form1.richTextBox2.Text += "if ( 1 == 1 ) goto L" + (Form1.etiquetas-1) + "; \n";
-                        this.verdaderas.Add(Form1.etiquetas -1);
+                        Form1.etiquetas += 2;
+                        if (temp[0].getHoja().getValor().getValor() + "" == "true")
+                        {
+                            Form1.richTextBox2.Text += "if ( 1 == 1 ) goto L" + (Form1.etiquetas - 1) + "; \n";
+                            this.verdaderas.Add(Form1.etiquetas - 1);
 
+                        }
+                        else
+                        {
+                            Form1.richTextBox2.Text += "if ( 1 == 0 ) goto L" + (Form1.etiquetas - 1) + "; \n";
+                            this.verdaderas.Add(Form1.etiquetas - 1);
+                        }
+                        Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + "; \n";
+                        this.falsas.Add(Form1.etiquetas);
+
+                        etiquetas = new int[] { Form1.etiquetas, Form1.etiquetas - 1, 0 };
                     }
                     else
                     {
-                        Form1.richTextBox2.Text += "if ( 1 == 0 ) goto L" + (Form1.etiquetas - 1) + "; \n";
-                        this.verdaderas.Add(Form1.etiquetas - 1);
-                    }
-                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + "; \n";
-                    this.falsas.Add(Form1.etiquetas);
 
-                    etiquetas = new int[] { Form1.etiquetas, Form1.etiquetas - 1 , 0};
+                    }
                 }
 
             }
 
             return etiquetas;
         }
+
+
+        public string generarTemporalesParaAsignaciones(AST.Nodo nodoAct, string varaible)
+        {
+            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
+
+            if (nodoAct.getNombre() == "ASIGNACION1")
+            {
+                varaible += temp[0].getHoja().getValor().getValor();
+
+                return generarTemporalesParaAsignaciones(temp[1], varaible);
+            }
+            else if (nodoAct.getNombre() == "ASIGNACION2")
+            {
+                if (temp.Length == 2)
+                {
+                    varaible += temp[0].getHoja().getValor().getValor();
+
+                    return generarTemporalesParaAsignaciones(temp[1], varaible);
+                }
+                else if (temp.Length == 3)
+                {
+                    if (temp[0].getHoja() != null)
+                    {
+                        return varaible;
+                        //llamada
+                    }
+                    else
+                    {
+                        return varaible;
+                        //arreglo
+                    }
+                }
+                else
+                {
+                    return varaible;
+                    //epsilon
+                }
+            }
+            else
+            {
+                if (temp.Length == 1)
+                {
+                    return varaible += temp[0].getHoja().getValor().getValor();
+                }
+                else
+                {
+                    varaible += generarTemporalesParaAsignaciones(temp[0], varaible);
+                    varaible += temp[1].getHoja().getValor().getValor();
+
+                    return varaible += temp[2].getHoja().getValor().getValor();
+                }
+            }
+
+        }
+
 
 
 
@@ -412,6 +509,23 @@ namespace Proyecto2.Semantica
             {
                 Form1.richTextBox2.Text += "L" + this.falsas[i] + ": ";
             }
+        }
+
+
+
+        public string getVerdaderasYFalsas()
+        {
+            string etiquetas = "";
+            for (int i = 0; i < this.verdaderas.Count; i++)
+            {
+                etiquetas += "L"+this.verdaderas[i]+": ";
+            }
+            etiquetas += "|";
+            for (int i = 0; i < this.falsas.Count; i++)
+            {
+                etiquetas += "L"+this.falsas[i]+": ";
+            }
+            return etiquetas;
         }
 
 

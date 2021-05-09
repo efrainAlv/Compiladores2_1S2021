@@ -179,6 +179,8 @@ namespace Proyecto2.Semantica.SentenciaDeControl
 
                     el.imptimirVeraderas();
                     //instrucciones
+                    Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
+                    ins.analizar(temp[4]);
 
                     Form1.etiquetas++;
                     etiqueta = Form1.etiquetas;
@@ -233,6 +235,8 @@ namespace Proyecto2.Semantica.SentenciaDeControl
 
                         el.imptimirVeraderas();
                         //instrucciones
+                        Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
+                        ins.analizar(temp[6]);
 
                         Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
 
@@ -245,6 +249,8 @@ namespace Proyecto2.Semantica.SentenciaDeControl
 
                         el.imptimirVeraderas();
                         //instrucciones
+                        Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
+                        ins.analizar(temp[5]);
 
                         Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
 
@@ -258,7 +264,8 @@ namespace Proyecto2.Semantica.SentenciaDeControl
                     if (tipo == "ELSE")
                     {
                         //instrucciones
-
+                        Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, valoresFunciones);
+                        ins.analizar(temp[2]);
                         Form1.richTextBox2.Text += "goto L" + etiqueta + ";\n";
                     }
                     else

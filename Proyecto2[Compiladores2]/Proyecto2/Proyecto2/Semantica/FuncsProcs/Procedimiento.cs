@@ -145,6 +145,32 @@ namespace Proyecto2.Semantica.FuncsProcs
         }
 
 
+        public void traducir()
+        {
+
+            if (this.funciones.Count > 0)
+            {
+                for (int i = 0; i < this.funciones.Count; i++)
+                {
+                    this.funciones[i].traducir();
+                }
+            }
+            if (this.procedimientos.Count > 0)
+            {
+                for (int i = 0; i < this.procedimientos.Count; i++)
+                {
+                    this.procedimientos[i].traducir();
+                }
+            }
+
+            Form1.richTextBox2.Text += this.nombre + "(){\n";
+            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
+            ins.analizar(this.instrucciones);
+            Form1.richTextBox2.Text += "}\n";
+
+        }
+
+
 
     }
 }

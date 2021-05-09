@@ -113,7 +113,7 @@ namespace Proyecto2.Semantica.FuncsProcs
                             }
                             else
                             {
-                                parametros[i].getVariable().indiceFinStackHeap = 0;
+                                parametros[i].getVariable().indiceFinStackHeap = -1;
                             }
                             Form1.finStack++;
                         }
@@ -238,7 +238,7 @@ namespace Proyecto2.Semantica.FuncsProcs
                             }
                             else
                             {
-                                parametros[i].getVariable().indiceFinStackHeap = 0;
+                                parametros[i].getVariable().indiceFinStackHeap = -1;
                             }
                             Form1.finStack++;
                         }

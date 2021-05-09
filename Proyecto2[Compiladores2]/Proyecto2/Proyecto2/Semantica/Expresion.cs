@@ -202,44 +202,78 @@ namespace Proyecto2.Semantica
                     {
                         if (temp[0].getNombre() == "ASIGNACION1")
                         {
-                            double resultado = 0;
-
-                            string asignacion = generarTemporalesParaAsignaciones(temp[0], "");
-
-                            int indiceEntorno = 0;
-                            string[] ids = asignacion.Split(".");
-                            Variable var = null;
-                            for (int i = this.entorno.Count - 1; i >= 0; i--)
+                            string tipo = "var";
+                            if (temp[0].getNodos()[1].getNodos().Count>0)
                             {
-                                var = this.entorno[i].buscarVariable(ids[0]);
-                                if (var!=null)
+                                tipo = temp[0].getNodos()[1].getNodos()[0].getHoja().getValor().getValor() + "";
+                            }
+                            
+                            if (tipo == "." || tipo=="var")
+                            {
+                                string asignacion = generarTemporalesParaAsignaciones(temp[0], "");
+
+                                int indiceEntorno = 0;
+                                string[] ids = asignacion.Split(".");
+                                Variable var = null;
+                                for (int i = this.entorno.Count - 1; i >= 0; i--)
                                 {
-                                    indiceEntorno = i;
-                                    break;
+                                    var = this.entorno[i].buscarVariable(ids[0]);
+                                    if (var != null)
+                                    {
+                                        indiceEntorno = i;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (var!=null)
-                            {
-                               var =  var.buscarAtributoDeObjeto(ids, 0);
-                            }
-
-                            if (indiceEntorno == 0)
-                            {
-                                if (ids.Length>1)
+                                if (var != null)
                                 {
-                                    return Form1.agregarTemporal(new CodigoI.Temporal("HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]", Convert.ToDouble(var.getValor().getValor())));
+                                    var = var.buscarAtributoDeObjeto(ids, 0);
+                                }
+
+                                if (indiceEntorno == 0)
+                                {
+                                    if (ids.Length > 1)
+                                    {
+                                        return Form1.agregarTemporal(new CodigoI.Temporal("HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]", Convert.ToDouble(var.getValor().getValor())));
+                                    }
+                                    else
+                                    {
+                                        return Form1.agregarTemporal(new CodigoI.Temporal("STACK[" + var.indiceStack + "]", Convert.ToDouble(var.getValor().getValor())));
+                                    }
                                 }
                                 else
                                 {
-                                    return Form1.agregarTemporal(new CodigoI.Temporal("STACK[" + var.indiceStack + "]", Convert.ToDouble(var.getValor().getValor())));
+                                    if (var.indiceFinStackHeap==-1)
+                                    {
+                                        return Form1.agregarTemporal(new CodigoI.Temporal("STACK[" + (var.indiceStack) + "]", Convert.ToDouble(var.getValor().getValor())));
+                                    }
+                                    else
+                                    {
+                                        return Form1.agregarTemporal(new CodigoI.Temporal("HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]", Convert.ToDouble(var.getValor().getValor())));
+                                    }
                                 }
+                            }
+                            else if (tipo=="(")
+                            {
+                                FuncsProcs.Funcion funcion = Form1.buscarFuncion(temp[0].getNodos()[0].getHoja().getValor().getValor()+"", "funcion");
+                                if (funcion!=null)
+                                {
+                                    Instruccion ins = new Instruccion(ref this.entorno);
+                                    ins.llamadasFunciones(temp[0].getNodos()[1].getNodos()[1], funcion, funcion.getLongParams()-1);
+
+                                    Variable varaible = funcion.getVariables()[funcion.getVariables().Count-1];
+                                    return Form1.agregarTemporal(new CodigoI.Temporal("STACK[" + (varaible.indiceStack) + "]", 0));
+                                }
+
+                            }
+                            else if (tipo =="[")
+                            {
+
                             }
                             else
                             {
-                                return Form1.agregarTemporal(new CodigoI.Temporal("HEAP[" + (var.indiceFinStackHeap-var.tamanio) + "]", Convert.ToDouble(var.getValor().getValor())));
-                            }
 
+                            }
                         }
                     }
 

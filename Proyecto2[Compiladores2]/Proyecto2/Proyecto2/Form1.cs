@@ -49,8 +49,8 @@ namespace Proyecto2
 
         public static List<CodigoI.Temporal> temps = new List<CodigoI.Temporal>();
 
-        public static int finHeap = 0;
-        public static int finStack = 0;
+        public static int finHeap = 1;
+        public static int finStack = 1;
 
         public Form1()
         {
@@ -106,6 +106,19 @@ namespace Proyecto2
             return temp;
         }
 
+
+        public static double buscarTemporal(string nombre)
+        {
+            for (int i = 0; i < temps.Count; i++)
+            {
+                if (nombre == temps[i].indice+"")
+                {
+                    return temps[i].getValor();
+                }
+            }
+
+            return 0;
+        }
 
         public static Semantica.Objeto buscarObjeto(string nombre)
         {
@@ -512,6 +525,16 @@ namespace Proyecto2
                     Semantica.FuncsProcs.Cuerpo cuerpo = new Semantica.FuncsProcs.Cuerpo(entornos);
                     cuerpo.analizar(temp[4]);
 
+                    for (int i = 0; i < procedimientos.Count; i++)
+                    {
+                        procedimientos[i].traducir();
+                    }
+
+                    for (int i = 0; i < funciones.Count; i++)
+                    {
+                        funciones[i].traducir();
+                    }
+
                     //procedimientos = cuerpo.getProcedimientos();
                 }
                 if (temp[6].getNombre() == "INSTRUCCIONES")
@@ -524,7 +547,11 @@ namespace Proyecto2
 
                     Semantica.Instruccion ins = new Semantica.Instruccion(ref entornos);
 
+                    richTextBox2.Text += "main {\n";
+
                     ins.analizar(temp[6]);
+
+                    richTextBox2.Text += "}\n";
 
                 }
 

@@ -66,7 +66,8 @@ namespace Proyecto2.Semantica
                         {
                             SentenciaDeControl.SenteciaIf senIf = new SentenciaDeControl.SenteciaIf(this.entorno, this.valoresParametros, this.valoresFunciones);
 
-                            senIf.analizar(temp[0], false);
+                            //senIf.analizar(temp[0], false);
+                            senIf.traducir(temp[0], 0);
 
                         }
                         else if (temp[0].getNombre() == "WHILE")
@@ -87,8 +88,8 @@ namespace Proyecto2.Semantica
 
                             FuncsProcs.cicloFor cicloFor = new FuncsProcs.cicloFor(this.entorno, this.valoresParametros, this.valoresFunciones);
 
-                            cicloFor.analizar(temp[0]);
-
+                            //cicloFor.analizar(temp[0]);
+                            cicloFor.traducir(temp[0]);
                             cicloFor = null;
 
                             Form1.indiceCiclos.RemoveAt(Form1.indiceCiclos.Count - 1);
@@ -230,8 +231,11 @@ namespace Proyecto2.Semantica
                                     func = llamadasFunciones(temp[0], null, 0);
                                 }
 
+                                
                                 if (func!=null)
                                 {
+                                    //Form1.richTextBox2.Text += func.getNombre() + "();\n";
+                                    /*
                                     func.ejecutar();
                                     restablecerValoresFunc(func);
 
@@ -268,52 +272,55 @@ namespace Proyecto2.Semantica
                                     
 
                                 }
-
+                                */
                                 func = null;
                             }
                             else
                             {
-                                Form1.procemientoAnalizado.Add(proc);
+                                    //Form1.richTextBox2.Text += proc.getNombre() + "();\n";
+                                    /*
+                                    Form1.procemientoAnalizado.Add(proc);
 
-                                proc.ejecutar();
-                                restablecerValoresProc(proc);
-
-
-                                if (proc.getLongParams() > 0)
-                                {
-                                    List<string> ids = valoresPorRef(temp[0].getNodos()[2], new List<string>());
-                                    List<string> vals = new List<string>();
+                                    proc.ejecutar();
+                                    restablecerValoresProc(proc);
 
 
-                                    for (int i = 0; i < proc.getLongParams(); i++)
+                                    if (proc.getLongParams() > 0)
                                     {
-                                        if (proc.getParametro(i).getTipo() == "referencia")
-                                        {
-                                            vals.Add(proc.getParametro(i).getVariable().getValor().getValor() + "");
-                                        }
-                                    }
+                                        List<string> ids = valoresPorRef(temp[0].getNodos()[2], new List<string>());
+                                        List<string> vals = new List<string>();
 
 
-                                    for (int k = 0; k < ids.Count && k < vals.Count; k++)
-                                    {
-                                        for (int i = this.entorno.Count - 1; i >= 0; i--)
+                                        for (int i = 0; i < proc.getLongParams(); i++)
                                         {
-                                            for (int j = 0; j < this.entorno[i].getVariables().Count; j++)
+                                            if (proc.getParametro(i).getTipo() == "referencia")
                                             {
-                                                if (this.entorno[i].getVariables()[j].getNombre() == ids[k])
+                                                vals.Add(proc.getParametro(i).getVariable().getValor().getValor() + "");
+                                            }
+                                        }
+
+
+                                        for (int k = 0; k < ids.Count && k < vals.Count; k++)
+                                        {
+                                            for (int i = this.entorno.Count - 1; i >= 0; i--)
+                                            {
+                                                for (int j = 0; j < this.entorno[i].getVariables().Count; j++)
                                                 {
-                                                    this.entorno[i].getVariables()[j].setValorTerminal(vals[k]);
+                                                    if (this.entorno[i].getVariables()[j].getNombre() == ids[k])
+                                                    {
+                                                        this.entorno[i].getVariables()[j].setValorTerminal(vals[k]);
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
+
+                                    */
+                                }
+                                    
+                                    //Form1.procemientoAnalizado.RemoveAt(Form1.procemientoAnalizado.Count - 1);
+                                    
 
                                 }
-
-                                Form1.procemientoAnalizado.RemoveAt(Form1.procemientoAnalizado.Count - 1);
-
-
-                            }
 
                             proc = null;
 
@@ -499,16 +506,29 @@ namespace Proyecto2.Semantica
                     }
                     else
                     {
-                        if (this.referenciaHeapStack.Length==0)
+                        if (this.referenciaHeapStack.Length == 0)
                         {
-                            Form1.richTextBox2.Text += "STACK[" + var.indiceStack + "] = " + valor + ";\n";
+                            Form1.richTextBox2.Text += "STACK[" + (var.indiceStack) + "] = " + valor + ";\n";
                         }
                         else
                         {
-                            Form1.richTextBox2.Text += "STACK[" + var.indiceStack + "] = " + referenciaHeapStack + ";\n";
+                            if (valor == "True" || valor == "False")
+                            {
+                                string[] etiquetas = referenciaHeapStack.Split('|');
+
+                                Form1.richTextBox2.Text += etiquetas[0] + " STACK[" + (var.indiceFinStackHeap - var.tamanio) + "] = 1;\n"; ;
+                                Form1.etiquetas++;
+                                Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + ";\n";
+                                Form1.richTextBox2.Text += etiquetas[1] + " STACK[" + (var.indiceFinStackHeap - var.tamanio) + "] = 0;\n"; ;
+                                Form1.richTextBox2.Text += "L" + Form1.etiquetas+": ";
+                            }
+                            else
+                            {
+                                Form1.richTextBox2.Text += "STACK[" + (var.indiceStack) + "] = " + referenciaHeapStack + ";\n";
+                            }
                             this.referenciaHeapStack = "";
                         }
-                        
+
                     }
                     var.getValor().setValor(valor);
                     return var;
@@ -561,11 +581,39 @@ namespace Proyecto2.Semantica
                                 {
                                     if (this.referenciaHeapStack.Length==0)
                                     {
-                                        Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " + valor + ";\n";
+                                        if (v.indiceFinStackHeap==-1)
+                                        {
+                                            Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " + valor + ";\n";
+                                        }
+                                        else
+                                        {
+                                            Form1.richTextBox2.Text += "STACK[" + (v.indiceStack) + "] = " + valor + ";\n";
+                                        }
                                     }
                                     else
                                     {
-                                        Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " + referenciaHeapStack + ";\n";
+                                        if (valor == "True" || valor == "False")
+                                        {
+                                            string[] etiquetas = referenciaHeapStack.Split('|');
+
+                                            Form1.richTextBox2.Text += etiquetas[0] + " HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = 1;\n"; ;
+                                            Form1.etiquetas++;
+                                            Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + ";\n";
+                                            Form1.richTextBox2.Text += etiquetas[1] + " HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = 0;\n"; ;
+                                            Form1.richTextBox2.Text += "L" + Form1.etiquetas+": ";
+                                        }
+                                        else
+                                        {
+                                            if (v.indiceFinStackHeap == -1)
+                                            {
+                                                Form1.richTextBox2.Text += "STACK[" + (v.indiceStack) + "] = " + referenciaHeapStack + ";\n";
+                                            }
+                                            else
+                                            {
+                                                Form1.richTextBox2.Text += "HEAP[" + (v.indiceFinStackHeap - v.tamanio) + "] = " + referenciaHeapStack + ";\n";
+                                            }
+                                            
+                                        }
                                         this.referenciaHeapStack = "";
                                     }
                                     
@@ -675,7 +723,15 @@ namespace Proyecto2.Semantica
 
                             if (v.getValor().getValorObjeto() == null)
                             {
-                                this.referenciaHeapStack = "HEAP[" + (var.indiceFinStackHeap-var.tamanio) + "]";
+                                if (var.indiceFinStackHeap==-1)
+                                {
+                                    this.referenciaHeapStack = "STACK[" + (var.indiceStack) + "]";
+                                }
+                                else
+                                {
+                                    this.referenciaHeapStack = "HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]";
+                                }
+                                
                                 return v.getValor().getValor();
                             }
                             else
@@ -737,12 +793,16 @@ namespace Proyecto2.Semantica
             else if (temp[n].getNodos()[0].getNombre() == "EXP")
             {
                 Expresion exp = new Expresion(this.entorno);
-                cadena += exp.noce(temp[n].getNodos()[0]);
+                //cadena += exp.noce(temp[n].getNodos()[0]);
                 CodigoI.Temporal t = exp.generarTemporales(temp[n].getNodos()[0]);
 
                 if (t!=null)
                 {
                     referenciaHeapStack = "T" + t.indice;
+                }
+                else
+                {
+                    cadena += exp.noce(temp[n].getNodos()[0]);
                 }
 
                 exp = null;
@@ -750,8 +810,11 @@ namespace Proyecto2.Semantica
             else if (temp[n].getNodos()[0].getNombre() == "EXP_LOG")
             {
                 ExpresionLogica expL = new ExpresionLogica(ref this.entorno);
-                cadena += expL.noce(temp[n].getNodos()[0]);
+                //cadena += expL.noce(temp[n].getNodos()[0]);
+                expL.traducir(temp[n].getNodos()[0]);
 
+                referenciaHeapStack = expL.getVerdaderasYFalsas();
+                
                 expL = null;
             }
             else
@@ -823,7 +886,7 @@ namespace Proyecto2.Semantica
 
                         if (funcion != null)
                         {
-                            funcion.ejecutar();
+                            //funcion.ejecutar();
 
                             try
                             {
@@ -837,6 +900,13 @@ namespace Proyecto2.Semantica
 
                                 referencia = valorRetornoAux + "";
                             }
+
+                            Variable var = funcion.getEntorno()[funcion.getEntorno().Count - 1].buscarVariable(funcion.getNombre());
+
+                            int temporal = CodigoI.Temporal.cantidad;
+                            Form1.richTextBox2.Text += "T" + temporal + " = " + "HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]\n";
+                            CodigoI.Temporal.cantidad++;
+                            referenciaHeapStack = "T" + temporal;
 
                             return referencia;
                         }
@@ -928,6 +998,19 @@ namespace Proyecto2.Semantica
         }
 
 
+
+
+
+
+        //FUNCIONES Y PROCEDIMIENTOS
+        /*
+        //
+        //
+        //
+        */
+        //FUNCIONES Y PROCEDIMIENTOS
+
+
         public FuncsProcs.Procedimiento llamadasProcedimientos(AST.Nodo nodoAct, FuncsProcs.Procedimiento proc, int indice)
         {
             string tipo = nodoAct.getNombre();
@@ -964,9 +1047,19 @@ namespace Proyecto2.Semantica
 
                 for (int i = 0; i < proc.getLongParams(); i++)
                 {
-                    proc.getParametro(i).getVariable().getValor().setValor(listaParams[i]);
-                }
+                    Form1.richTextBox2.Text += "STACK[" + proc.getParametro(i).getVariable().indiceStack + "] = " + listaParams[i] + "\n";
 
+                    try
+                    {
+                        proc.getParametro(i).getVariable().getValor().setValor(Convert.ToDouble(listaParams[i]));
+                    }
+                    catch (FormatException e)
+                    {
+                        proc.getParametro(i).getVariable().getValor().setValor( Form1.buscarTemporal(listaParams[i].Substring(1)));
+                    }
+                    
+                }
+                Form1.richTextBox2.Text += proc.getNombre() + "(); \n";
                 proc.setValoresParametros(listaParams);
 
                 return proc;
@@ -1046,8 +1139,23 @@ namespace Proyecto2.Semantica
 
                 for (int i = 0; i < func.getLongParams(); i++)
                 {
-                    func.getParametro(i).getVariable().getValor().setValor(listaParams[i]);
+                    if (listaParams[i].Length==0)
+                    {
+                        listaParams[i] = "0";
+                    }
+                    Form1.richTextBox2.Text += "STACK[" + func.getParametro(i) .getVariable().indiceStack+ "] = "+ listaParams[i] + "\n";
+                    try
+                    {
+                        func.getParametro(i).getVariable().getValor().setValor(Convert.ToDouble(listaParams[i]));
+                    }
+                    catch (FormatException e)
+                    {
+                        func.getParametro(i).getVariable().getValor().setValor(Form1.buscarTemporal(listaParams[i].Substring(1)));
+                    }
+
                 }
+
+                Form1.richTextBox2.Text += func.getNombre()+"(); \n";
 
                 return func;
 
@@ -1113,10 +1221,20 @@ namespace Proyecto2.Semantica
 
                         Expresion exp = new Expresion(this.entorno);
 
-                        double resp = exp.noce(temp[n].getNodos()[0]);
+                        //double resp = exp.noce(temp[n].getNodos()[0]);
                         //proc.getParametro(indice).getVariable().getValor().setValor(resp);
 
-                        return resp+"";
+                        CodigoI.Temporal t = exp.generarTemporales(temp[n].getNodos()[0]);
+
+                        if (t != null)
+                        {
+                            return "T" + t.indice;
+                        }
+                        else
+                        {
+                            return exp.noce(temp[n].getNodos()[0])+"";
+                        }
+
                     }
                     else
                     {
@@ -1127,12 +1245,26 @@ namespace Proyecto2.Semantica
                 {
                     if (proc.getParametro(indice).getVariable().getValor().getTipo() == Terminal.TipoDato.BOOLEANO)
                     {
-                        ExpresionLogica expl = new ExpresionLogica(ref this.entorno);
+                        ExpresionLogica expL = new ExpresionLogica(ref this.entorno);
 
-                        bool resp = expl.noce(temp[n].getNodos()[0]);
+                        //bool resp = expl.noce(temp[n].getNodos()[0]);
                         //proc.getParametro(indice).getVariable().getValor().setValor(resp);
 
-                        return resp+"";
+                        expL.traducir(temp[n].getNodos()[0]);
+
+                        int temporal = CodigoI.Temporal.cantidad;
+
+                        expL.imptimirVeraderas();
+                        Form1.richTextBox2.Text += "T" + temporal + " = 1;\n";
+                        Form1.etiquetas++;
+                        Form1.richTextBox2.Text += "goto L"+ Form1.etiquetas + ";\n";
+                        expL.imprimirFalsas();
+                        Form1.richTextBox2.Text += "T" + temporal + " = 0;\n";
+                        Form1.richTextBox2.Text += "L" + Form1.etiquetas + ": \n";
+                        CodigoI.Temporal.cantidad++;
+
+                        return temporal+"";
+
                     }
                     else
                     {
@@ -1192,6 +1324,9 @@ namespace Proyecto2.Semantica
 
                     if (func != null)
                     {
+
+                        
+                        /*
                         func.ejecutar();
 
                         try
@@ -1208,6 +1343,8 @@ namespace Proyecto2.Semantica
                             //func.getParametro(indice).getVariable().getValor().setValor(valorRetornoAux);
                             return valorRetornoAux ;
                         }
+                        */
+                        return "";
                     }
                     else
                     {
@@ -1224,11 +1361,20 @@ namespace Proyecto2.Semantica
 
                         Expresion exp = new Expresion(this.entorno);
 
-                        double resp = exp.noce(temp[n].getNodos()[0]);
+                        //double resp = exp.noce(temp[n].getNodos()[0]);
                         //func.getParametro(indice).getVariable().getValor().setValor(resp);
-                        exp.generarTemporales(temp[n].getNodos()[0]);
 
-                        return resp+"";
+                        CodigoI.Temporal t = exp.generarTemporales(temp[n].getNodos()[0]);
+
+                        if (t != null)
+                        {
+                            return "T" + t.indice;
+                        }
+                        else
+                        {
+                            return exp.noce(temp[n].getNodos()[0]) + "";
+                        }
+
                     }
                     else
                     {
@@ -1401,40 +1547,6 @@ namespace Proyecto2.Semantica
             File.WriteAllTextAsync("c:\\compiladores2\\tabla.html", tabla);
 
         }
-
-
-
-        public void traducirAsignaciones()
-        {
-
-
-        }
-
-
-        //Produccion Valor
-        public void VALOR(AST.Nodo nodoAct)
-        {
-            AST.Nodo[] temp = nodoAct.getNodos().ToArray();
-
-            if (temp[0].getNombre()=="ASIGNACION1")
-            {
-
-            }
-            else if (temp[0].getNombre() == "EXP")
-            {
-
-            }
-            else if (temp[0].getNombre() == "EXP_LOG")
-            {
-
-            }
-            else
-            {
-
-            }
-
-        }
-
 
 
     }

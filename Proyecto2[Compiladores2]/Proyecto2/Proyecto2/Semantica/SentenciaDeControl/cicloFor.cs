@@ -12,6 +12,8 @@ namespace Proyecto2.Semantica.FuncsProcs
         private List<string> valoresParametros = new List<string>();
         private List<string> valoresFunciones = new List<string>();
 
+        private string stackHeap = "STACK";
+
         public cicloFor(List<Entorno> entorno)
         {
             this.entorno = entorno;
@@ -94,13 +96,16 @@ namespace Proyecto2.Semantica.FuncsProcs
 
                     //for id : = 10*(5+5) to 20*(2*4) do begin end ;
 
+                    Variable var = buscarVariableEnEntornos(temp[1].getHoja().getValor().getValor() + "");
                     if (t1 == null)
                     {
-                        Form1.richTextBox2.Text += temp[1].getHoja().getValor().getValor() + "=" + r1 + " \n";
+                        
+                        Form1.richTextBox2.Text +=  this.stackHeap+ " = " + r1 + "; \n";
+                        
                     }
                     else
                     {
-                        Form1.richTextBox2.Text += temp[1].getHoja().getValor().getValor() + "=" + "T" + t1.indice + " \n";
+                        Form1.richTextBox2.Text += this.stackHeap+ " = " + "T" + t1.indice + "; \n";
                     }
 
                     Form1.etiquetas++;
@@ -111,11 +116,11 @@ namespace Proyecto2.Semantica.FuncsProcs
 
                     if (t1 == null)
                     {
-                        Form1.richTextBox2.Text += temp[1].getHoja().getValor().getValor() + " >=";
+                        Form1.richTextBox2.Text += this.stackHeap + " >= ";
                     }
                     else
                     {
-                        Form1.richTextBox2.Text += "T" + t1.indice + " >";
+                        Form1.richTextBox2.Text += "T" + t1.indice + " > ";
                     }
 
                     if (t2 == null)
@@ -134,6 +139,11 @@ namespace Proyecto2.Semantica.FuncsProcs
                     int fin = Form1.etiquetas;
                     Form1.richTextBox2.Text += "goto L"+ Form1.etiquetas+";\n";
 
+                    int temporal = CodigoI.Temporal.cantidad;
+                    CodigoI.Temporal.cantidad++;
+                    Form1.richTextBox2.Text += "T"+temporal+" = "+this.stackHeap+" + 1;\n";
+                    Form1.richTextBox2.Text += this.stackHeap +" = T"+temporal+";\n";
+                    Form1.richTextBox2.Text += "goto L" + Form1.etiquetas + ";\n";
                     Form1.richTextBox2.Text += "goto L" + inicio + ";\n";
 
                     Form1.richTextBox2.Text += "L" + fin + ": ";
@@ -165,6 +175,28 @@ namespace Proyecto2.Semantica.FuncsProcs
             return "";
         }
 
+
+        public Variable buscarVariableEnEntornos(string nombreVar)
+        {
+            for (int i = this.entorno.Count - 1; i >= 0; i--)
+            {
+                Variable varEntorno = this.entorno[i].buscarVariable(nombreVar);
+
+                if (varEntorno != null)
+                {
+                    if (i==0){
+                        this.stackHeap = "STACK["+varEntorno.indiceStack+"]";
+                    }
+                    else
+                    {
+                        this.stackHeap = "HEAP["+varEntorno.indiceFinStackHeap+"]";
+                    }
+
+                    return varEntorno;
+                }
+            }
+            return null;
+        }
 
     }
 }

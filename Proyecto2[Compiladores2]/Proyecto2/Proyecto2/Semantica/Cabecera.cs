@@ -527,6 +527,9 @@ namespace Proyecto2.Semantica
 
         //METODO PARA ANALIZAR PRODUCCION ASIGNAICON1
         //RETORNA EL VALOR DE UNA VARIABLE, OBJETO ANINDADO, FUNCION
+
+
+
         public string validarAsignacionAVariable(AST.Nodo nodoAct, string referencia, Instruccion ins)
         {
 
@@ -582,7 +585,7 @@ namespace Proyecto2.Semantica
 
                     if (funcion != null)
                     {
-                        funcion.ejecutar();
+                        //funcion.ejecutar();
 
                         try
                         {

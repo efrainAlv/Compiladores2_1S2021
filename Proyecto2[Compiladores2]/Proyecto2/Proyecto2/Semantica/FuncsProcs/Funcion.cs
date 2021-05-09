@@ -52,23 +52,22 @@ namespace Proyecto2.Semantica.FuncsProcs
                 variablesLocales.Add(this.parametros[i].getVariable());
             }
 
-            if (valor.getTipo()==Terminal.TipoDato.CADENA)
+            if (valor.getTipo() == Terminal.TipoDato.CADENA)
             {
-                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap+20, 20));
+                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap + 20, 20));
                 Form1.finHeap += 20;
             }
             else if (valor.getTipo() == Terminal.TipoDato.OBJETO)
             {
-                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap+ valor.getValorObjeto().getTamanioObjeto(), valor.getValorObjeto().getTamanioObjeto()));
+                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap + valor.getValorObjeto().getTamanioObjeto(), valor.getValorObjeto().getTamanioObjeto()));
                 Form1.finHeap += valor.getValorObjeto().getTamanioObjeto();
             }
             else
             {
-                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finHeap+1, 1));
-                Form1.finHeap += 1;
+                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finStack, 1));
+                Form1.finStack++;
             }
-            Form1.finStack++;
-
+            
             this.entorno.Add(new Entorno(ref variablesLocales, (Form1.finStack - variablesLocales.Count), Form1.finStack, variablesLocales.Count - parametros.Count, Form1.finHeap, inicioHeap));
 
         }
@@ -138,6 +137,11 @@ namespace Proyecto2.Semantica.FuncsProcs
         }
 
 
+        public List<Variable> getVariables()
+        {
+            return this.variablesLocales;
+        }
+
 
         public void ejecutar()
         {
@@ -154,6 +158,31 @@ namespace Proyecto2.Semantica.FuncsProcs
             ins = null;
         }
 
+
+        public void traducir()
+        {
+
+            if (this.funciones.Count>0)
+            {
+                for (int i = 0; i < this.funciones.Count; i++)
+                {
+                    this.funciones[i].traducir();
+                }
+            }
+            if (this.procedimientos.Count>0)
+            {
+                for (int i = 0; i < this.procedimientos.Count; i++)
+                {
+                    this.procedimientos[i].traducir();
+                }
+            }
+            
+            Form1.richTextBox2.Text += this.nombre + "(){\n";
+            Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
+            ins.analizar(this.instrucciones);
+            Form1.richTextBox2.Text += "}\n";
+
+        }
 
     }
 }
