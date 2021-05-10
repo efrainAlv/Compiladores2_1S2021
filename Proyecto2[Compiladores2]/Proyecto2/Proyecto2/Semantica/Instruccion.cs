@@ -686,7 +686,14 @@ namespace Proyecto2.Semantica
                 if (var.getValor().getValorObjeto()==null)
                 {
                     this.referenciaHeapStack = "STACK[" + var.indiceStack + "]";
-                    return var.getValor().getValor();
+                    if (var.indiceFinStackHeap==-1)
+                    {
+                        return "STACK[" + var.indiceStack + "]";
+                    }
+                    else
+                    {
+                        return var.getValor().getValor();
+                    }
                 }
                 else
                 {
@@ -904,11 +911,11 @@ namespace Proyecto2.Semantica
                             Variable var = funcion.getEntorno()[funcion.getEntorno().Count - 1].buscarVariable(funcion.getNombre());
 
                             int temporal = CodigoI.Temporal.cantidad;
-                            Form1.richTextBox2.Text += "T" + temporal + " = " + "HEAP[" + (var.indiceFinStackHeap - var.tamanio) + "]\n";
+                            Form1.richTextBox2.Text += "T" + temporal + " = " + "STACK[" + (var.indiceStack) + "]\n";
                             CodigoI.Temporal.cantidad++;
                             referenciaHeapStack = "T" + temporal;
 
-                            return referencia;
+                            return referenciaHeapStack;
                         }
                         else
                         {

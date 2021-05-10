@@ -68,11 +68,14 @@ namespace Proyecto2
 
         public static CodigoI.Temporal agregarTemporal(CodigoI.Temporal temp)
         {
-            for (int i = 0; i < temps.Count; i++)
+            if (!temp.getArg1().Contains("[") && !temp.getArg2().Contains("["))
             {
-                if (temp.comparar(temps[i]))
+                for (int i = 0; i < temps.Count; i++)
                 {
-                    return temps[i];
+                    if (temp.comparar(temps[i]))
+                    {
+                        return temps[i];
+                    }
                 }
             }
 
@@ -547,11 +550,11 @@ namespace Proyecto2
 
                     Semantica.Instruccion ins = new Semantica.Instruccion(ref entornos);
 
-                    richTextBox2.Text += "main {\n";
+                    richTextBox2.Text += "int main() {\n";
 
                     ins.analizar(temp[6]);
 
-                    richTextBox2.Text += "}\n";
+                    richTextBox2.Text += "return 0;\n }\n";
 
                 }
 

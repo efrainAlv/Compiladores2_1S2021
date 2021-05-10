@@ -64,7 +64,9 @@ namespace Proyecto2.Semantica.FuncsProcs
             }
             else
             {
-                this.variablesLocales.Add(new Variable(nombre, valor, Form1.finStack, 1));
+                Variable var1 = new Variable(nombre, valor, Form1.finStack, -1);
+                var1.indiceStack = Form1.finStack;
+                this.variablesLocales.Add(var1);
                 Form1.finStack++;
             }
             
@@ -177,9 +179,26 @@ namespace Proyecto2.Semantica.FuncsProcs
                 }
             }
             
-            Form1.richTextBox2.Text += this.nombre + "(){\n";
+            Form1.richTextBox2.Text += "void "+this.nombre + "(){\n";
+            int inicioTemps = CodigoI.Temporal.cantidad;
+            string codigo1 = Form1.richTextBox2.Text;
+            Form1.richTextBox2.Clear();
+
             Instruccion ins = new Instruccion(ref this.entorno, this.valoresParametros, this.valoresFunciones);
             ins.analizar(this.instrucciones);
+            string codigo2 = Form1.richTextBox2.Text;
+            Form1.richTextBox2.Clear();
+
+            Form1.richTextBox2.Text += codigo1;
+            Form1.richTextBox2.Text += "int ";
+            for (int i = inicioTemps; i < CodigoI.Temporal.cantidad-1; i++)
+            {
+                Form1.richTextBox2.Text += "T"+i+", ";
+            }
+            Form1.richTextBox2.Text += "T" + CodigoI.Temporal.cantidad + ";\n";
+            Form1.richTextBox2.Text += codigo2;
+
+            Form1.richTextBox2.Text += "return;\n";
             Form1.richTextBox2.Text += "}\n";
 
         }
